@@ -5,6 +5,10 @@
 - [L1 开发原则](principles.md)
 - [Monorepo 实践指南](monorepo.md)
 
+## 主题（跨项目技术约定）
+
+- [API 错误码与 HTTP 状态约定](api-error-codes.md)
+
 ## ADR（Architecture / Standard Decision Records）
 
 | ID | 标题 | 状态 |
