@@ -32,3 +32,5 @@ alwaysApply: true
 ## Git
 
 Conventional Commits 风格。不主动 commit/push，除非用户明确要求。
+
+> 行业基线对齐见 `playbook/baselines/`；本文件为 Agent 流程层派生。

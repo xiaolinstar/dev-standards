@@ -15,6 +15,12 @@
 - **放进本仓库**：跨项目通用原则、工作流、编码底线
 - **不放进本仓库**：具体项目的 domain 知识（如 ai-todo CLI 细节 → 留在 ai-todo 仓库的 Skill）
 
+## 修改基线时
+
+- 读 `playbook/baselines/README.md` §怎么改
+- 任何偏离必须新建 ADR 并在"缺口"段链上
+- 跑 `bash scripts/sync.sh validate` 确认 0 违例
+
 ## 首选 Skill
 
 新建或整理项目时，使用 `@dev-bootstrap`（同步后位于 `~/.claude/skills/dev-bootstrap`）。
