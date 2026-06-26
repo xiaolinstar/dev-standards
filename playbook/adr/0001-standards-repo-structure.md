@@ -1,8 +1,10 @@
-# ADR-0001: 标准库仓库结构与 Claude Code 对齐
-
-- **状态**: 已接受
-- **日期**: 2026-06-21
-- **决策者**: xiaolin
+---
+ID: 0001
+Title: 标准库仓库结构与 Claude Code 对齐
+Status: Accepted
+Date: 2026-06-21
+Deciders: xingxiaolin
+---
 
 ## 背景
 

@@ -10,6 +10,7 @@
 | 层级 | 本仓库 | 消费位置 |
 |------|--------|----------|
 | 原则与 ADR | `playbook/` | 人读；Skill 引用 |
+| 外部基线映射 | `playbook/baselines/` | 人读；principles / skills 引用 |
 | 工作流 Skills | `skills/` | `~/.claude/skills/`（个人）或 `<project>/.claude/skills/`（项目） |
 | Hooks 模板 | `hooks/` | `<project>/.claude/hooks/` |
 | 项目模板（未来 C） | `templates/` | 新建仓库时复制 |
@@ -22,17 +23,27 @@
 ```
 dev-standards/
 ├── CLAUDE.md              # Claude Code 入口（本仓库自用）
+├── README.md              # 本文件
+├── docs/
+│   └── superpowers/       # 设计 spec / 实施 plan
 ├── playbook/
-│   ├── principles.md      # L1 原则（短）
-│   ├── monorepo.md        # monorepo 实践（pnpm、apps/packages）
-│   ├── INDEX.md           # 文档索引
-│   └── adr/               # 架构/标准决策记录
+│   ├── principles.md      # L1 原则（Agent / 流程层）
+│   ├── monorepo.md        # monorepo 实践
+│   ├── api-error-codes.md # 跨项目 API 错误响应约定
+│   ├── ci-minimum-gate.md # CI 必选 3 项 + 可选 4 项
+│   ├── baselines/         # 外部行业基线映射（CNCF TAG / 12-Factor / …）
+│   ├── INDEX.md           # 文档索引（含 ADR 仲裁顺序）
+│   └── adr/               # 架构 / 标准决策记录
 ├── skills/                # Claude Code Skill 源码（一等公民）
 │   └── dev-bootstrap/
 ├── hooks/                 # Claude hooks 模板（一等公民）
 ├── adapters/              # 非 Claude Code Agent 的兼容镜像
 │   └── cursor/            # Cursor rules（派生自 playbook/）
-├── scripts/sync.sh        # 同步到本机 Claude / 部署到目标项目
+├── scripts/               # 同步 / 校验脚本
+│   ├── sync.sh            # 入口
+│   ├── lint.sh            # markdownlint + 链接 + 未决项扫描 + 孤儿
+│   ├── adr-validate.sh    # ADR frontmatter
+│   └── baselines-validate.sh  # baselines/ frontmatter + 过期
 └── templates/             # 方案 C 预留
 ```
 
@@ -59,6 +70,16 @@ dev-standards/
 3. **ADR** — 有争议的默认选择写 `playbook/adr/NNNN-*.md`
 4. **同步** — `./scripts/sync.sh` 推到本机；业务项目按需部署 adapter / hooks
 5. **迭代** — 每月扫一遍：Agent 是否反复违反某条？→ 补 Rule 或缩短 Skill
+6. **基线月扫** — 每月跑 `bash scripts/sync.sh validate`；`last-reviewed` > 30 天的 baselines/ 文件要重读上游并复核
+
+## 外部基线
+
+行业基线对齐见 [`playbook/baselines/`](playbook/baselines/README.md)。当前覆盖：
+
+- [CNCF TAG App Delivery](playbook/baselines/cncf-tag-app-delivery.md) — CI/CD、Continuous Delivery、GitOps、Progressive Delivery、Observability
+- [12-Factor](playbook/baselines/twelve-factor.md) — Codebase / Dependencies / Config / …
+
+新增基线流程见 `playbook/baselines/README.md` §怎么改。
 
 ## 与 Claude Code 的对应关系
 

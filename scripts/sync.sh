@@ -17,6 +17,7 @@ Commands:
                               (e.g. 'adapters cursor <project>' → <project>/.cursor/rules/)
   hooks <project>     Copy hooks/ → <project>/.claude/hooks/
   all [project]       skills + print adapters/hooks usage (optional project path for adapters cursor)
+  validate            Run all validators (lint + adr + baselines)
   help                Show this message
 
 Examples:
@@ -111,6 +112,21 @@ cmd_all() {
   fi
 }
 
+cmd_validate() {
+  local script failed=0
+  for script in lint.sh adr-validate.sh baselines-validate.sh; do
+    if [[ -x "$ROOT/scripts/$script" ]]; then
+      echo "→ $script"
+      if ! bash "$ROOT/scripts/$script"; then
+        failed=1
+      fi
+    else
+      echo "warning: $ROOT/scripts/$script not found or not executable" >&2
+    fi
+  done
+  return $failed
+}
+
 main() {
   local cmd="${1:-help}"
   shift || true
@@ -119,6 +135,7 @@ main() {
     adapters) cmd_adapters "$@" ;;
     hooks)    cmd_hooks "$@" ;;
     all)      cmd_all "$@" ;;
+    validate) cmd_validate ;;
     help|-h|--help) usage ;;
     *)
       echo "error: unknown command: $cmd" >&2
