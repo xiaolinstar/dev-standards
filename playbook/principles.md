@@ -1,6 +1,6 @@
 # L1 开发原则
 
-> 短、稳定、跨项目。真源就是本文；Cursor 写法派生见 `adapters/cursor/`（adapter 镜像），流程见 `skills/`。
+> 短、稳定、跨项目。真源就是本文；Cursor 写法派生见 `adapters/cursor/`（adapter 镜像），流程见 `skills/`。行业基线对齐见 [baselines/](baselines/README.md)；决策走 [ADR](adr/)。
 
 ## 1. 最小 scope
 
@@ -46,8 +46,15 @@
 - **默认单包**；≥2 个可运行产物或需共享 TS 库时再上 monorepo
 - **pnpm workspaces** + `apps/` / `packages/`；详见 [monorepo.md](monorepo.md) 与 [ADR-0002](adr/0002-monorepo-default-selection.md)
 
-## 待补充（从项目中提取）
+## 已落地的补全
 
-- [ ]  API 错误码与 HTTP 状态约定
-- [ ]  前端/小程序目录约定
-- [ ]  CI 最低门槛（lint / test / secret scan）
+- API 错误码与 HTTP 状态约定 → 详见 [api-error-codes.md](api-error-codes.md) / [ADR-0005](adr/0005-api-error-code-convention.md)
+- CI 最低门槛 → 详见 [ci-minimum-gate.md](ci-minimum-gate.md) / [ADR-0006](adr/0006-ci-minimum-gate.md)
+
+## 显式延后
+
+- **前端 / 小程序目录约定** — 不在本阶段覆盖。触发条件：出现第 2 个前端项目时启动。理由：单项目特例不上升为通用标准；见 [ADR-0004](adr/0004-cncf-tag-app-delivery-adoption.md) 末尾说明。
+
+## 外部基线
+
+行业基线对齐见 [baselines/](baselines/README.md)（CNCF TAG App Delivery、12-Factor）。冲突时按 [INDEX.md](INDEX.md) §ADR 仲裁顺序处理。
