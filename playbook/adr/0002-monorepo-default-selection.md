@@ -1,8 +1,10 @@
-# ADR-0002: Monorepo / 单包默认选型
-
-- **状态**: 已接受
-- **日期**: 2026-06-21
-- **决策者**: xiaolin
+---
+ID: 0002
+Title: Monorepo / 单包默认选型
+Status: Accepted
+Date: 2026-06-21
+Deciders: xingxiaolin
+---
 
 ## 背景
 
