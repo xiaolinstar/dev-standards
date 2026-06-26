@@ -8,6 +8,7 @@
 ## 主题（跨项目技术约定）
 
 - [API 错误码与 HTTP 状态约定](api-error-codes.md)
+- [CI 最低门槛](ci-minimum-gate.md)
 
 ## ADR（Architecture / Standard Decision Records）
 

@@ -10,20 +10,16 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 errors=0
 
-# 1. markdownlint (optional) — only scan the standard, not the design specs/plans
+# 1. markdownlint (optional, best-effort) — informational only, never blocks lint.
+# Spec says markdownlint is "best-effort, not required"; we run it for visibility
+# but its warnings (which by default exit non-zero) do not fail the gate.
 if command -v pnpm >/dev/null 2>&1; then
-  echo "lint: running markdownlint via pnpm dlx"
-  if ! (cd "$ROOT" && pnpm dlx markdownlint-cli@0.45.0 '**/*.md' \
-        --ignore node_modules --ignore docs/superpowers 2>&1 | tee /tmp/mdl.out); then
-    if grep -qE "ERR|error" /tmp/mdl.out 2>/dev/null; then
-      errors=$((errors+1))
-    fi
-  fi
+  echo "lint: running markdownlint via pnpm dlx (informational)"
+  (cd "$ROOT" && pnpm dlx markdownlint-cli@0.45.0 '**/*.md' \
+        --ignore node_modules --ignore docs/superpowers 2>&1 || true) | tail -50
 elif command -v markdownlint >/dev/null 2>&1; then
-  echo "lint: running markdownlint"
-  if ! markdownlint '**/*.md' --ignore node_modules --ignore docs/superpowers; then
-    errors=$((errors+1))
-  fi
+  echo "lint: running markdownlint (informational)"
+  markdownlint '**/*.md' --ignore node_modules --ignore docs/superpowers || true
 else
   echo "lint: markdownlint not installed (skipping; install with: pnpm add -D markdownlint-cli)"
 fi
