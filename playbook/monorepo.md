@@ -142,6 +142,25 @@ Monorepo Progress:
 - [ ] .gitignore：node_modules、dist、.venv
 ```
 
+## 混合发布（多 artifact 不同节奏）
+
+当 monorepo 内**服务端可 CI/CD 自动部署**、**客户端须人工 gate**（如微信小程序提审）时：
+
+```text
+main push → CI 构建全部 artifact + deploy-manifest（指纹）
+         → 客户端人工上传/验收（体验版、提审）
+         → 手动触发 CD，按 tag 部署服务端
+         → post-deploy-verify；失败自动回滚
+```
+
+要点：
+
+- 用 **manifest + digest** 关联「同一次 CI 的 API 镜像 + 小程序 dist」，而非「CI 绿了就部署」
+- CD **不**默认 main 自动上生产（避免服务端先于客户端上线）
+- 兼容矩阵：`docs/releases/compatibility.md` 记录已验证组合
+
+参考实现：ai-todo `docs/ci-cd.md`、`docs/release-runbook.md`。
+
 ## 参考实现
 
 - [ai-todo](https://github.com/xiaolinstar/ai-todo)：`apps/api`（Python）+ `apps/cli` + `apps/miniapp` + `packages/shared` 等

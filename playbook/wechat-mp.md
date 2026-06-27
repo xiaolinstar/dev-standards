@@ -23,11 +23,28 @@
 | 包管理 | pnpm | 与仓库 [monorepo.md](monorepo.md) 实践一致 |
 | Lint | ESLint + `@umijs/eslint-config` + Prettier | 微信生态最广覆盖 |
 | 测试 | Jest + `miniprogram-automator` | automator 是微信官方 UI 自动化方案 |
-| 提交 | conventional commits + commitlint + Husky | 自动生成 CHANGELOG |
+| **提交规范** ⭐ | **conventional commits + commitlint + Husky（必选）** | 见 [ci-minimum-gate.md §必选 4 项](ci-minimum-gate.md)；自动生成 CHANGELOG |
 | 异步 API | `miniprogram-api-promise` 包 | `wx.request` 原生是 callback，统一 Promise 化 |
 | 发布 | `miniprogram-ci` | 官方 CI 工具，免本地微信开发者工具 |
 
 **与基线冲突时**：以 [ADR-0007](adr/0007-wechat-miniprogram-baseline.md) 为准。
+
+**审计必查项**（漏一项不合格）：见 [ci-minimum-gate.md §审计 checklist](ci-minimum-gate.md#审计-checklist)。
+
+## Monorepo 嵌套（`apps/miniapp/`）
+
+小程序位于 pnpm monorepo 内时，与本文「独立仓库根目录」结构的差异：
+
+| 独立仓库 | Monorepo 嵌套 |
+|---|---|
+| 根 `pnpm lint` | 根 `pnpm check:wechat` 或 `pnpm --filter @scope/miniapp check` |
+| 根 `.github/workflows/release.yml` | 常合并进 monorepo 根 `ci.yml`；**可不**单独 upload job |
+| `services/http.ts` | 可为 `miniprogram/lib/api.ts` 等等价路径 |
+| `scripts/bump-version.ts` | 可为 `apps/miniapp/scripts/bump-version.mjs` |
+
+**CI 上传开发版**（push main → miniprogram-ci）为推荐默认；若改用微信开发者工具手动上传，须在项目 `CLAUDE.md` 登记例外（见 [audit-feedback-loop.md](audit-feedback-loop.md)）。
+
+脚手架未就绪前，可从 [ai-todo `apps/miniapp/`](https://github.com/xiaolinstar/ai-todo/tree/main/apps/miniapp) 复制工程实践，而非空 `templates/wechat-mp/`。
 
 ## 项目结构
 
@@ -188,7 +205,7 @@ jobs:
 新项目/补差时，按 [skills/dev-bootstrap](../skills/dev-bootstrap/SKILL.md) 走。**额外检查项**：
 
 - [ ] `project.private.config.json` 在 `.gitignore` 中
-- [ ] `scripts/bump-version.ts` 已加且 `pnpm bump` 可用
+- [ ] `scripts/bump-version.{ts,mjs}` 已加且 `pnpm bump-version`（或等价）可用，并同步 `project.config.json` → `versionName`
 - [ ] `.github/workflows/ci.yml` 与 `release.yml` 来自 `templates/wechat-mp/`
 - [ ] `CHANGELOG.md` 由 release-please 维护
 - [ ] 项目级 `CLAUDE.md` 含 appid、API base URL（dev/trial/release）、项目负责人

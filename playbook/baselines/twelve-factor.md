@@ -7,7 +7,10 @@ deviation-count: 4
 last-reviewed: 2026-06-24
 ---
 
-> 本文件为 12-Factor 在本仓的"采用 / 落地 / 缺口"映射。**所有偏离必须显式链到 ADR**，且总体立场由 [ADR-0003](../adr/0003-12-factor-adaptation.md) 决定。
+# 12-Factor App
+
+> 本文件为 12-Factor 在本仓的“采用 / 落地 / 缺口”映射。
+> **所有偏离必须显式链到 ADR**，且总体立场由 [ADR-0003](../adr/0003-12-factor-adaptation.md) 决定。
 
 ## I. Codebase
 
@@ -21,7 +24,8 @@ last-reviewed: 2026-06-24
 
 **采用**：Explicitly declare and isolate dependencies.
 
-**落地**：显式依赖声明（pyproject.toml / package.json）+ 锁文件（uv.lock / pnpm-lock.yaml）；详见 [monorepo.md](../monorepo.md) 包边界规则。
+**落地**：显式依赖声明（pyproject.toml / package.json）+
+锁文件（uv.lock / pnpm-lock.yaml）；详见 [monorepo.md](../monorepo.md) 包边界规则。
 
 **缺口 / ADR**：无。
 
@@ -37,16 +41,22 @@ last-reviewed: 2026-06-24
 
 **采用**：Treat backing services as attached resources.
 
-**落地**：DB / cache / queue URL 走环境变量。**允许**本地 SQLite 与生产 Postgres 并存（schema 相同前提下）；见 [ADR-0003](../adr/0003-12-factor-adaptation.md)。
+**落地**：DB / cache / queue URL 走环境变量。
+**允许**本地 SQLite 与生产 Postgres 并存（schema 相同前提下）；见 [ADR-0003](../adr/0003-12-factor-adaptation.md)。
 
 **缺口 / ADR**：
-- "schema 相同"在多 DB 引擎下的强校验 → 待 Phase 2 加 CI 检查。
+
+- “schema 相同”在多 DB 引擎下的强校验 → 待 Phase 2 加 CI 检查。
 
 ## V. Build, Release, Run
 
 **采用**：Strict separation between build, release, and run stages.
 
-**落地**：build = 锁文件 + 镜像构建；release = tag + 环境配置注入；run = 进程启动。详见 [ADR-0003](../adr/0003-12-factor-adaptation.md)；CI 最低门槛见 [ci-minimum-gate.md](../ci-minimum-gate.md)。
+**落地**：build = 锁文件 + 镜像构建；
+release = tag + 环境配置注入；
+run = 进程启动。
+详见 [ADR-0003](../adr/0003-12-factor-adaptation.md)；
+CI 最低门槛见 [ci-minimum-gate.md](../ci-minimum-gate.md)。
 
 **缺口 / ADR**：[ADR-0006](../adr/0006-ci-minimum-gate.md) 决定 CI 必选项。
 
@@ -62,7 +72,8 @@ last-reviewed: 2026-06-24
 
 **采用**：Export services via port binding.
 
-**落地**：FastAPI / Node HTTP server 自包含，不依赖外部 web 容器（[monorepo.md](../monorepo.md) Python 应用部分）。
+**落地**：FastAPI / Node HTTP server 自包含，
+不依赖外部 web 容器（[monorepo.md](../monorepo.md) Python 应用部分）。
 
 **缺口 / ADR**：无。
 
@@ -70,7 +81,8 @@ last-reviewed: 2026-06-24
 
 **采用**：Scale out via the process model.
 
-**落地**：[ADR-0003](../adr/0003-12-factor-adaptation.md) 标"不适用"；遇多 worker 场景再启用（gunicorn -w N / PM2）。
+**落地**：[ADR-0003](../adr/0003-12-factor-adaptation.md) 标“**不适用**”；
+遇多 worker 场景再启用（gunicorn -w N / PM2）。
 
 **缺口 / ADR**：[ADR-0003](../adr/0003-12-factor-adaptation.md)。
 
@@ -89,15 +101,19 @@ last-reviewed: 2026-06-24
 **落地**：DB 类型差异**允许**（本地 SQLite、生产 Postgres），schema 必须一致；"dev/prod schema 不同"禁止（[ADR-0003](../adr/0003-12-factor-adaptation.md)）。
 
 **缺口 / ADR**：
-- "schema 一致"的强校验（alembic / prisma migrate）→ 待 Phase 2 加 CI 步骤。
+
+- “schema 一致”的强校验（alembic / prisma migrate）→ 待 Phase 2 加 CI 步骤。
 
 ## XI. Logs
 
 **采用**：Treat logs as event streams.
 
-**落地**：stdout + 文件双写；traceId 必填（见 [api-error-codes.md](../api-error-codes.md)）；集中采集由 Phase 2 hooks 处理。
+**落地**：stdout + 文件双写；
+traceId 必填（见 [api-error-codes.md](../api-error-codes.md)）；
+集中采集由 Phase 2 hooks 处理。
 
 **缺口 / ADR**：
+
 - 集中采集 / ELK 接入 → Phase 2。
 
 ## XII. Admin Processes

@@ -1,6 +1,7 @@
 # L1 开发原则
 
-> 短、稳定、跨项目。真源就是本文；Cursor 写法派生见 `adapters/cursor/`（adapter 镜像），流程见 `skills/`。行业基线对齐见 [baselines/](baselines/README.md)；决策走 [ADR](adr/)。
+> 短、稳定、跨项目。真源就是本文；Cursor 写法派生见 `adapters/cursor/`（adapter 镜像），流程见 `skills/`。
+> 行业基线对齐见 [baselines/](baselines/README.md)；决策走 [ADR](adr/)。
 
 ## 1. 最小 scope
 

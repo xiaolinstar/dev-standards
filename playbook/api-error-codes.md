@@ -58,6 +58,40 @@
 - **单包项目**：集中在 `app/errors.py` 或同等位置。
 - **禁止**：在 controller / handler 里直接写字符串字面量。
 
+## Envelope 变体（兼容）
+
+部分已上线 API（如 ai-todo）使用**外层 envelope**，内层仍须遵守 `code` / `message` / 前缀规范：
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "VAL_REQUIRED_FIELD",
+    "message": "title is required",
+    "details": { "field": "title" }
+  },
+  "request_id": "req_abc123"
+}
+```
+
+| 标准字段 | Envelope 等价 | 说明 |
+|---|---|---|
+| `code` | `error.code` | **必须**逐步改为 `AUTH_*` / `VAL_*` / `BIZ_*` / `SYS_*` 前缀 |
+| `message` | `error.message` | 同 |
+| `details` | `error.details` | 同 |
+| `traceId` | `request_id` 或 `requestId` | 语义等价；header 可用 `X-Request-ID` 或 `X-Trace-Id` |
+
+**新 API** 可继续用 envelope（若全栈已统一 `{ ok, data }`）；**新错误码**必须带前缀并在集中枚举定义。
+
+### 迁移路径（存量项目）
+
+1. **冻结**旧字符串码（如 `VALIDATION_ERROR`）— 客户端已依赖则保留 alias
+2. **新增**错误只用前缀码；在 `packages/shared/errors/` 或 `app/errors.py` 定义
+3. **映射表**（可选）：旧码 → 新码，文档 + 测试各保留一期
+4. **不要求**一次性改响应 envelope 形状（避免破坏小程序/CLI）
+
+详见 [audit-feedback-loop.md](audit-feedback-loop.md)。
+
 ## traceId
 
 `traceId` 是请求进入系统时生成的唯一 ID（推荐 ULID / UUIDv7），必须：
@@ -71,4 +105,5 @@
 
 - 优先用 `code` 字段判断错误类型（**不要** 解析 `message` 文本）
 - 用户提示用 `message`
-- 客服/排障用 `traceId`
+- 客服/排障用 `traceId`（或 envelope 中的 `request_id` / `requestId`）
+
