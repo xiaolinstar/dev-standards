@@ -11,6 +11,7 @@
 
 - [API 错误码与 HTTP 状态约定](api-error-codes.md)
 - [CI 最低门槛](ci-minimum-gate.md)
+- [微信小程序项目标准（原生 + TypeScript）](wechat-mp.md)
 
 ## 外部基线（行业对位）
 
@@ -30,6 +31,7 @@
 | [0004](adr/0004-cncf-tag-app-delivery-adoption.md) | CNCF TAG App Delivery 采用范围 | Accepted |
 | [0005](adr/0005-api-error-code-convention.md) | API 错误码与 HTTP 状态约定 | Accepted |
 | [0006](adr/0006-ci-minimum-gate.md) | CI 最低门槛 | Accepted |
+| [0007](adr/0007-wechat-miniprogram-baseline.md) | 微信小程序项目标准（原生 + TypeScript） | Accepted |
 
 ## Skills（一等公民，源码在 `../skills/`）
 
