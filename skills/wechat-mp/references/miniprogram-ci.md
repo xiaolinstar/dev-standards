@@ -48,7 +48,7 @@ miniprogram-ci upload \
 echo "${{ secrets.WECHAT_KEY_BASE64 }}" | base64 -d > /tmp/private.key
 ```
 
-完整 workflow 见 [playbook/wechat-mp.md §CI/CD](../../../../playbook/wechat-mp.md#cicdgithub-actions-模板)。
+完整 workflow 见 [playbook/wechat-mp.md §CI/CD](../../../playbook/wechat-mp.md#cicdgithub-actions-模板)。
 
 ## 参数速查
 

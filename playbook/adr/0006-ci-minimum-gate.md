@@ -70,7 +70,7 @@ CNCF TAG "CI/CD" 与 12-Factor V 都要求"任何合入都过流水线"。在 so
 ## 后果
 
 - `playbook/ci-minimum-gate.md` 据此落地（含本地 pre-commit 模板 + 审计清单）
-- [skills/dev-bootstrap](../skills/dev-bootstrap/SKILL.md) 审计清单同步升级
+- [skills/dev-bootstrap](../../skills/dev-bootstrap/SKILL.md) 审计清单同步升级
 - 任何新项目 `dev-bootstrap` 时必须确保 4 项必选 + 本地 hook 装备（10 项审计清单）
 - 等价物表是推荐而非强制；项目可用同类别其他工具
 - **未来扩展**：5/6 项待 Phase N 评估（候选：依赖审计 SBOM、镜像扫描、E2E gate）

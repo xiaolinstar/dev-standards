@@ -1,7 +1,7 @@
 # 网络层与登录态
 
 > 与 [SKILL.md §2-3 网络层 / 登录流程](../SKILL.md) 配套。
-> 错误格式遵循 [playbook/api-error-codes.md](../../../../playbook/api-error-codes.md)（在 dev-standards 仓库内）。
+> 错误格式遵循 [playbook/api-error-codes.md](../../../playbook/api-error-codes.md)（在 dev-standards 仓库内）。
 
 ## http.ts 完整骨架
 

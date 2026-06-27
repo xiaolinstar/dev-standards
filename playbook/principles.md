@@ -51,10 +51,11 @@
 
 - API 错误码与 HTTP 状态约定 → 详见 [api-error-codes.md](api-error-codes.md) / [ADR-0005](adr/0005-api-error-code-convention.md)
 - CI 最低门槛 → 详见 [ci-minimum-gate.md](ci-minimum-gate.md) / [ADR-0006](adr/0006-ci-minimum-gate.md)
+- 微信小程序项目标准（原生 + TypeScript）→ 详见 [wechat-mp.md](wechat-mp.md) / [ADR-0007](adr/0007-wechat-miniprogram-baseline.md)
 
 ## 显式延后
 
-- **前端 / 小程序目录约定** — 不在本阶段覆盖。触发条件：出现第 2 个前端项目时启动。理由：单项目特例不上升为通用标准；见 [ADR-0004](adr/0004-cncf-tag-app-delivery-adoption.md) 末尾说明。
+- **Web 前端目录约定**（React / Next.js / SPA 等）— 不在本阶段覆盖。触发条件：出现第 2 个 Web 前端项目时启动。理由：单项目特例不上升为通用标准；见 [ADR-0004](adr/0004-cncf-tag-app-delivery-adoption.md) 末尾说明。
 
 ## 外部基线
 

@@ -19,7 +19,7 @@ description: WeChat native mini-program (微信小程序) development patterns a
 
 ## 标准库对齐
 
-本 Skill 是 [playbook/wechat-mp.md](../../../playbook/wechat-mp.md) 的"工具书"。**决策与基线以 wechat-mp.md 为准**，本文给具体模式与坑点。
+本 Skill 是 [playbook/wechat-mp.md](../../playbook/wechat-mp.md) 的"工具书"。**决策与基线以 wechat-mp.md 为准**，本文给具体模式与坑点。
 
 ## 核心约定（必读）
 
@@ -68,7 +68,7 @@ export async function http<T>(opts: RequestOpts): Promise<T> {
 }
 ```
 
-错误格式遵循 [playbook/api-error-codes.md](../../../playbook/api-error-codes.md)。
+错误格式遵循 [playbook/api-error-codes.md](../../playbook/api-error-codes.md)。
 
 ### 3. 登录流程
 
@@ -192,7 +192,7 @@ Component({
 - [ ] 网络请求走 `services/http.ts`，不在页面里裸调
 - [ ] 登录态校验在 `http.ts` 统一处理（401 → 跳登录）
 - [ ] 组件 props 类型显式声明
-- [ ] 主包体积未超 2M（CI 加 `size-limit` 检查，见 [playbook/wechat-mp.md §CI 最低门槛](../../../playbook/wechat-mp.md)）
+- [ ] 主包体积未超 2M（CI 加 `size-limit` 检查，见 [playbook/wechat-mp.md §CI 最低门槛](../../playbook/wechat-mp.md)）
 - [ ] 用户协议 / 隐私协议在小程序后台配置（首次提交审核时人工）
 
 ## 参考（按需查）
