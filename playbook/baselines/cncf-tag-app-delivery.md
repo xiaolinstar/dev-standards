@@ -62,8 +62,9 @@ last-reviewed: 2026-06-24
 **采用**：应用行为可被外部系统观测（metrics / logs / traces）。
 
 **落地**：结构化日志（JSON 行）+ traceId 必填（[api-error-codes.md](../api-error-codes.md)）；
-指标与链路追踪集中化推到 Phase 2。
+参考 [snippets/structured-logging.md](../snippets/structured-logging.md)。
+指标与链路追踪集中化仍延后。
 
 **缺口 / ADR**：
 
-- metrics / tracing 集中化（Prometheus / OpenTelemetry）→ Phase 2。
+- metrics / tracing 集中化（Prometheus / OpenTelemetry）→ 触发条件：第 2 个生产服务项目。

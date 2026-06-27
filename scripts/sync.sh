@@ -18,6 +18,8 @@ Commands:
   hooks <project>     Copy Claude hooks → <project>/.claude/hooks/
   hooks-precommit <project>
                       Install Husky pre-commit templates (see hooks/pre-commit/)
+  template <name> <dest>
+                      Copy templates/<name>/ → <dest>/ (e.g. template wechat-mp ./my-app)
   all [project]       skills + print adapters/hooks usage (optional project path for adapters cursor)
   validate            Run all validators (lint + adr + baselines)
   help                Show this message
@@ -26,6 +28,7 @@ Examples:
   $(basename "$0") skills
   $(basename "$0") adapters cursor ~/AgentProjects/my-app
   $(basename "$0") hooks-precommit ~/AgentProjects/my-app
+  $(basename "$0") template wechat-mp ~/AgentProjects/my-miniapp
   $(basename "$0") all ~/AgentProjects/my-app
 EOF
 }
@@ -141,12 +144,36 @@ cmd_hooks_precommit() {
   echo "  full guide: $ROOT/playbook/ci-minimum-gate.md"
 }
 
+cmd_template() {
+  local name="${1:-}"
+  local dest="${2:-}"
+  if [[ -z "$name" ]] || [[ -z "$dest" ]]; then
+    echo "error: usage: $0 template <name> <dest>" >&2
+    usage >&2
+    exit 1
+  fi
+  local src="$ROOT/templates/$name"
+  if [[ ! -d "$src" ]]; then
+    echo "error: template not found: $src" >&2
+    echo "  available: $(find "$ROOT/templates" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | tr '\n' ' ')" >&2
+    exit 1
+  fi
+  mkdir -p "$dest"
+  dest="$(cd "$dest" && pwd)"
+  rsync -a "$src/" "$dest/"
+  echo "→ template '$name' copied to $dest"
+  if [[ -f "$src/README.md" ]]; then
+    echo "  next: read $dest/README.md (replace YOUR_* placeholders)"
+  fi
+}
+
 cmd_all() {
   cmd_skills
   echo
   echo "Adapters:  $0 adapters <name> <project>   (e.g. 'adapters cursor <project>')"
   echo "Hooks:     $0 hooks <project>   (Claude PreToolUse guard)"
   echo "Pre-commit: $0 hooks-precommit <project>   (Husky + lint-staged + commitlint)"
+  echo "Template:   $0 template <name> <dest>   (e.g. template wechat-mp ./my-app)"
   if [[ -n "${1:-}" ]]; then
     echo
     cmd_adapters cursor "$1"
@@ -176,6 +203,7 @@ main() {
     adapters) cmd_adapters "$@" ;;
     hooks)    cmd_hooks "$@" ;;
     hooks-precommit) cmd_hooks_precommit "$@" ;;
+    template) cmd_template "$@" ;;
     all)      cmd_all "$@" ;;
     validate) cmd_validate ;;
     help|-h|--help) usage ;;

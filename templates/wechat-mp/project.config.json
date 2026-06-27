@@ -1,0 +1,20 @@
+{
+  "description": "YOUR_PROJECT mini program",
+  "miniprogramRoot": "miniprogram/",
+  "compileType": "miniprogram",
+  "setting": {
+    "useCompilerPlugins": ["typescript"],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "enhance": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "appid": "touristappid",
+  "projectname": "YOUR_PROJECT",
+  "versionName": "0.1.0",
+  "libVersion": "3.15.0"
+}

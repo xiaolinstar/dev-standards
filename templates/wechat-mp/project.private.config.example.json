@@ -1,0 +1,11 @@
+{
+  "description": "复制为 project.private.config.json（已 gitignore）",
+  "appid": "YOUR_APPID",
+  "libVersion": "3.15.0",
+  "projectname": "YOUR_PROJECT",
+  "setting": {
+    "urlCheck": false,
+    "minified": true,
+    "enhance": true
+  }
+}

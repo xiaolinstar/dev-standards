@@ -1,9 +1,19 @@
-# 项目模板（方案 C，暂缓）
+# 项目模板（方案 C — Phase 3 部分激活）
 
-ADR-0001 决定暂不建设 template monorepo。此目录预留给未来的项目脚手架：
+ADR-0001 暂缓完整 template monorepo；Phase 3 按 [ADR-0008](../playbook/adr/0008-templates-wechat-mp-scaffold.md) 激活微信小程序模板。
 
-- 语言/框架 starter（如 Python API、Next.js）
-- 预置 `CLAUDE.md`、CI 工作流、`.cursor/rules/`（按需）
-- 与 `dev-bootstrap` Skill 联动的一键初始化
+## 可用模板
 
-当前新建项目请使用 `skills/dev-bootstrap` 检查清单 + `scripts/sync.sh`。
+| 模板 | 部署命令 | 标准 |
+|------|----------|------|
+| `wechat-mp/` | `sync.sh template wechat-mp <dest>` | [wechat-mp.md](../playbook/wechat-mp.md) |
+
+## 部署后
+
+1. 读模板内 `README.md` 替换 `YOUR_*` 占位符
+2. `sync.sh hooks-precommit` + `sync.sh adapters cursor` 部署标准
+3. `dev-bootstrap` 审计合规
+
+## 未来
+
+Python API / Next.js 等模板：触发条件同 principles.md「Web 前端目录约定」— 第 2 个项目出现时评估。

@@ -74,13 +74,18 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 `apps/`/`packages/` 边界、组件独立版本
 **Python API** — pyproject.toml、迁移策略、tests/ 布局
 **Agent 友好 CLI** — 结构化子命令 + `--json`；domain Skill 放业务仓库
-**微信小程序（原生 + TS）** — 读 [playbook/wechat-mp.md](../../playbook/wechat-mp.md) + [skills/wechat-mp/](../../skills/wechat-mp/SKILL.md)
+**微信小程序（原生 + TS）** — 读 [playbook/wechat-mp.md](../../playbook/wechat-mp.md) +
+[skills/wechat-mp/](../../skills/wechat-mp/SKILL.md)；新建项目：
+`sync.sh template wechat-mp <dest>`
 
 ## 初始化
 
 ```bash
 # 1. 同步个人 Skills 到 Claude Code
 ~/AgentProjects/dev-standards/scripts/sync.sh skills
+
+# 1b. （可选）以 Plugin 安装：claude plugin marketplace add ./marketplace.json
+#     然后 claude plugin install dev-standards@dev-standards
 
 # 2. 部署 Cursor adapter 到项目（仅当项目用 Cursor 时）
 ~/AgentProjects/dev-standards/scripts/sync.sh adapters cursor /path/to/project

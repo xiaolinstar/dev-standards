@@ -1,0 +1,14 @@
+{
+  "name": "dev-standards",
+  "owner": {
+    "name": "xingxiaolin"
+  },
+  "plugins": [
+    {
+      "name": "dev-standards",
+      "description": "Personal cross-project dev standards (skills: dev-bootstrap, wechat-mp)",
+      "version": "3.0.0",
+      "source": "./"
+    }
+  ]
+}

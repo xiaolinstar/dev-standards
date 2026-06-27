@@ -1,0 +1,20 @@
+name: release
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i -g miniprogram-ci
+      - name: Decode upload key
+        run: echo "${{ secrets.WECHAT_PRIVATE_KEY_BASE64 }}" | base64 -d > /tmp/private.key
+      - run: |
+          miniprogram-ci upload \
+            --pp miniprogram/ \
+            --pkp /tmp/private.key \
+            --appid ${{ secrets.WECHAT_APPID }} \
+            --uv ${{ github.event.release.tag_name || 'manual' }}

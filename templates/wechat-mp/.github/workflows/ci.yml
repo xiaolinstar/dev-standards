@@ -1,0 +1,46 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  scan-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+
+  gate:
+    needs: [scan-secrets]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm check
+
+  upload-dev:
+    needs: [gate]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: pnpm install --frozen-lockfile
+      - run: npm i -g miniprogram-ci
+      - name: Decode upload key
+        run: echo "${{ secrets.WECHAT_PRIVATE_KEY_BASE64 }}" | base64 -d > /tmp/private.key
+      - run: |
+          miniprogram-ci upload \
+            --pp miniprogram/ \
+            --pkp /tmp/private.key \
+            --appid ${{ secrets.WECHAT_APPID }} \
+            --uv 1.0.${{ github.run_number }}

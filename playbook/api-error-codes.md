@@ -104,6 +104,7 @@
 ## 实现参考
 
 Middleware 最小示例（FastAPI / Express）见 [snippets/trace-id-middleware.md](snippets/trace-id-middleware.md)。
+日志格式见 [snippets/structured-logging.md](snippets/structured-logging.md)。
 
 ## 客户端处理建议
 

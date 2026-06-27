@@ -13,7 +13,7 @@
 | 外部基线映射 | `playbook/baselines/` | 人读；principles / skills 引用 |
 | 工作流 Skills | `skills/` | `~/.claude/skills/`（个人）或 `<project>/.claude/skills/`（项目） |
 | Hooks 模板 | `hooks/` | `<project>/.claude/hooks/` |
-| 项目模板（未来 C） | `templates/` | 新建仓库时复制 |
+| 项目模板 | `templates/` | `sync.sh template <name> <dest>` |
 | Adapters | `adapters/<name>/` | `<project>/.cursor/rules/`（Cursor）等 |
 
 **不是**业务代码仓库。各项目在自身 repo 里只保留「通用标准副本 + 项目特例」。
@@ -50,7 +50,11 @@ dev-standards/
 │   ├── adr-validate.sh    # ADR frontmatter
 │   └── baselines-validate.sh  # baselines/ frontmatter + 过期
 ├── .markdownlint.json     # markdownlint 规则（line_length 120 等）
-└── templates/             # 方案 C 预留
+├── .claude-plugin/        # Claude Code plugin manifest（v3.0.0）
+├── marketplace.json       # 自托管 plugin marketplace
+├── CHANGELOG.md           # Plugin / 标准库版本变更
+├── templates/             # 项目脚手架（wechat-mp 已激活）
+│   └── wechat-mp/
 ```
 
 ## 快速开始
@@ -66,10 +70,13 @@ dev-standards/
 ./scripts/sync.sh hooks-precommit /path/to/your-project
 ./scripts/sync.sh hooks /path/to/your-project   # Claude PreToolUse（可选）
 
-# 4. 校验标准库文档
+# 4. 从模板新建小程序项目
+./scripts/sync.sh template wechat-mp /path/to/your-miniapp
+
+# 5. 校验标准库文档
 ./scripts/sync.sh validate
 
-# 5. 全部
+# 6. 全部
 ./scripts/sync.sh all /path/to/your-project
 ```
 

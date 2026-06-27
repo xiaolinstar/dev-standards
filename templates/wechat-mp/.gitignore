@@ -1,0 +1,8 @@
+miniprogram/**/*.js
+miniprogram/**/*.wxss
+node_modules/
+.preview/
+project.private.config.json
+private*.key
+*.key
+.env.local

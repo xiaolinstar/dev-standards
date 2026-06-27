@@ -1,0 +1,12 @@
+{
+  "name": "dev-standards",
+  "version": "3.0.0",
+  "description": "Personal cross-project dev standards: dev-bootstrap, wechat-mp skills, hooks templates",
+  "author": {
+    "name": "xingxiaolin"
+  },
+  "homepage": "https://github.com/xiaolinstar/dev-standards",
+  "repository": "https://github.com/xiaolinstar/dev-standards",
+  "license": "MIT",
+  "keywords": ["standards", "bootstrap", "wechat-mp", "ci", "monorepo"]
+}

@@ -17,6 +17,7 @@
 ## 实现片段（可复制参考）
 
 - [traceId middleware（FastAPI / Express）](snippets/trace-id-middleware.md)
+- [结构化日志（JSON 行 + traceId）](snippets/structured-logging.md)
 
 ## 外部基线（行业对位）
 
@@ -37,6 +38,7 @@
 | [0005](adr/0005-api-error-code-convention.md) | API 错误码与 HTTP 状态约定 | Accepted |
 | [0006](adr/0006-ci-minimum-gate.md) | CI 最低门槛 | Accepted |
 | [0007](adr/0007-wechat-miniprogram-baseline.md) | 微信小程序项目标准（原生 + TypeScript） | Accepted |
+| [0008](adr/0008-templates-wechat-mp-scaffold.md) | 激活 templates/wechat-mp 脚手架（Phase 3） | Accepted |
 
 ## Skills（一等公民，源码在 `../skills/`）
 
@@ -58,6 +60,16 @@
 |---------|------|----------|
 | [cursor](../adapters/cursor/) | Cursor Rules（5 个 `.mdc`，派生自 playbook/） | `<project>/.cursor/rules/` |
 
-## Templates（方案 C 预留，源码在 `../templates/`）
+## Templates（方案 C，源码在 `../templates/`）
 
-未来用于项目脚手架，当前为空。
+| 模板 | 部署 |
+|------|------|
+| [wechat-mp](../templates/wechat-mp/) | `sync.sh template wechat-mp <dest>` |
+
+## Plugin（Claude Code 打包）
+
+| 文件 | 用途 |
+|------|------|
+| [.claude-plugin/plugin.json](../.claude-plugin/plugin.json) | Plugin 元数据 v3.0.0 |
+| [marketplace.json](../marketplace.json) | 自托管 marketplace 入口 |
+| [CHANGELOG.md](../CHANGELOG.md) | 版本变更记录 |

@@ -198,7 +198,7 @@ jobs:
 | 缺口 | 缓解 / 计划 | 链到 |
 |---|---|---|
 | 3 个项目历史代码可能与本标准不一致 | `dev-bootstrap` 审计后逐项补差 | [skills/dev-bootstrap](../skills/dev-bootstrap/SKILL.md) |
-| Taro / uni-app 项目不在本标准覆盖范围 | 未来如需支持，新增 ADR | 待 Phase 3 |
+| Taro / uni-app 项目不在本标准覆盖范围 | 跨端需求出现时新增 ADR | 待 |
 | E2E 测试 automator 在 CI 中稳定性 | 暂不强制，列入可选检查 | 待 Phase 2 |
 | 小程序码（QR）生成的 CI 自动化 | 当前手动；wxacode.get API 可后续接入 | 待 Phase 2 |
 
@@ -208,7 +208,7 @@ jobs:
 
 - [ ] `project.private.config.json` 在 `.gitignore` 中
 - [ ] `scripts/bump-version.{ts,mjs}` 已加且 `pnpm bump-version`（或等价）可用，并同步 `project.config.json` → `versionName`
-- [ ] `.github/workflows/ci.yml` 与 `release.yml` 来自 `templates/wechat-mp/`
+- [ ] `.github/workflows/ci.yml` 与 `release.yml` 来自 `templates/wechat-mp/`（或等效）
 - [ ] `CHANGELOG.md` 由 release-please 维护
 - [ ] 项目级 `CLAUDE.md` 含 appid、API base URL（dev/trial/release）、项目负责人
 - [ ] 已部署 [wechat-mp domain skill](../skills/wechat-mp/SKILL.md)（仅本仓库内 `skills/` 目录存在时）

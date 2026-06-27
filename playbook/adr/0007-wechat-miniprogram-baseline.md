@@ -117,4 +117,4 @@ Deciders: xingxiaolin
 - [playbook/wechat-mp.md](../wechat-mp.md) — "怎么用"
 - [playbook/INDEX.md](../INDEX.md) — 主题段已加链接
 - [skills/wechat-mp/](../../skills/wechat-mp/) — domain 知识 Skill（`sync.sh skills` 同步）
-- [templates/wechat-mp/](../../templates/wechat-mp/) — 脚手架（待建；当前参考 ai-todo `apps/miniapp/`）
+- [templates/wechat-mp/](../../templates/wechat-mp/) — 脚手架（`sync.sh template wechat-mp`）
