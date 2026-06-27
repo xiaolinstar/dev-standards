@@ -29,13 +29,16 @@ dev-standards/
 ├── playbook/
 │   ├── principles.md      # L1 原则（Agent / 流程层）
 │   ├── monorepo.md        # monorepo 实践
+│   ├── audit-feedback-loop.md  # 项目审计 → 标准反馈闭环
 │   ├── api-error-codes.md # 跨项目 API 错误响应约定
-│   ├── ci-minimum-gate.md # CI 必选 3 项 + 可选 4 项
+│   ├── ci-minimum-gate.md # CI 必选 4 项 + 可选 4 项
+│   ├── wechat-mp.md       # 微信小程序（原生 + TS）
 │   ├── baselines/         # 外部行业基线映射（CNCF TAG / 12-Factor / …）
 │   ├── INDEX.md           # 文档索引（含 ADR 仲裁顺序）
 │   └── adr/               # 架构 / 标准决策记录
 ├── skills/                # Claude Code Skill 源码（一等公民）
-│   └── dev-bootstrap/
+│   ├── dev-bootstrap/
+│   └── wechat-mp/
 ├── hooks/                 # Claude hooks 模板（一等公民）
 ├── adapters/              # 非 Claude Code Agent 的兼容镜像
 │   └── cursor/            # Cursor rules（派生自 playbook/）
@@ -59,7 +62,10 @@ dev-standards/
 # 3. 部署 hooks 模板到某个项目
 ./scripts/sync.sh hooks /path/to/your-project
 
-# 4. 全部
+# 4. 校验标准库文档
+./scripts/sync.sh validate
+
+# 5. 全部
 ./scripts/sync.sh all /path/to/your-project
 ```
 

@@ -39,6 +39,7 @@
 | Skill | 用途 |
 |-------|------|
 | dev-bootstrap | 新建或整理项目时的检查清单 |
+| wechat-mp | 原生 + TS 微信小程序开发模式与坑点 |
 
 ## Hooks（一等公民，源码在 `../hooks/`）
 
@@ -48,7 +49,7 @@ PreToolUse 守卫模板（如提交前确认）。按项目部署，非全局强
 
 | Adapter | 用途 | 部署目标 |
 |---------|------|----------|
-| [cursor](../adapters/cursor/) | Cursor Rules（派生自 principles.md / monorepo.md） | `<project>/.cursor/rules/` |
+| [cursor](../adapters/cursor/) | Cursor Rules（派生自 principles.md / monorepo.md；Phase 2 扩主题） | `<project>/.cursor/rules/` |
 
 ## Templates（方案 C 预留，源码在 `../templates/`）
 
