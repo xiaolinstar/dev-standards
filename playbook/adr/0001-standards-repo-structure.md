@@ -15,7 +15,8 @@ Deciders: xingxiaolin
 1. 在 `~/AgentProjects/dev-standards` 建立独立 Git 仓库（方案 B）
 2. Skills 源码放在 `skills/`，通过脚本同步到 `~/.claude/skills/`（一等公民）
 3. Hooks 模板放在 `hooks/`，按项目部署到 `<project>/.claude/hooks/`（一等公民）
-4. 非 Claude Code 兼容层放在 `adapters/<name>/`（如 `adapters/cursor/`）；每个 adapter 是其他 Agent / IDE 的派生镜像，与未来新增的 adapter（Codex、Continue 等）平等并列
+4. 非 Claude Code 兼容层放在 `adapters/<name>/`（如 `adapters/cursor/`）；
+   每个 adapter 是其他 Agent / IDE 的派生镜像，与未来新增的 adapter（Codex、Continue 等）平等并列
 5. 项目模板（方案 C）暂缓，仅保留 `templates/` 占位
 6. 项目专属 domain Skill（如 ai-todo）留在各业务仓库，不迁入标准库
 

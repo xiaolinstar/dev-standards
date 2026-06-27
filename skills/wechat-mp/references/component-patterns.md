@@ -6,7 +6,7 @@
 
 每个组件一个目录，**4 文件同名**：
 
-```
+```text
 components/
 └── todo-item/
     ├── index.ts         # 组件逻辑
@@ -16,11 +16,13 @@ components/
 ```
 
 `components/todo-item/index.json`：
+
 ```json
 { "component": true, "usingComponents": {} }
 ```
 
 主 `miniprogram/app.json`：
+
 ```json
 {
   "pages": ["pages/home/index"],

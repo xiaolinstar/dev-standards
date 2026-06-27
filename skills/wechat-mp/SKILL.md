@@ -25,7 +25,9 @@ description: WeChat native mini-program (微信小程序) development patterns a
 
 ### 1. 异步 API 全部 Promise 化
 
-`wx.request` / `wx.login` / `wx.getStorage` 等原生 API 默认 callback，**项目里禁止直接用 callback**。统一用 [miniprogram-api-promise](https://github.com/wechat-miniprogram/api-promise) 全局 patch：
+`wx.request` / `wx.login` / `wx.getStorage` 等原生 API 默认 callback，
+**项目里禁止直接用 callback**。
+统一用 [miniprogram-api-promise](https://github.com/wechat-miniprogram/api-promise) 全局 patch：
 
 ```ts
 // miniprogram/app.ts
@@ -80,6 +82,7 @@ wx.login() → 拿 code
 ```
 
 **禁止**：
+
 - 前端持久化 `session_key`
 - 用 `openid` 当唯一凭据（多 appid 不通用）
 - 跳过 token 校验直接信任前端传的 `userId`

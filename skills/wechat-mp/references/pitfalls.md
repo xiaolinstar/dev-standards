@@ -7,11 +7,13 @@
 **症状**：`miniprogram-ci` 报错 "分包大小超过限制" 或微信开发者工具上传失败。
 
 **原因**：
+
 - 大量图片资源 import 进了 `miniprogram/images/`
 - 引入了大体积 npm 包（如完整 lodash、完整 moment）
 - TypeScript 编译后 wxml/wxss 体积膨胀
 
 **解法**：
+
 ```json
 // project.config.json
 {
@@ -39,6 +41,7 @@
 **症状**：长列表滚动卡顿，wxml 数据更新有明显延迟。
 
 **解法**：
+
 - 列表用 `wx:key`（必备）
 - 单次 setData 数据 ≤ 1MB
 - 避免全量 setData：用 MobX 自动追踪，或 `setData({ 'item[3].done': true })` 局部更新
@@ -57,6 +60,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **症状**：业务代码出现 `wx.request({ ..., success: r => ... })`，导致后续代码不能 await。
 
 **解法**：
+
 - 项目里约定只能用 `wxp.*`（见 [SKILL.md §1](../SKILL.md)）
 - 装 `miniprogram-api-promise` 在 `app.ts` 一次性 patch
 - 代码 review 拦截
@@ -66,6 +70,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **症状**：审核被拒"获取用户信息接口使用不当"。
 
 **解法**：用**头像昵称填写**组件：
+
 ```xml
 <button open-type="chooseAvatar" bindchooseavatar="onChoose">
   <image src="{{avatarUrl}}" />
@@ -76,11 +81,13 @@ this.setData({ [`items[${idx}].done`]: true });
 ## 5. 订阅消息权限坑
 
 **症状**：
+
 - 用户点了"允许"但没收到通知
 - `accept` 后没立即收到
 - 第二天想发，发现用户没"长期订阅"
 
 **解法**：
+
 - 一次性订阅只在用户点击时**当场**发一次，不能囤着
 - 需要长期推送 → 申请**长期订阅**模板（审核严格）
 - 用户 `ban` 后引导到设置页：`wxp.openSetting()`
@@ -92,6 +99,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **原因**：连续 navigateTo 超过 10 层。
 
 **解法**：
+
 - 中间层用 `redirectTo`（关掉当前页）
 - 详情页 → 详情页用 `redirectTo`
 - 用 `getCurrentPages().length` 自检
@@ -101,6 +109,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **症状**：团队成员用 `getApp().globalData.token` 存 token，App 销毁后丢。
 
 **解法**：
+
 - token 走 `wx.setStorageSync`（持久）
 - globalData 只用于**会话级**临时数据
 - 跨页状态用 MobX store
@@ -110,6 +119,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **症状**：本地 wx.request 失败 "不在以下合法域名列表中"。
 
 **解法**：
+
 - 微信公众平台 → 开发管理 → 开发设置 → **服务器域名**配置 request 合法域名
 - 开发期可勾选"不校验合法域名"（仅开发工具）
 - **注意**：勾选"不校验"后上线审核**仍**会拒
@@ -121,6 +131,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **原因**：`miniprogram-ci build` 内部跑的是 `project.config.json` 配的编译钩子，不一定走 `tsc`。
 
 **解法**：
+
 - 在 `package.json` 加 `build: "tsc && miniprogram-ci build ..."`
 - 让 `tsc` 先跑
 
@@ -129,6 +140,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **症状**：发请求期间页面卡住。
 
 **解法**：
+
 - 永远用 `wxp.request`（Promise），不要用 `wx.requestSync`
 - 同步存储用 `wx.getStorageSync` 也要短（<10ms），大对象走异步
 
@@ -139,6 +151,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **原因**：WXML 模板只能识别 `data` 里声明过的字段。
 
 **解法**：
+
 - Page/Component 的 `data` 初始值要包含所有字段（即使是 `null`）
 - 或在 setData 之前 `this.setData({ newField: null, ...rest })`
 
@@ -147,6 +160,7 @@ this.setData({ [`items[${idx}].done`]: true });
 **症状**：新 API 在老基础库上 `undefined`。
 
 **解法**：
+
 - 微信开发者工具 → 详情 → 本地设置 → 调试基础库设到目标最低版本
 - 关键新 API 走 `if (wxp.someNewApi) { ... }` 兼容判断
 - `manifest.json` → `mp-weixin.libVersion` 设最低基础库

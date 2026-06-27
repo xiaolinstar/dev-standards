@@ -130,7 +130,7 @@ pnpm -r --parallel lint         # 并行 lint（包少时）
 
 ## 新建 monorepo 检查清单
 
-```
+```text
 Monorepo Progress:
 - [ ] pnpm-workspace.yaml（apps/*, packages/*）
 - [ ] 根 package.json：private、packageManager、编排 scripts

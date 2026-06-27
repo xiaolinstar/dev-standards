@@ -63,6 +63,7 @@ CNCF TAG "CI/CD" 与 12-Factor V 都要求"任何合入都过流水线"。在 so
 - 新增 §审计 checklist（10 项），用于 `dev-bootstrap` 审计
 
 **升级理由**：
+
 - audit ai-todo 时发现项目零 pre-commit / commitlint / 本地 gitleaks，但 CI 表面满足 3 项必选 → 标准的"通过"判定有盲区
 - commit message 不强制 → 无法自动生成 CHANGELOG，违反 §版本策略
 - ai-todo 作为触发参考：补差项见 [audit-feedback-loop.md](../audit-feedback-loop.md)；**以项目 main 上 checklist 10 项为准**，不在 ADR 中声明「已修复」

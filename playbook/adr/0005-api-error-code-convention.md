@@ -52,7 +52,10 @@ Deciders: xingxiaolin
 
 ### Envelope 变体（存量兼容）
 
-已上线 API 若使用 `{ ok, error: { code, message, details }, request_id }` 外形，**允许保留 envelope**；`request_id` 与 `traceId` 语义等价。内层 `error.code` 仍须遵循前缀分层；新错误码必须进集中枚举。详见 [api-error-codes.md §Envelope 变体](../api-error-codes.md#envelope-变体兼容)。
+已上线 API 若使用 `{ ok, error: { code, message, details }, request_id }` 外形，
+**允许保留 envelope**；`request_id` 与 `traceId` 语义等价。
+内层 `error.code` 仍须遵循前缀分层；新错误码必须进集中枚举。
+详见 [api-error-codes.md §Envelope 变体](../api-error-codes.md#envelope-变体兼容)。
 
 ## 后果
 

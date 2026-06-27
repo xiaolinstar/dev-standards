@@ -5,7 +5,10 @@
 
 ## 概念
 
-dev-standards 优先服务 Claude Code（Skills、hooks、CLAUDE.md）。当某个项目的开发者主要使用其他 Agent（Cursor、Codex、Continue 等）时，adapters 目录负责**一次性把标准转写成对方能消费的格式**，并通过 `scripts/sync.sh adapters <name> <project>` 部署到目标项目。
+dev-standards 优先服务 Claude Code（Skills、hooks、CLAUDE.md）。
+当某个项目的开发者主要使用其他 Agent（Cursor、Codex、Continue 等）时，
+adapters 目录负责**一次性把标准转写成对方能消费的格式**，
+并通过 `scripts/sync.sh adapters <name> <project>` 部署到目标项目。
 
 原则：
 

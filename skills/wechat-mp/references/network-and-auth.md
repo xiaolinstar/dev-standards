@@ -134,6 +134,7 @@ Page({
 **简单方案**：过期靠 401 兜底，被踢回登录页重新走 wx.login。
 
 **复杂方案**（多 token 体系）：
+
 - `accessToken` 短（如 15min），`refreshToken` 长（7d）
 - http.ts 拦截 401 时，**自动**用 refreshToken 换新 accessToken，重放原请求
 - refreshToken 也过期 → 跳登录

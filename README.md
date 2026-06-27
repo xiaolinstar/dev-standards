@@ -20,7 +20,7 @@
 
 ## 目录结构
 
-```
+```text
 dev-standards/
 ├── CLAUDE.md              # Claude Code 入口（本仓库自用）
 ├── README.md              # 本文件
@@ -47,6 +47,7 @@ dev-standards/
 │   ├── lint.sh            # markdownlint + 链接 + 未决项扫描 + 孤儿
 │   ├── adr-validate.sh    # ADR frontmatter
 │   └── baselines-validate.sh  # baselines/ frontmatter + 过期
+├── .markdownlint.json     # markdownlint 规则（line_length 120 等）
 └── templates/             # 方案 C 预留
 ```
 

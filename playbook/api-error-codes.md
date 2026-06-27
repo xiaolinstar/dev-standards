@@ -106,4 +106,3 @@
 - 优先用 `code` 字段判断错误类型（**不要** 解析 `message` 文本）
 - 用户提示用 `message`
 - 客服/排障用 `traceId`（或 envelope 中的 `request_id` / `requestId`）
-

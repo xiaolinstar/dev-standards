@@ -55,6 +55,7 @@ Deciders: xingxiaolin
 **理由**：微信小程序要求 `project.config.json` 的 `versionName` 严格递增且与"上传号"绑定。3 个项目历史上都出现过"代码改了 versionName 没改"导致上传失败。
 
 **机制**：
+
 - 代码版本用 semver，由 release-please 自动 bump
 - `scripts/bump-version.ts` 同步到 `project.config.json`
 - 上传号 dev 用 `1.0.${run_number}`，避免与正式版冲突
@@ -64,6 +65,7 @@ Deciders: xingxiaolin
 **理由**：微信小程序密钥一旦泄露 = appid 被他人控制。私钥（`private.<APPID>.key`）和 appid 都不能进库。
 
 **实现**：
+
 - `private.<APPID>.key` 在 CI 时由 Secrets base64 解码到临时文件
 - `project.private.config.json`（含 appid / 私钥路径 / es6 设置）必须 gitignore
 - pre-commit gitleaks 兜底
@@ -71,6 +73,7 @@ Deciders: xingxiaolin
 ## 范围
 
 **覆盖**：
+
 - 技术选型（语言、框架、状态、样式、Lint、测试、提交）
 - 项目结构（目录树、命名）
 - 分环境与发布流程
@@ -79,6 +82,7 @@ Deciders: xingxiaolin
 - 密钥管理
 
 **不覆盖**：
+
 - 跨端方案（Taro / uni-app）→ 未来如需支持，新增 ADR
 - 云开发（wx.cloud）为主的项目 → 单独 ADR
 - 插件市场 / 硬件小程序 → 单独 ADR
@@ -87,11 +91,13 @@ Deciders: xingxiaolin
 ## 后果
 
 **正面**：
+
 - 3 个项目可复用同一份 CI workflow、同一份脚手架
 - 新建项目从 `templates/wechat-mp/` 复制即可，30 分钟内可跑通
 - 任何小程序项目的"该有的东西"清单明确
 
 **负面 / 风险**：
+
 - 偏离本标准的小程序项目需走 ADR 例外流程
 - 3 个已上线项目需要按本标准**审计 → 补差**（详见 dev-bootstrap 走审计模式）
 - 微信平台政策变化时（如"上传号规则调整"），需重审本标准

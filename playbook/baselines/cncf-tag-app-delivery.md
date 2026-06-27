@@ -19,6 +19,7 @@ last-reviewed: 2026-06-24
 **采用**：任何合入主干的代码必须经过自动化 build/test 流水线；流水线产物可复现。
 
 **落地**：[ci-minimum-gate.md](../ci-minimum-gate.md) 定义最低门槛，包含：
+
 - lint
 - typecheck-or-test
 - secret scan

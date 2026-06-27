@@ -51,6 +51,7 @@ onNicknameBlur(e: WechatMiniprogram.CustomEvent) {
 ```
 
 **注意**：
+
 - `wx.getUserProfile` 已废弃，不要用
 - `wx.checkSession` 只校验 `session_key`，**不**等同"用户已登录"——用后端 token 校验
 
@@ -77,6 +78,7 @@ async function getCached<T>(key: string, loader: () => Promise<T>, ttlMs: number
 ```
 
 **限制**：
+
 - 单个 key 1MB；总容量 10MB（前端可申请扩到更多，但慢）
 - 同步 API 阻塞 UI 线程，**禁止**在 `onLoad` 里大量调用
 
@@ -100,6 +102,7 @@ wxp.navigateBack({ delta: 1 });
 ```
 
 **坑**：
+
 - 页面栈最多 **10 层**（2024 调整后），超出需 `redirectTo`
 - Tab 页只能用 `switchTab`
 - 路由参数走 query string，**不**支持复杂对象（要传就用 JSON 字符串再 parse）
@@ -152,6 +155,7 @@ wxp.requestSubscribeMessage({
 ```
 
 **坑**：
+
 - `accept` 表示用户同意；`reject` 一次性，**不持久**；`ban` 是永久拒绝（需引导到设置）
 - 一个模板 ID 用户每天最多接收 **N 条**（具体看模板设置）
 

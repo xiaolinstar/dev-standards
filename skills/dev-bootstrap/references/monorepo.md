@@ -32,7 +32,7 @@
 
 ## 审计清单
 
-```
+```text
 Monorepo Audit:
 - [ ] 符合 ADR-0002 升级条件（否则应拆回单包）
 - [ ] pnpm-workspace.yaml 仅含 apps/*、packages/*

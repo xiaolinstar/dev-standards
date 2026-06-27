@@ -11,6 +11,7 @@ pnpm add -D miniprogram-automator
 ## 项目内 CLI 入口
 
 `scripts/e2e.ts`：
+
 ```ts
 import { MiniProgram } from 'miniprogram-automator';
 
@@ -99,6 +100,7 @@ jobs:
 | E2E | automator | ✗ | 低（关键路径） | 高 |
 
 **推荐比例**：
+
 - 70% 单元测试（services / utils / store）
 - 20% 组件逻辑测试（不渲染 wxml）
 - 10% E2E（核心 1-2 个流程）

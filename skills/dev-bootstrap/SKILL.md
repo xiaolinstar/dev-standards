@@ -61,7 +61,9 @@ description: Bootstrap or audit a software project against personal dev standard
 
 ## 按项目类型追加
 
-**Monorepo** — 读 [references/monorepo.md](references/monorepo.md)；核对 ADR-0002 触发条件、`pnpm-workspace.yaml`、根编排 scripts、`apps/`/`packages/` 边界、组件独立版本
+**Monorepo** — 读 [references/monorepo.md](references/monorepo.md)；
+核对 ADR-0002 触发条件、`pnpm-workspace.yaml`、根编排 scripts、
+`apps/`/`packages/` 边界、组件独立版本
 **Python API** — pyproject.toml、迁移策略、tests/ 布局
 **Agent 友好 CLI** — 结构化子命令 + `--json`；domain Skill 放业务仓库
 **微信小程序（原生 + TS）** — 读 [playbook/wechat-mp.md](../../playbook/wechat-mp.md) + [skills/wechat-mp/](../../skills/wechat-mp/SKILL.md)

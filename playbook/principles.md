@@ -55,7 +55,9 @@
 
 ## 显式延后
 
-- **Web 前端目录约定**（React / Next.js / SPA 等）— 不在本阶段覆盖。触发条件：出现第 2 个 Web 前端项目时启动。理由：单项目特例不上升为通用标准；见 [ADR-0004](adr/0004-cncf-tag-app-delivery-adoption.md) 末尾说明。
+- **Web 前端目录约定**（React / Next.js / SPA 等）— 不在本阶段覆盖。
+  触发条件：出现第 2 个 Web 前端项目时启动。
+  理由：单项目特例不上升为通用标准；见 [ADR-0004](adr/0004-cncf-tag-app-delivery-adoption.md) 末尾说明。
 
 ## 外部基线
 

@@ -90,6 +90,7 @@
 ```
 
 **关键约定**：
+
 - `miniprogram/` 是源码根，与 `project.config.json` 的 `miniprogramRoot` 对齐
 - `project.private.config.json` **必须**加入 `.gitignore`
 - `services/http.ts` 统一走 [api-error-codes.md](api-error-codes.md) 约定的错误格式
@@ -111,6 +112,7 @@
 | release（正式版） | GitHub Release 发布 | 正式版（待审核） | `x.y.z`（CHANGELOG 同步） | 人工到微信后台提交审核 |
 
 **关键点**：
+
 - 体验版/正式版必须由人工到[微信公众平台](https://mp.weixin.qq.com/)提交审核，CI 只负责"上传"那一步。
 - 三个环境的 `appid` 可不同（推荐 dev/trial 用同一 appid，release 用生产 appid）—— 项目级 CLAUDE.md 写明。
 
