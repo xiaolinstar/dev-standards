@@ -14,6 +14,10 @@
 - [CI 最低门槛](ci-minimum-gate.md)
 - [微信小程序项目标准（原生 + TypeScript）](wechat-mp.md)
 
+## 实现片段（可复制参考）
+
+- [traceId middleware（FastAPI / Express）](snippets/trace-id-middleware.md)
+
 ## 外部基线（行业对位）
 
 - [baselines/ 目录说明](baselines/README.md)
@@ -43,13 +47,16 @@
 
 ## Hooks（一等公民，源码在 `../hooks/`）
 
-PreToolUse 守卫模板（如提交前确认）。按项目部署，非全局强制。
+| 类型 | 部署命令 | 用途 |
+|------|----------|------|
+| Claude PreToolUse | `sync.sh hooks <project>` | `git-commit-guard.py` 等 |
+| Husky pre-commit | `sync.sh hooks-precommit <project>` | lint-staged + gitleaks + commitlint |
 
 ## Adapters（派生镜像，源码在 `../adapters/`）
 
 | Adapter | 用途 | 部署目标 |
 |---------|------|----------|
-| [cursor](../adapters/cursor/) | Cursor Rules（派生自 principles.md / monorepo.md；Phase 2 扩主题） | `<project>/.cursor/rules/` |
+| [cursor](../adapters/cursor/) | Cursor Rules（5 个 `.mdc`，派生自 playbook/） | `<project>/.cursor/rules/` |
 
 ## Templates（方案 C 预留，源码在 `../templates/`）
 

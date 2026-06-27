@@ -19,6 +19,14 @@ description: Bootstrap or audit a software project against personal dev standard
 > **完整版**：[playbook/ci-minimum-gate.md §审计 checklist](../../playbook/ci-minimum-gate.md#审计-checklist)
 > 这里是入口摘要；遇到具体项去 ci-minimum-gate.md 查模板。
 
+### 标准库健康检查（审计 dev-standards 本身时）
+
+- [ ] `bash ~/AgentProjects/dev-standards/scripts/sync.sh validate` exit 0
+- [ ] `playbook/baselines/` 各文件 `last-reviewed` ≤ 30 天（过期则标 ⚠️ 并复核上游）
+
+B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
+[audit-feedback-loop.md §反馈落点决策树](../../playbook/audit-feedback-loop.md#反馈落点决策树)。
+
 ### 仓库基础
 
 - [ ] README、LICENSE（若开源）、.gitignore
@@ -77,10 +85,14 @@ description: Bootstrap or audit a software project against personal dev standard
 # 2. 部署 Cursor adapter 到项目（仅当项目用 Cursor 时）
 ~/AgentProjects/dev-standards/scripts/sync.sh adapters cursor /path/to/project
 
-# 3. 部署 hooks 模板到项目（手动复制 .husky/ + commitlint.config + package.json 片段）
-# 见 ci-minimum-gate.md §本地 pre-commit 配置
+# 3. 部署 pre-commit 模板（Husky + lint-staged + commitlint）
+~/AgentProjects/dev-standards/scripts/sync.sh hooks-precommit /path/to/project
+# 合并 .dev-standards-package.json.snippet → package.json；见 ci-minimum-gate.md
 
-# 4. 装依赖并初始化 husky
+# 4. 部署 Claude hooks（可选）
+~/AgentProjects/dev-standards/scripts/sync.sh hooks /path/to/project
+
+# 5. 装依赖并初始化 husky
 pnpm install --frozen-lockfile
 # pnpm install 会自动触发 husky prepare
 ```

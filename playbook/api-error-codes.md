@@ -101,6 +101,10 @@
 - 出现在所有对外 HTTP 调用的 `X-Trace-Id` header
 - 由 middleware / interceptor 在请求入口生成
 
+## 实现参考
+
+Middleware 最小示例（FastAPI / Express）见 [snippets/trace-id-middleware.md](snippets/trace-id-middleware.md)。
+
 ## 客户端处理建议
 
 - 优先用 `code` 字段判断错误类型（**不要** 解析 `message` 文本）

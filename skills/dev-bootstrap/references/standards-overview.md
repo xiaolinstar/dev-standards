@@ -63,6 +63,8 @@ Phase 2 计划派生更多主题 `.mdc`（api-error-codes、ci-minimum-gate、we
 5. 迭代 — Agent 反复违反某条 → 补 Adapter / 缩短 Skill
 6. 基线月扫 — `sync.sh validate`；`baselines/` 的 `last-reviewed` > 30 天需复核上游
 
+审计 dev-standards 本身时，额外跑 validate 并检查 baselines 日期（见 dev-bootstrap §标准库健康检查）。
+
 ## 审计入口
 
 - 初始化 / 合规检查 → [dev-bootstrap SKILL.md](../SKILL.md)

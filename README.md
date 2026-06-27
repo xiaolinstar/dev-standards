@@ -40,8 +40,10 @@ dev-standards/
 │   ├── dev-bootstrap/
 │   └── wechat-mp/
 ├── hooks/                 # Claude hooks 模板（一等公民）
+│   ├── git-commit-guard.py
+│   └── pre-commit/        # Husky 模板（hooks-precommit 部署）
 ├── adapters/              # 非 Claude Code Agent 的兼容镜像
-│   └── cursor/            # Cursor rules（派生自 playbook/）
+│   └── cursor/            # 5 个 .mdc（派生自 playbook/）
 ├── scripts/               # 同步 / 校验脚本
 │   ├── sync.sh            # 入口
 │   ├── lint.sh            # markdownlint + 链接 + 未决项扫描 + 孤儿
@@ -61,7 +63,8 @@ dev-standards/
 ./scripts/sync.sh adapters cursor /path/to/your-project
 
 # 3. 部署 hooks 模板到某个项目
-./scripts/sync.sh hooks /path/to/your-project
+./scripts/sync.sh hooks-precommit /path/to/your-project
+./scripts/sync.sh hooks /path/to/your-project   # Claude PreToolUse（可选）
 
 # 4. 校验标准库文档
 ./scripts/sync.sh validate

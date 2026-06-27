@@ -15,7 +15,9 @@ Commands:
   skills --cursor     Also sync skills/ → ~/.cursor/skills/
   adapters <name> <project>   Copy adapters/<name>/ → target path under <project>/
                               (e.g. 'adapters cursor <project>' → <project>/.cursor/rules/)
-  hooks <project>     Copy hooks/ → <project>/.claude/hooks/
+  hooks <project>     Copy Claude hooks → <project>/.claude/hooks/
+  hooks-precommit <project>
+                      Install Husky pre-commit templates (see hooks/pre-commit/)
   all [project]       skills + print adapters/hooks usage (optional project path for adapters cursor)
   validate            Run all validators (lint + adr + baselines)
   help                Show this message
@@ -23,6 +25,7 @@ Commands:
 Examples:
   $(basename "$0") skills
   $(basename "$0") adapters cursor ~/AgentProjects/my-app
+  $(basename "$0") hooks-precommit ~/AgentProjects/my-app
   $(basename "$0") all ~/AgentProjects/my-app
 EOF
 }
@@ -95,17 +98,55 @@ cmd_hooks() {
     echo "warning: no hooks in $ROOT/hooks" >&2
     exit 0
   fi
-  # Skip README when copying hook scripts
-  rsync -a --exclude='README.md' "$ROOT/hooks/" "$dest/"
+  # Skip README and pre-commit templates (deployed via hooks-precommit)
+  rsync -a --exclude='README.md' --exclude='pre-commit/' "$ROOT/hooks/" "$dest/"
   echo "→ hooks copied to $dest"
   echo "  remember to wire hooks in .claude/settings.json (see hooks/README.md)"
+}
+
+cmd_hooks_precommit() {
+  local project="${1:-}"
+  if [[ -z "$project" ]]; then
+    echo "error: project path required" >&2
+    usage >&2
+    exit 1
+  fi
+  local src="$ROOT/hooks/pre-commit"
+  if [[ ! -d "$src" ]]; then
+    echo "error: template dir not found: $src" >&2
+    exit 1
+  fi
+  project="$(cd "$project" && pwd)"
+
+  if [[ -d "$project/.husky" ]]; then
+    echo "warning: $project/.husky already exists; skipping hook install (no overwrite)" >&2
+  else
+    mkdir -p "$project/.husky"
+    install -m 755 "$src/husky-pre-commit.sh" "$project/.husky/pre-commit"
+    install -m 755 "$src/husky-commit-msg.sh" "$project/.husky/commit-msg"
+    echo "→ installed .husky/pre-commit and .husky/commit-msg"
+  fi
+
+  if [[ -f "$project/commitlint.config.cjs" ]] || [[ -f "$project/commitlint.config.js" ]]; then
+    echo "warning: commitlint config already exists; skipping commitlint.config.cjs" >&2
+  else
+    cp "$src/commitlint.config.cjs" "$project/commitlint.config.cjs"
+    echo "→ installed commitlint.config.cjs"
+  fi
+
+  cp "$src/package.json.snippet" "$project/.dev-standards-package.json.snippet"
+  cp "$src/README.md" "$project/.dev-standards-precommit-README.md"
+  echo "→ wrote .dev-standards-precommit-README.md and .dev-standards-package.json.snippet"
+  echo "  merge snippet into package.json, then: pnpm install && pnpm exec husky"
+  echo "  full guide: $ROOT/playbook/ci-minimum-gate.md"
 }
 
 cmd_all() {
   cmd_skills
   echo
   echo "Adapters:  $0 adapters <name> <project>   (e.g. 'adapters cursor <project>')"
-  echo "Hooks:     $0 hooks <project>"
+  echo "Hooks:     $0 hooks <project>   (Claude PreToolUse guard)"
+  echo "Pre-commit: $0 hooks-precommit <project>   (Husky + lint-staged + commitlint)"
   if [[ -n "${1:-}" ]]; then
     echo
     cmd_adapters cursor "$1"
@@ -134,6 +175,7 @@ main() {
     skills)   cmd_skills "$@" ;;
     adapters) cmd_adapters "$@" ;;
     hooks)    cmd_hooks "$@" ;;
+    hooks-precommit) cmd_hooks_precommit "$@" ;;
     all)      cmd_all "$@" ;;
     validate) cmd_validate ;;
     help|-h|--help) usage ;;

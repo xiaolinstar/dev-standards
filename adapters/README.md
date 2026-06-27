@@ -22,8 +22,15 @@ adapters 目录负责**一次性把标准转写成对方能消费的格式**，
 |---------|------|--------------|----------|
 | Cursor | `adapters/cursor/` | `<project>/.cursor/rules/` | `./scripts/sync.sh adapters cursor <project>` |
 
-> `adapters/cursor/*.mdc` 当前派生自 `playbook/principles.md` / `playbook/monorepo.md`。
-> Phase 2 将派生 api-error-codes、ci-minimum-gate、wechat-mp 等主题。
+### Cursor `.mdc` 文件（派生自 playbook/）
+
+| 文件 | 真源 |
+|------|------|
+| `core-principles.mdc` | `playbook/principles.md` |
+| `monorepo.mdc` | `playbook/monorepo.md` |
+| `api-error-codes.mdc` | `playbook/api-error-codes.md` |
+| `ci-minimum-gate.mdc` | `playbook/ci-minimum-gate.md` |
+| `wechat-mp.mdc` | `playbook/wechat-mp.md` |
 
 ## 新增一个 adapter
 
