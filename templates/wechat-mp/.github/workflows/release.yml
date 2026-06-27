@@ -8,7 +8,7 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: npm i -g miniprogram-ci
       - name: Decode upload key
         run: echo "${{ secrets.WECHAT_PRIVATE_KEY_BASE64 }}" | base64 -d > /tmp/private.key

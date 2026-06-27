@@ -82,9 +82,9 @@ jobs:
   e2e:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with: { node-version: 24 }
       - run: pnpm install --frozen-lockfile
       - run: pnpm e2e
         env:

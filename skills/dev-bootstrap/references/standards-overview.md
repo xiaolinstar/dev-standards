@@ -19,7 +19,7 @@
 | 文档 | ADR | 要点 |
 |------|-----|------|
 | [api-error-codes.md](../../../playbook/api-error-codes.md) | [0005](../../../playbook/adr/0005-api-error-code-convention.md) | 错误体 schema、`AUTH_*`/`VAL_*`/`BIZ_*`/`SYS_*`、traceId |
-| [ci-minimum-gate.md](../../../playbook/ci-minimum-gate.md) | [0006](../../../playbook/adr/0006-ci-minimum-gate.md) | **必选 4 项**（lint / typecheck-or-test / secret scan / commitlint）+ 本地 Husky 双段 |
+| [ci-minimum-gate.md](../../../playbook/ci-minimum-gate.md) | [0006](../../../playbook/adr/0006-ci-minimum-gate.md) | 必选 4 项 + Hooks/CI/CD 三阶段、Monorepo 布局、环境密钥 L0–L3 |
 | [wechat-mp.md](../../../playbook/wechat-mp.md) | [0007](../../../playbook/adr/0007-wechat-miniprogram-baseline.md) | 原生 + TS 小程序目录、CI、MobX 状态 |
 
 索引真源：[playbook/INDEX.md](../../../playbook/INDEX.md)
@@ -35,9 +35,7 @@
 
 | 路径 | 用途 | 消费方式 |
 |------|------|----------|
-| `adapters/cursor/` | Cursor Rules（派生自 `playbook/principles.md` / `monorepo.md`） | `sync.sh adapters cursor <project>` |
-
-Phase 2 计划派生更多主题 `.mdc`（api-error-codes、ci-minimum-gate、wechat-mp）。
+| `adapters/cursor/` | Cursor Rules（5 个 `.mdc`，派生自 playbook/） | `sync.sh adapters cursor <project>` |
 
 ## 边界
 

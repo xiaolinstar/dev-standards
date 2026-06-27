@@ -11,7 +11,7 @@
 ## 主题（跨项目技术约定）
 
 - [API 错误码与 HTTP 状态约定](api-error-codes.md)
-- [CI 最低门槛](ci-minimum-gate.md)
+- [CI 最低门槛](ci-minimum-gate.md)（含 Hooks/CI/CD 三阶段、Monorepo 布局、环境密钥分层）
 - [微信小程序项目标准（原生 + TypeScript）](wechat-mp.md)
 
 ## 实现片段（可复制参考）

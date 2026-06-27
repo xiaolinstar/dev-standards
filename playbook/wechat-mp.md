@@ -129,10 +129,10 @@ jobs:
   gate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: pnpm }
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 24, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint           # eslint
       - run: pnpm typecheck      # tsc --noEmit
@@ -145,7 +145,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: npm i -g miniprogram-ci
       - run: miniprogram-ci upload \
               --pp dist/ \
@@ -164,7 +164,7 @@ jobs:
   upload-trial-or-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: npm i -g miniprogram-ci
       - run: miniprogram-ci upload \
               --pp dist/ \
