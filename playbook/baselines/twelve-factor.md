@@ -102,7 +102,7 @@ CI 最低门槛见 [ci-minimum-gate.md](../ci-minimum-gate.md)。
 
 **缺口 / ADR**：
 
-- “schema 一致”的强校验（alembic / prisma migrate）→ 待 Phase 2 加 CI 步骤。
+- “schema 一致”的强校验（alembic / prisma migrate）→ 延后；见 [principles.md](../principles.md) §显式延后。
 
 ## XI. Logs
 
@@ -114,7 +114,7 @@ traceId 必填（见 [api-error-codes.md](../api-error-codes.md)）；
 
 **缺口 / ADR**：
 
-- 集中采集 / ELK 接入 → Phase 2。
+- 集中采集 / ELK 接入 → 延后；见 [cncf-tag-app-delivery.md](cncf-tag-app-delivery.md) 缺口段。
 
 ## XII. Admin Processes
 

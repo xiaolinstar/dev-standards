@@ -1,6 +1,6 @@
 # dev-standards
 
-个人开发标准库（方案 B）：跨项目的规范、Skills、Hooks、Adapter 的**唯一真相来源**。
+个人跨项目开发标准库：规范、Skills、Hooks、Adapter 的**唯一真相来源**（公开仓库，欢迎 fork 与按需裁剪）。
 
 **一等公民**：Claude Code（`.claude/`、Skills、hooks）+ 跨工具 **AGENTS.md**。  
 **可选**：Cursor `.cursor/rules/`（glob 作用域，见 [playbook/agent-config.md](playbook/agent-config.md)）。
@@ -12,6 +12,7 @@
 | 原则与 ADR | `playbook/` | 人读；Skill 引用 |
 | 外部基线映射 | `playbook/baselines/` | 人读；principles / skills 引用 |
 | 工作流 Skills | `skills/` | `~/.claude/skills/`（个人）或 `<project>/.claude/skills/`（项目） |
+| Agent 权限清单 | `permissions/` | `sync.sh permissions` → Cursor / Claude / Codex 等 |
 | Hooks 模板 | `hooks/` | `<project>/.claude/hooks/` |
 | 项目模板 | `templates/` | `sync.sh template <name> <dest>` |
 | Adapters | `adapters/<name>/` | `<project>/.cursor/rules/`（Cursor）等 |
@@ -29,6 +30,7 @@ dev-standards/
 ├── playbook/
 │   ├── principles.md      # L1 原则（Agent / 流程层）
 │   ├── monorepo.md        # monorepo 实践
+│   ├── agent-config.md    # Claude + AGENTS 双体系最小维护
 │   ├── audit-feedback-loop.md  # 项目审计 → 标准反馈闭环
 │   ├── api-error-codes.md # 跨项目 API 错误响应约定
 │   ├── ci-minimum-gate.md # CI 必选 4 项 + 可选 4 项
@@ -38,7 +40,11 @@ dev-standards/
 │   └── adr/               # 架构 / 标准决策记录
 ├── skills/                # Claude Code Skill 源码（一等公民）
 │   ├── dev-bootstrap/
+│   ├── agent-permissions/
 │   └── wechat-mp/
+├── permissions/           # 跨 Agent check/deny 规则真源
+│   ├── manifest.json
+│   └── overlays/        # 项目特例（如 ai-todo.json）
 ├── hooks/                 # Claude hooks 模板（一等公民）
 │   ├── git-commit-guard.py
 │   └── pre-commit/        # Husky 模板（hooks-precommit 部署）
@@ -46,11 +52,12 @@ dev-standards/
 │   └── cursor/            # 5 个 .mdc（派生自 playbook/）
 ├── scripts/               # 同步 / 校验脚本
 │   ├── sync.sh            # 入口
+│   ├── permissions-sync.mjs  # permissions 分发
 │   ├── lint.sh            # markdownlint + 链接 + 未决项扫描 + 孤儿
 │   ├── adr-validate.sh    # ADR frontmatter
 │   └── baselines-validate.sh  # baselines/ frontmatter + 过期
 ├── .markdownlint.json     # markdownlint 规则（line_length 120 等）
-├── .claude-plugin/        # Claude Code plugin manifest（v3.0.0）
+├── .claude-plugin/        # Claude Code plugin manifest（v3.1.0）
 ├── marketplace.json       # 自托管 plugin marketplace
 ├── CHANGELOG.md           # Plugin / 标准库版本变更
 ├── templates/             # 项目脚手架（wechat-mp 已激活）
@@ -63,20 +70,23 @@ dev-standards/
 # 1. 同步个人 Skills 到 Claude Code
 ./scripts/sync.sh skills
 
-# 2. 把 Cursor adapter 部署到某个项目（仅当该项目用 Cursor 时）
+# 2. 同步跨 Agent 权限清单（check/deny 免审批规则）
+./scripts/sync.sh permissions --user
+
+# 3. 把 Cursor adapter 部署到某个项目（仅当该项目用 Cursor 时）
 ./scripts/sync.sh adapters cursor /path/to/your-project
 
-# 3. 部署 hooks 模板到某个项目
+# 4. 部署 hooks 模板到某个项目
 ./scripts/sync.sh hooks-precommit /path/to/your-project
 ./scripts/sync.sh hooks /path/to/your-project   # Claude PreToolUse（可选）
 
-# 4. 从模板新建小程序项目
+# 5. 从模板新建小程序项目
 ./scripts/sync.sh template wechat-mp /path/to/your-miniapp
 
-# 5. 校验标准库文档
+# 6. 校验标准库文档
 ./scripts/sync.sh validate
 
-# 6. 全部
+# 7. 全部
 ./scripts/sync.sh all /path/to/your-project
 ```
 

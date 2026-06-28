@@ -32,7 +32,7 @@ sync.sh permissions           ← 生成并部署到各 Agent
 
 ### 新增 check 规则
 
-1. 编辑 `permissions/manifest.json`，追加：
+示例条目：
 
 ```json
 {
@@ -45,6 +45,7 @@ sync.sh permissions           ← 生成并部署到各 Agent
 }
 ```
 
+1. 编辑 `permissions/manifest.json`，追加条目
 2. 预览：`bash ~/AgentProjects/dev-standards/scripts/sync.sh permissions`
 3. 部署：`bash ~/AgentProjects/dev-standards/scripts/sync.sh permissions --user`
 4. 若有项目 overlay：`permissions/overlays/<repo-name>.json` + `--project PATH`
