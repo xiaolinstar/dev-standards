@@ -47,6 +47,7 @@ Cursor **不会**自动读 `.claude/`、`.agents/`。跨工具共享内容放 **
 2. 各项目 **AGENTS.md** 只更新项目特例摘要
 3. 需要 Cursor glob 规则时：`sync.sh adapters cursor <project>`
 4. **禁止**在 AGENTS.md 与 CLAUDE.md 各写一份完整 playbook 副本
+5. **环境变量**：L0 在仓库 `*.example`；L3 在 `~/.config/xiaolinstar/` — Agent 禁止改（[env-management.md](env-management.md)）
 
 ## Cursor：check 命令免审批
 

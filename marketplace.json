@@ -7,7 +7,7 @@
     {
       "name": "dev-standards",
       "description": "Personal cross-project dev standards (dev-bootstrap, agent-permissions, wechat-mp)",
-      "version": "3.1.0",
+      "version": "3.2.0",
       "source": "./"
     }
   ]

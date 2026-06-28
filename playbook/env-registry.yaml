@@ -1,0 +1,104 @@
+# 跨项目环境变量键名注册表（L0 元数据真源）
+# 真实值只在 L3：~/.config/xiaolinstar/<project>/<env>.env 或 VPS 运行时文件
+# 机器校验：scripts/env/validate-registry.sh
+
+version: 1
+config_root: ~/.config/xiaolinstar
+
+categories:
+  platform:
+    description: 公网入口、TLS、监控栈
+    projects: [xiaolin-gateway]
+  application:
+    description: 业务 API / monorepo 可部署产物
+    projects: [ai-todo, party-helper, drink-budget]
+  content:
+    description: 文档站 / 内容站（容器静态服务）
+    projects: [xiaolin-docs, xiaolin-life]
+
+projects:
+  xiaolin-gateway:
+    category: platform
+    repo: xiaolinstar/xiaolin-gateway
+    runtime_layout: root-dotenv
+    load_order: [.env, .env.production]
+    templates:
+      - { path: .env.example, env: base }
+      - { path: .env.production.example, env: production }
+    local_config:
+      local: local.env
+      production: production.env
+    github_environments: [production]
+    docs: [docs/runtime-env-management.md]
+
+  ai-todo:
+    category: application
+    repo: xiaolinstar/ai-todo
+    runtime_layout: app-scoped
+    runtime_root: apps/api
+    load_order: [.env, .env.local, .env.staging, .env.production]
+    templates:
+      - { path: apps/api/.env.example, env: base }
+      - { path: apps/api/.env.local.example, env: local }
+      - { path: apps/api/.env.staging.example, env: staging }
+      - { path: apps/api/.env.production.example, env: production }
+    local_config:
+      local: local.env
+      staging: staging.env
+      production: production.env
+    github_environments: [staging, production]
+    docs: [docs/env/README.md, docs/env/github-environments.md]
+
+  party-helper:
+    category: application
+    repo: xiaolinstar/party-helper
+    runtime_layout: app-scoped
+    runtime_root: apps/api
+    templates:
+      - { path: apps/api/.env.example, env: base }
+      - { path: apps/api/.env.production.example, env: production }
+    local_config:
+      local: local.env
+      production: production.env
+    github_environments: [production]
+    docs: [docs/deploy-api.md]
+
+  drink-budget:
+    category: application
+    repo: xiaolinstar/drink-budget
+    runtime_layout: app-scoped
+    runtime_root: apps/api
+    templates:
+      - { path: apps/api/.env.example, env: base }
+      - { path: apps/api/.env.production.example, env: production }
+    local_config:
+      local: local.env
+      production: production.env
+    github_environments: [production]
+    docs: []
+
+  xiaolin-docs:
+    category: content
+    repo: xiaolinstar/xiaolin-docs
+    runtime_layout: root-dotenv
+    load_order: [.env, .env.production]
+    templates:
+      - { path: .env.example, env: base }
+    local_config:
+      local: local.env
+      production: production.env
+    github_environments: [production]
+    docs: []
+
+  xiaolin-life:
+    category: content
+    repo: xiaolinstar/xiaolin-life
+    runtime_layout: root-dotenv
+    load_order: [.env, .env.production]
+    templates:
+      - { path: .env.example, env: base }
+    local_config:
+      local: local.env
+      production: production.env
+    github_environments: [production]
+    docs: []

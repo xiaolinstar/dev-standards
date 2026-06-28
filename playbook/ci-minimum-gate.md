@@ -267,7 +267,7 @@ jobs:
 
 ## 环境、版本与密钥分层
 
-> **下一步（多环境）**：把「配置名」在标准库写清，把「具体值」留在业务仓 `.env.example` 与 GitHub Environments。
+> **环境密钥治理**：[env-management.md](env-management.md)（`~/.config/xiaolinstar`、键名校验、Agent 禁区）。
 > 原则见 [principles.md](principles.md) §5、[twelve-factor.md](baselines/twelve-factor.md) §III。
 
 ### 四层模型（从提交到运行时）
@@ -326,7 +326,7 @@ L3  运行时（VPS / 容器）      apps/<app>/.env + .env.<env>
 - [ ] staging / production Variables 分离（URL、阈值等）
 - [ ] 文档说明各环境加载顺序与 `gh secret set --env` 示例
 
-业务仓完整清单示例：`docs/env/README.md`、`docs/env/github-environments.md`（ai-todo，**不复制进本库**）。
+详见 [env-management.md](env-management.md) 与 [env-registry.yaml](env-registry.yaml)。业务仓示例：`docs/env/README.md`（ai-todo，**不复制进本库**）。
 
 ## 不在 CI 范围
 

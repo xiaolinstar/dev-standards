@@ -23,7 +23,9 @@ Commands:
   template <name> <dest>
                       Copy templates/<name>/ → <dest>/ (e.g. template wechat-mp ./my-app)
   all [project]       skills + print adapters/hooks usage (optional project path for adapters cursor)
-  validate            Run all validators (lint + adr + baselines)
+  validate            Run all validators (lint + adr + baselines + env registry)
+  env init-config     Create ~/.config/xiaolinstar layout (never overwrites values)
+  env check           Compare *.example keys vs runtime (see scripts/env/check-env-keys.sh)
   help                Show this message
 
 Examples:
@@ -33,6 +35,8 @@ Examples:
   $(basename "$0") template wechat-mp ~/AgentProjects/my-miniapp
   $(basename "$0") permissions --user
   $(basename "$0") permissions --user --project ~/AgentProjects/ai-todo
+  $(basename "$0") env init-config
+  $(basename "$0") env check --project ~/AgentProjects/ai-todo --local production
   $(basename "$0") all ~/AgentProjects/my-app
 EOF
 }
@@ -188,9 +192,24 @@ cmd_permissions() {
   node "$ROOT/scripts/permissions-sync.mjs" "$@"
 }
 
+cmd_env() {
+  local sub="${1:-help}"
+  shift || true
+  case "$sub" in
+    init-config) bash "$ROOT/scripts/env/init-config.sh" "$@" ;;
+    check) bash "$ROOT/scripts/env/check-env-keys.sh" "$@" ;;
+    *)
+      echo "Usage: $0 env {init-config|check} [args]" >&2
+      echo "  init-config   → ~/.config/xiaolinstar/" >&2
+      echo "  check         → scripts/env/check-env-keys.sh --help" >&2
+      exit 1
+      ;;
+  esac
+}
+
 cmd_validate() {
   local script failed=0
-  for script in lint.sh adr-validate.sh baselines-validate.sh; do
+  for script in lint.sh adr-validate.sh baselines-validate.sh env/validate-registry.sh; do
     if [[ -x "$ROOT/scripts/$script" ]]; then
       echo "→ $script"
       if ! bash "$ROOT/scripts/$script"; then
@@ -212,6 +231,7 @@ main() {
     hooks)    cmd_hooks "$@" ;;
     hooks-precommit) cmd_hooks_precommit "$@" ;;
     permissions) cmd_permissions "$@" ;;
+    env) cmd_env "$@" ;;
     template) cmd_template "$@" ;;
     all)      cmd_all "$@" ;;
     validate) cmd_validate ;;

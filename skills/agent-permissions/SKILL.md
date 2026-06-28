@@ -93,6 +93,7 @@ sync.sh permissions --user --project ~/AgentProjects/ai-todo
 - ❌ 在各工具配置里手改 allowlist 而不回写 manifest（下一轮 sync 会覆盖或漂移）
 - ❌ 用裸 `Bash(*)` 或 `terminalAllowlist: ["pnpm"]` 放行全部子命令
 - ❌ 把 manifest 复制进业务仓库（只用 overlay + sync）
+- ❌ 编辑 `~/.config/xiaolinstar/**` 或 gitignored `.env`（只改 `*.example`；见 [env-management.md](../../playbook/env-management.md)）
 
 ## 参考
 

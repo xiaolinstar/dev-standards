@@ -20,6 +20,7 @@
 |------|-----|------|
 | [api-error-codes.md](../../../playbook/api-error-codes.md) | [0005](../../../playbook/adr/0005-api-error-code-convention.md) | 错误体 schema、前缀码、traceId；**参考实现** ai-todo tag `api-error-codes-migration-complete` |
 | [ci-minimum-gate.md](../../../playbook/ci-minimum-gate.md) | [0006](../../../playbook/adr/0006-ci-minimum-gate.md) | 必选 4 项 + Hooks/CI/CD 三阶段、Monorepo 布局、环境密钥 L0–L3 |
+| [env-management.md](../../../playbook/env-management.md) | — | `~/.config/xiaolinstar`、键名校验、Agent 禁区；索引 [env-registry.yaml](../../../playbook/env-registry.yaml) |
 | [wechat-mp.md](../../../playbook/wechat-mp.md) | [0007](../../../playbook/adr/0007-wechat-miniprogram-baseline.md) | 原生 + TS 小程序目录、CI、MobX 状态 |
 
 索引真源：[playbook/INDEX.md](../../../playbook/INDEX.md)

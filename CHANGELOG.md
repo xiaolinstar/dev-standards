@@ -2,6 +2,13 @@
 
 All notable changes to the dev-standards Claude Code plugin follow [Semantic Versioning](https://semver.org/).
 
+## [3.2.0] - 2026-06-28
+
+- **Added** — `playbook/env-management.md`（L0–L3、`~/.config/xiaolinstar`）
+- **Added** — `playbook/env-registry.yaml` 与 `scripts/env/*` 键名校验
+- **Added** — `sync.sh env {init-config|check}`
+- **Changed** — `permissions/manifest.json` deny 运行时 env；`ci-minimum-gate` 链 env-management
+
 ## [3.1.0] - 2026-06-28
 
 - **Added** — `playbook/agent-config.md`（Claude + AGENTS 双体系最小维护）

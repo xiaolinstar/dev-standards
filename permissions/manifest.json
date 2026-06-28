@@ -11,7 +11,8 @@
     ],
     "block_instructions": [
       "Do not auto-run git push, git commit, pnpm publish, docker push, deploy scripts, or rm -rf without approval.",
-      "Do not auto-run commands that modify production databases or remote infrastructure."
+      "Do not auto-run commands that modify production databases or remote infrastructure.",
+      "Do not edit gitignored env files (.env, .env.production, etc.) or ~/.config/xiaolinstar/; only *.example and docs/env/ in repos."
     ]
   },
   "rules": [
@@ -110,6 +111,14 @@
       "since": "2026-06-28",
       "patterns": ["git push"],
       "note": "Require approval for push"
+    },
+    {
+      "id": "write-runtime-env",
+      "tier": "deny",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["> .env", "tee .env", "vim .env", "nano .env"],
+      "note": "Runtime env is human-only; edit *.example in repo instead"
     },
     {
       "id": "pnpm-publish",
