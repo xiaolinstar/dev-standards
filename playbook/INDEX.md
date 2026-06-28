@@ -15,6 +15,7 @@
 - [CI 最低门槛](ci-minimum-gate.md)（含 Hooks/CI/CD 三阶段、Monorepo 布局、环境密钥分层）
 - [环境变量与密钥治理](env-management.md)（L0–L3、`~/.config/xiaolinstar`、键名校验）
 - [环境变量迁移 Runbook](env-migration-runbook.md)（进度：[env-migration-status.yaml](env-migration-status.yaml) · `sync.sh env status`）
+- [Phase 3 应用层清单](env-phase3-checklist.md)
 - [微信小程序项目标准（原生 + TypeScript）](wechat-mp.md)
 
 ## 实现片段（可复制参考）

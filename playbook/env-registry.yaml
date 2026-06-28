@@ -61,21 +61,26 @@ projects:
       local: local.env
       production: production.env
     github_environments: [production]
-    docs: [docs/deploy-api.md]
+    docs: [docs/env/README.md, docs/deploy-api.md]
 
   drink-budget:
     category: application
     repo: xiaolinstar/drink-budget
     runtime_layout: app-scoped
     runtime_root: apps/api
+    vps_runtime_files: [.env.production]
+    upstream_host: 124.222.98.227
+    upstream_port: 8020
+    load_order: [.env.production]
     templates:
       - { path: apps/api/.env.example, env: base }
+      - { path: apps/api/.env.local.example, env: local }
       - { path: apps/api/.env.production.example, env: production }
     local_config:
       local: local.env
       production: production.env
     github_environments: [production]
-    docs: []
+    docs: [docs/env/README.md, docs/21-github-cd-config.md]
 
   xiaolin-docs:
     category: content

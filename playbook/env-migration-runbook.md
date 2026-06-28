@@ -96,8 +96,13 @@ Phase 3  应用     ai-todo → party-helper → drink-budget
 
 ### drink-budget
 
-- **先补** `apps/api/.env.production.example`（registry 已登记但文件缺失）
-- 再按 ai-todo 模式迁移 → port **8020**
+- 生产 VPS **单文件** `apps/api/.env.production`（`--env-file`）
+- 模板：`.env.production.example`（密钥）+ `.env.example`（非敏感默认）
+- 端口 **8020** · 清单：[env-phase3-checklist.md](env-phase3-checklist.md) §3C
+
+## Phase 3 详细步骤
+
+见 [env-phase3-checklist.md](env-phase3-checklist.md)。
 
 ## VPS 通用检查清单
 
