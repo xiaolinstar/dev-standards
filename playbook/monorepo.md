@@ -164,3 +164,6 @@ main push → CI 构建全部 artifact + deploy-manifest（指纹）
 ## 参考实现
 
 - [ai-todo](https://github.com/xiaolinstar/ai-todo)：`apps/api`（Python）+ `apps/cli` + `apps/miniapp` + `packages/shared` 等
+- **API 错误码 + traceId**（ADR-0005 Batch 0–6）：
+  tag [`api-error-codes-migration-complete`](https://github.com/xiaolinstar/ai-todo/releases/tag/api-error-codes-migration-complete)
+  · [api-error-codes.md §参考实现](api-error-codes.md#参考实现ai-todo-batch-06-已闭合)

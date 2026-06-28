@@ -82,6 +82,7 @@ Cursor 写法派生？
 | 主题 | 文档 |
 |------|------|
 | API envelope 变体 + 迁移 | [api-error-codes.md §Envelope 变体](api-error-codes.md#envelope-变体兼容) |
+| API 错误码 Batch 0–6（ai-todo 已闭合） | [ai-todo release note](https://github.com/xiaolinstar/ai-todo/blob/main/docs/releases/api-error-codes-migration.md) · [api-error-codes.md §参考实现](api-error-codes.md#参考实现ai-todo-batch-06-已闭合) |
 | Monorepo 内嵌小程序 | [wechat-mp.md §Monorepo 嵌套](wechat-mp.md#monorepo-嵌套appsminiapp) |
 | 混合发布（API CD + 客户端人工） | [monorepo.md §混合发布](monorepo.md#混合发布多-artifact-不同节奏) |
 | lint-staged 路径分流 | [ci-minimum-gate.md §lint-staged](ci-minimum-gate.md#lint-staged-范围最小集) |

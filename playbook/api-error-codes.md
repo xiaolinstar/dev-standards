@@ -54,9 +54,21 @@
 
 ## 实现位置
 
-- **monorepo 项目**：枚举集中在 `packages/shared/errors/`；每个错误一个文件，导出一个 `class` 或 `const`。
+- **monorepo 项目**：枚举集中在 `packages/shared/src/errors.ts`（TS matcher）+ 各语言后端等价物（如 Python `app/errors.py`）；**禁止** handler 里硬编码字符串。
 - **单包项目**：集中在 `app/errors.py` 或同等位置。
-- **禁止**：在 controller / handler 里直接写字符串字面量。
+
+### 参考实现（ai-todo，Batch 0–6 已闭合）
+
+| 项 | 位置 |
+| --- | --- |
+| Git tag | [`api-error-codes-migration-complete`](https://github.com/xiaolinstar/ai-todo/releases/tag/api-error-codes-migration-complete) |
+| Release note | [`docs/releases/api-error-codes-migration.md`](https://github.com/xiaolinstar/ai-todo/blob/main/docs/releases/api-error-codes-migration.md) |
+| Python 枚举 | [`apps/api/src/ai_todo_api/errors.py`](https://github.com/xiaolinstar/ai-todo/blob/main/apps/api/src/ai_todo_api/errors.py) |
+| TS matcher | [`packages/shared/src/errors.ts`](https://github.com/xiaolinstar/ai-todo/blob/main/packages/shared/src/errors.ts) |
+| 关联 ID middleware | [`observability.py`](https://github.com/xiaolinstar/ai-todo/blob/main/apps/api/src/ai_todo_api/observability.py) |
+| HTTP 契约文档 | [`docs/api-design.md` §错误码](https://github.com/xiaolinstar/ai-todo/blob/main/docs/api-design.md) |
+
+**不等于默认合规** — 审计仍以 ADR + checklist 为准；见 [audit-feedback-loop.md](audit-feedback-loop.md)。
 
 ## Envelope 变体（兼容）
 
@@ -76,7 +88,7 @@
 
 | 标准字段 | Envelope 等价 | 说明 |
 |---|---|---|
-| `code` | `error.code` | **必须**逐步改为 `AUTH_*` / `VAL_*` / `BIZ_*` / `SYS_*` 前缀 |
+| `code` | `error.code` | wire 须带 `AUTH_*` / `VAL_*` / `BIZ_*` / `SYS_*` 前缀 |
 | `message` | `error.message` | 同 |
 | `details` | `error.details` | 同 |
 | `traceId` | `request_id` 或 `requestId` | 语义等价；header 可用 `X-Request-ID` 或 `X-Trace-Id` |
@@ -85,12 +97,14 @@
 
 ### 迁移路径（存量项目）
 
-1. **冻结**旧字符串码（如 `VALIDATION_ERROR`）— 客户端已依赖则保留 alias
-2. **新增**错误只用前缀码；在 `packages/shared/errors/` 或 `app/errors.py` 定义
-3. **映射表**（可选）：旧码 → 新码，文档 + 测试各保留一期
-4. **不要求**一次性改响应 envelope 形状（避免破坏小程序/CLI）
+参考 [ai-todo Batch 0–6](https://github.com/xiaolinstar/ai-todo/blob/main/docs/releases/api-error-codes-migration.md)：
 
-详见 [audit-feedback-loop.md](audit-feedback-loop.md)。
+1. **Batch 0** — 响应体注入 `requestId` / `traceId`（不改 `error.code`）
+2. **Batch 1** — `errors.py`（或等价）+ `LEGACY_ERROR_ALIASES` + guard tests
+3. **Batch 2–5** — 按 AUTH → VAL → BIZ → SYS 切换 wire；客户端 `matches*ErrorCode` 保留 legacy 一期
+4. **Batch 6** — `api-design.md` / skill / runbook 与实现对齐
+
+原则：**冻结**旧字符串码作 alias；**不要求**改 envelope 外形。
 
 ## traceId
 
