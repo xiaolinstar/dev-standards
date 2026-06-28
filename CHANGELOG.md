@@ -2,6 +2,12 @@
 
 All notable changes to the dev-standards Claude Code plugin follow [Semantic Versioning](https://semver.org/).
 
+## [3.2.1] - 2026-06-27
+
+- **Added** — `playbook/env-migration-runbook.md` 与 `env-migration-status.yaml`
+- **Added** — `scripts/env/{migration-status,import-to-config,apply-to-runtime}.sh`
+- **Added** — `sync.sh env {status|import-config|apply-config}`
+
 ## [3.2.0] - 2026-06-28
 
 - **Added** — `playbook/env-management.md`（L0–L3、`~/.config/xiaolinstar`）

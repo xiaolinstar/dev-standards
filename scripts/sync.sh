@@ -26,6 +26,9 @@ Commands:
   validate            Run all validators (lint + adr + baselines + env registry)
   env init-config     Create ~/.config/xiaolinstar layout (never overwrites values)
   env check           Compare *.example keys vs runtime (see scripts/env/check-env-keys.sh)
+  env status          Migration progress for all registered projects
+  env import-config   Copy repo runtime → ~/.config/xiaolinstar (human/ops)
+  env apply-config    Copy ~/.config/xiaolinstar → repo runtime (human/ops)
   help                Show this message
 
 Examples:
@@ -36,6 +39,9 @@ Examples:
   $(basename "$0") permissions --user
   $(basename "$0") permissions --user --project ~/AgentProjects/ai-todo
   $(basename "$0") env init-config
+  $(basename "$0") env status
+  $(basename "$0") env import-config --project ai-todo
+  $(basename "$0") env apply-config --project ai-todo --env production --force
   $(basename "$0") env check --project ~/AgentProjects/ai-todo --local production
   $(basename "$0") all ~/AgentProjects/my-app
 EOF
@@ -198,10 +204,16 @@ cmd_env() {
   case "$sub" in
     init-config) bash "$ROOT/scripts/env/init-config.sh" "$@" ;;
     check) bash "$ROOT/scripts/env/check-env-keys.sh" "$@" ;;
+    status) bash "$ROOT/scripts/env/migration-status.sh" "$@" ;;
+    import-config) bash "$ROOT/scripts/env/import-to-config.sh" "$@" ;;
+    apply-config) bash "$ROOT/scripts/env/apply-to-runtime.sh" "$@" ;;
     *)
-      echo "Usage: $0 env {init-config|check} [args]" >&2
-      echo "  init-config   → ~/.config/xiaolinstar/" >&2
-      echo "  check         → scripts/env/check-env-keys.sh --help" >&2
+      echo "Usage: $0 env {init-config|check|status|import-config|apply-config} [args]" >&2
+      echo "  init-config     → ~/.config/xiaolinstar/" >&2
+      echo "  check           → scripts/env/check-env-keys.sh --help" >&2
+      echo "  status          → migration progress table" >&2
+      echo "  import-config   → repo runtime → ~/.config/xiaolinstar (human/ops)" >&2
+      echo "  apply-config    → ~/.config/xiaolinstar → repo runtime (human/ops)" >&2
       exit 1
       ;;
   esac

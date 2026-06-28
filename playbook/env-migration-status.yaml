@@ -1,0 +1,63 @@
+# 环境变量迁移进度（人工更新 Status）
+# 机器扫描：scripts/sync.sh env status
+
+version: 1
+blocked_until_done: true
+note: 全部项目 local_config + vps_runtime 为 done 后，再启动 /healthz 与 uptime 探活迁移
+
+projects:
+  xiaolin-gateway:
+    category: platform
+    priority: 1
+    local_config: pending
+    vps_runtime: pending
+    github_l2: partial
+    blockers:
+      - 若 VPS 仍有 env/production.env，合并到 .env / .env.production 后删除
+      - 确保 VPS 存在 ~/AgentProjects/dev-standards 供 CD verify
+
+  xiaolin-docs:
+    category: content
+    priority: 2
+    local_config: pending
+    vps_runtime: unknown
+    github_l2: partial
+    blockers:
+      - 仓库 .env 已对齐模板；导入 ~/.config/xiaolinstar 备份
+
+  xiaolin-life:
+    category: content
+    priority: 2
+    local_config: pending
+    vps_runtime: unknown
+    github_l2: partial
+    blockers:
+      - .env 缺 COS_SECRET_ID / COS_SECRET_KEY（对照 .env.example 补齐）
+
+  ai-todo:
+    category: application
+    priority: 3
+    local_config: pending
+    vps_runtime: unknown
+    github_l2: documented
+    blockers:
+      - apps/api/.env* 与 staging / prod VPS 分别整理
+      - docs/env 已为参考实现
+
+  party-helper:
+    category: application
+    priority: 4
+    local_config: pending
+    vps_runtime: unknown
+    github_l2: partial
+    blockers:
+      - docs/env 已存在；补齐 apps/api/.env.production
+
+  drink-budget:
+    category: application
+    priority: 5
+    local_config: pending
+    vps_runtime: unknown
+    github_l2: unknown
+    blockers:
+      - 缺 apps/api/.env.production.example（需新增模板后再迁移）

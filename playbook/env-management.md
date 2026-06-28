@@ -143,6 +143,8 @@ bash scripts/env/validate-registry.sh
 
 ## 与其它文档
 
+- [env-migration-runbook.md](env-migration-runbook.md) — 全项目迁移顺序与命令（完成前暂停 probe 扩展）
+- [env-migration-status.yaml](env-migration-status.yaml) — 人工进度跟踪
 - [ci-minimum-gate.md](ci-minimum-gate.md) — CI 四必选 + L0–L3 摘要
 - [env-registry.yaml](env-registry.yaml) — 项目键名与路径索引
 - [agent-config.md](agent-config.md) — Agent 配置边界
