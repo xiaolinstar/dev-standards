@@ -9,30 +9,33 @@ projects:
   xiaolin-gateway:
     category: platform
     priority: 1
-    local_config: in_progress
-    vps_runtime: in_progress
+    vps_host: 101.34.78.2
+    local_config: done
+    vps_runtime: done
     github_l2: partial
     blockers:
-      - 若 VPS 仍有 env/production.env，合并到 .env / .env.production 后删除
-      - 确保 VPS 存在 ~/AgentProjects/dev-standards 供 CD verify
+      - GitHub CD SERVER_HOST 应指向 101.34.78.2（若在 Secrets 中仍为旧 IP 需人工更新）
 
   xiaolin-docs:
     category: content
     priority: 2
-    local_config: pending
-    vps_runtime: unknown
+    upstream: 124.222.98.227:8080
+    local_config: done
+    vps_runtime: done
+    vps_note: VPS 无 .env 为预期（compose 不读 env 文件）
     github_l2: partial
     blockers:
-      - 仓库 .env 已对齐模板；导入 ~/.config/xiaolinstar 备份
+      - 核对 GitHub Variables DOCKER_BAIDU_ANALYTICS_ID
 
   xiaolin-life:
     category: content
     priority: 2
-    local_config: pending
-    vps_runtime: unknown
+    upstream: 124.222.98.227:8081
+    local_config: done
+    vps_runtime: done
+    vps_note: VPS 无 .env 为预期；COS 凭证在 ~/.cos.yaml（暂不纳入 config 备份）
     github_l2: partial
-    blockers:
-      - .env 缺 COS_SECRET_ID / COS_SECRET_KEY（对照 .env.example 补齐）
+    blockers: []
 
   ai-todo:
     category: application

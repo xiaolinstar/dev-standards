@@ -42,6 +42,33 @@ GitHub 组织/用户名为 **xiaolinstar**，本地集中目录统一为：
 ~/AgentProjects/dev-standards/scripts/sync.sh env init-config
 ```
 
+### 仓库 runtime ↔ config 备份对照
+
+`~/.config/.../local.env` **不是**仓库里的 `.env.local`，而是 registry 环境档位名 `local` 对应的备份文件名。
+
+| 仓库 runtime（VPS / 本机） | config 备份 | 说明 |
+|----------------------------|-------------|------|
+| `.env` | `local.env` | 基础层；VPS 生产也备份到此名（易误解但为既定约定） |
+| `.env.production` | `production.env` | 生产覆盖层 |
+| `.env.staging` | `staging.env` | staging VPS（如 ai-todo） |
+| `.env.local` | *无专用槽位* | **仅本机开发**覆盖；VPS CD **不读**；一般不必备份 |
+
+gateway VPS（`101.34.78.2`）示例：
+
+```bash
+scp ubuntu@101.34.78.2:~/AgentProjects/xiaolin-gateway/.env \
+    ~/.config/xiaolinstar/xiaolin-gateway/local.env
+scp ubuntu@101.34.78.2:~/AgentProjects/xiaolin-gateway/.env.production \
+    ~/.config/xiaolinstar/xiaolin-gateway/production.env
+chmod 600 ~/.config/xiaolinstar/xiaolin-gateway/*.env
+```
+
+校验备份（分层模型勿用 `--local --env production` 验 `production.env`，会误报）：
+
+```bash
+sync.sh env check --project ~/AgentProjects/xiaolin-gateway --local --env local --strict
+```
+
 ### 工作流
 
 1. 仓库 PR 只改 `*.example` 与 `docs/env/`（L0）。
@@ -137,7 +164,9 @@ bash scripts/env/validate-registry.sh
 |----|------|---------|
 | 平台 | xiaolin-gateway | 根 `.env*`；监控/Alertmanager 路径 |
 | 应用 | ai-todo 等 | `apps/api/.env*`；GitHub staging+production |
-| 内容 | xiaolin-docs / life | 根 `.env*`；变量通常较少 |
+| 内容 | xiaolin-docs / life | 本机 `.env`（构建/媒体脚本）；**VPS compose 通常不读 `.env`**；life 的 COS 凭证在 `~/.cos.yaml` |
+
+内容站详见各仓 `docs/env/README.md`。
 
 路由与域名见 [xiaolin-gateway routing-registry](https://github.com/xiaolinstar/xiaolin-gateway/blob/main/docs/routing-registry.md)。
 

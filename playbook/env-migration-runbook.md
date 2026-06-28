@@ -61,16 +61,18 @@ Phase 3  应用     ai-todo → party-helper → drink-budget
 
 ## Phase 2 · 内容站
 
-### xiaolin-docs
+### xiaolin-docs（与 life 对齐 · COS）
 
-- 本地 `.env` 已与模板对齐（`check` ok）
-- 执行 `import-config` → 填 `production.env` → VPS 上 `.env`（compose 用）
+- 共用 Bucket + `~/.cos.yaml`；`.env` 设 `COS_PREFIX=docs`、`MEDIA_CDN_BASE`
+- 上传：`pnpm run media:upload`（`docs/public/images` → `docs/` 前缀）
+- VPS **无** `.env`；文档：[docs/env/README.md](https://github.com/xiaolinstar/xiaolin-docs/blob/main/docs/env/README.md)
 
-### xiaolin-life
+### xiaolin-life（方案 A）
 
-- **当前 gap**：`.env` 缺 `COS_SECRET_ID`、`COS_SECRET_KEY`
-- 在 `~/.config/xiaolinstar/xiaolin-life/local.env` 补全后 `apply-config --env local`
-- VPS：同步 `.env` 到 8081 容器
+- **COS 凭证在 `~/.cos.yaml`**，不在 `.env`
+- `.env` 仅 `COS_PREFIX`、`MEDIA_CDN_BASE` 等；`.env.example` 已去掉 `COS_SECRET_*`
+- VPS 8081 无需 `.env`；备份 `local.env` + 单独保管 `~/.cos.yaml`
+- 文档：[xiaolin-life docs/env/README.md](https://github.com/xiaolinstar/xiaolin-life/blob/main/docs/env/README.md)
 
 ## Phase 3 · 应用
 

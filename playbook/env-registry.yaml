@@ -81,24 +81,34 @@ projects:
     category: content
     repo: xiaolinstar/xiaolin-docs
     runtime_layout: root-dotenv
-    load_order: [.env, .env.production]
+    vps_runtime_env: false
+    upstream_host: 124.222.98.227
+    upstream_port: 8080
+    cos_credentials: ~/.cos.yaml
+    cos_prefix: docs
+    load_order: [.env]
     templates:
       - { path: .env.example, env: base }
     local_config:
       local: local.env
       production: production.env
+    l2_github_vars: [DOCKER_BAIDU_ANALYTICS_ID, PAGES_BAIDU_ANALYTICS_ID]
     github_environments: [production]
-    docs: []
+    docs: [docs/env/README.md, docs/sre/planning/media-standards.md]
 
   xiaolin-life:
     category: content
     repo: xiaolinstar/xiaolin-life
     runtime_layout: root-dotenv
-    load_order: [.env, .env.production]
+    vps_runtime_env: false
+    upstream_host: 124.222.98.227
+    upstream_port: 8081
+    cos_credentials: ~/.cos.yaml
+    load_order: [.env]
     templates:
       - { path: .env.example, env: base }
     local_config:
       local: local.env
       production: production.env
     github_environments: [production]
-    docs: []
+    docs: [docs/env/README.md, docs/MEDIA-NAMESPACE.md]
