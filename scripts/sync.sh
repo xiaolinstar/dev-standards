@@ -29,6 +29,7 @@ Commands:
   env status          Migration progress for all registered projects
   env import-config   Copy repo runtime → ~/.config/xiaolinstar (human/ops)
   env apply-config    Copy ~/.config/xiaolinstar → repo runtime (human/ops)
+  env sync-github     Push ~/.config/.../github-*.env → GitHub (L2, see sync-github-env.mjs)
   help                Show this message
 
 Examples:
@@ -207,13 +208,15 @@ cmd_env() {
     status) bash "$ROOT/scripts/env/migration-status.sh" "$@" ;;
     import-config) bash "$ROOT/scripts/env/import-to-config.sh" "$@" ;;
     apply-config) bash "$ROOT/scripts/env/apply-to-runtime.sh" "$@" ;;
+    sync-github) node "$ROOT/scripts/env/sync-github-env.mjs" "$@" ;;
     *)
-      echo "Usage: $0 env {init-config|check|status|import-config|apply-config} [args]" >&2
+      echo "Usage: $0 env {init-config|check|status|import-config|apply-config|sync-github} [args]" >&2
       echo "  init-config     → ~/.config/xiaolinstar/" >&2
       echo "  check           → scripts/env/check-env-keys.sh --help" >&2
       echo "  status          → migration progress table" >&2
       echo "  import-config   → repo runtime → ~/.config/xiaolinstar (human/ops)" >&2
       echo "  apply-config    → ~/.config/xiaolinstar → repo runtime (human/ops)" >&2
+      echo "  sync-github     → L2 github-*.env → gh secret/variable (see github-sync-profiles.json)" >&2
       exit 1
       ;;
   esac

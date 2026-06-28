@@ -27,14 +27,18 @@ GitHub 组织/用户名为 **xiaolinstar**，本地集中目录统一为：
 ~/.config/xiaolinstar/
 ├── README.md                 # 人工维护；Agent 禁止写入
 ├── xiaolin-gateway/
-│   ├── local.env
-│   └── production.env
+│   ├── local.env             # L3：VPS runtime 备份
+│   ├── production.env
+│   └── github-production.env # L2：可选，GitHub Environment 本地清单
 ├── ai-todo/
 │   ├── local.env
 │   ├── staging.env
-│   └── production.env
+│   ├── production.env
+│   └── github-staging.env    # L2 可选
 └── …/<project>/<env>.env
 ```
+
+**L3 与 L2 备份分文件**：`local.env` / `production.env` 对应 VPS 业务运行时；`github-*.env` 仅含 CD/探活等 GitHub Actions 键，**不要**与 DB/JWT 等业务密钥混在同一文件。
 
 初始化（不覆盖已有文件）：
 
@@ -99,18 +103,69 @@ sync.sh env check --project ~/AgentProjects/xiaolin-gateway --local --env local 
 
 ## GitHub Environments（L2）
 
-- 命名与运行时对齐：`staging`、`production`。
-- 放：SSH、`DEPLOY_HOST`、公网验收 URL、CI smoke PAT。
-- 不放：能只留在 VPS 的业务 DB 密码（减少重复）。
+### 真源与职责
 
-业务仓参考：ai-todo [docs/env/github-environments.md](https://github.com/xiaolinstar/ai-todo/blob/main/docs/env/github-environments.md)（不复制进本库正文）。
+| 角色 | 位置 | 说明 |
+|------|------|------|
+| **运行时真源** | GitHub → Settings → Environments → `production` / `staging` | Actions 读 `secrets.*` / `vars.*` |
+| **键名文档（L0）** | 各仓 `docs/env/github-environments.md` 或 `*.example.env` | 只列键名与示例，不含真实值 |
+| **本地清单（可选）** | `~/.config/xiaolinstar/<project>/github-<env>.env` | 灾难恢复、换机、批量 `gh` 同步 |
 
-设置示例：
+命名与运行时对齐：`staging`、`production`。
+
+- **放 L2**：`DEPLOY_HOST`、`DEPLOY_SSH_KEY` / `DEPLOY_PASSWORD`、公网 smoke URL、CI PAT、构建期非敏感变量（如 `DOCKER_BAIDU_ANALYTICS_ID`）。
+- **不放 L2**：能只留在 VPS L3 的业务 DB 密码、JWT、微信密钥（减少重复与泄露面）。
+
+### 推荐工作流（你当前设想的模式）
+
+1. 读仓库 L0 文档，确认该 Environment 需要哪些 **Variables** 与 **Secrets**。
+2. 在本机填写 `~/.config/xiaolinstar/<project>/github-production.env`（或项目自有路径，见下）。
+3. 用 `gh` 推到 GitHub（手动或脚本）；**GitHub 仍是 CI 运行时真源**，本地文件只是备份与可重复同步源。
 
 ```bash
-gh secret set --env production DEPLOY_HOST --body your-vps-host
-gh variable set --env production CD_PUBLIC_API_URL --body https://example.com
+# 手动（变量 vs 密钥区分清楚）
+gh variable set DEPLOY_HOST --repo xiaolinstar/ai-todo --env production --body 124.222.98.227
+gh secret set DEPLOY_SSH_KEY --repo xiaolinstar/ai-todo --env production < ~/.ssh/deploy_key
+
+# 带脚本的仓（优先用仓内脚本，键名与 workflow 已对齐）
+cd ~/AgentProjects/party-helper && pnpm sync:github-env -- --dry-run
+cd ~/AgentProjects/drink-budget && pnpm sync:github-env -- --dry-run
+cd ~/AgentProjects/xiaolin-gateway && bash scripts/cd/sync-github-env.sh --dry-run
+cd ~/AgentProjects/xiaolin-docs && pnpm sync:github-env -- --dry-run
+
+# 或从 dev-standards 统一入口（profile 见 scripts/env/github-sync-profiles.json）
+~/AgentProjects/dev-standards/scripts/sync.sh env sync-github --project xiaolin-life --dry-run
 ```
+
+业务仓 L0 参考：ai-todo
+[github-environments.md](https://github.com/xiaolinstar/ai-todo/blob/main/docs/env/github-environments.md)；
+party-helper / drink-budget 有 `github-*.env.example` + 同步脚本。
+
+### 本地路径的两种约定（收敛中）
+
+| 约定 | 路径 | 项目 |
+|------|------|------|
+| **xiaolinstar 统一** | `~/.config/xiaolinstar/<project>/github-<env>.env` | 新备份建议用此 |
+| **项目自有（迁移中）** | `~/.config/party-helper/env/` | party-helper 仍兼容旧路径；drink-budget 已统一到 xiaolinstar |
+
+不必立刻迁移旧路径；新增 L2 备份时优先放进 `xiaolinstar/<project>/`，并在该仓 `docs/env/README.md` 写清文件名。
+
+### 与 Actions Secrets/Variables 方案的关系
+
+**是的，这就是当前方案**：GitHub Environments 的 **Environment secrets** + **Environment variables**，
+由 workflow 的 `environment: production` 注入 job。
+`gh secret set --env` / `gh variable set --env` 正是官方 CLI，适合单人本地集中管理后推送到指定仓库。
+
+**是否需要更好方案？** 对你当前规模（单人、多仓、已有 VPS L3）：
+
+| 方案 | 适用 | 说明 |
+|------|------|------|
+| **现状 + 本地 `github-*.env` + `gh`** | ✅ 推荐继续 | 简单、与 Actions 原生集成、无额外服务 |
+| Organization secrets | 多仓共享同一 GHCR token 等 | 仅真正跨仓重复的键才上 org 级 |
+| SOPS + age 加密本地备份 | 担心本机磁盘泄露 | 可选；GitHub 侧仍用 Environments |
+| Vault / Infisical / Doppler | 多人轮换、审计 | 过重；等团队协作再评估 |
+
+**不要**把 L2 SSH 与 L3 Grafana/DB 写进同一个 `.env` 文件；L2 变更（换 deploy 密钥）也不应触发 VPS runtime 备份 diff。
 
 ## 模板与运行时键名同步（check）
 

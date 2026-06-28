@@ -1,0 +1,67 @@
+{
+  "xiaolin-gateway": {
+    "repository": "xiaolinstar/xiaolin-gateway",
+    "scope": "repository",
+    "config_file": "~/.config/xiaolinstar/xiaolin-gateway/github-production.env",
+    "variables": [],
+    "secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"],
+    "required_secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"]
+  },
+  "xiaolin-docs": {
+    "repository": "xiaolinstar/xiaolin-docs",
+    "scope": "repository",
+    "config_file": "~/.config/xiaolinstar/xiaolin-docs/github-production.env",
+    "variables": ["DOCKER_BAIDU_ANALYTICS_ID", "PAGES_BAIDU_ANALYTICS_ID"],
+    "secrets": [
+      "SERVER_HOST",
+      "SERVER_USER",
+      "SERVER_PASSWORD",
+      "MAIL_USERNAME",
+      "MAIL_PASSWORD"
+    ],
+    "required_secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"]
+  },
+  "xiaolin-life": {
+    "repository": "xiaolinstar/xiaolin-life",
+    "scope": "repository",
+    "config_file": "~/.config/xiaolinstar/xiaolin-life/github-production.env",
+    "variables": [],
+    "secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"],
+    "required_secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"]
+  },
+  "party-helper": {
+    "repository": "xiaolinstar/party-helper",
+    "scope": "environment",
+    "environment": "production",
+    "config_file": "~/.config/xiaolinstar/party-helper/github-production.env",
+    "legacy_config_file": "~/.config/party-helper/env/github-production.env",
+    "variables": [
+      "DEPLOY_HOST",
+      "DEPLOY_USER",
+      "DEPLOY_PORT",
+      "DEPLOY_PATH",
+      "GHCR_DEPLOY_USER"
+    ],
+    "secrets": ["DEPLOY_PASSWORD", "GHCR_DEPLOY_TOKEN"],
+    "required_variables": ["DEPLOY_HOST"],
+    "ssh_key_secret": "DEPLOY_SSH_KEY"
+  },
+  "drink-budget": {
+    "repository": "xiaolinstar/drink-budget",
+    "scope": "environment",
+    "environment": "production",
+    "config_file": "~/.config/xiaolinstar/drink-budget/github-production.env",
+    "legacy_config_file": "~/.config/drink-budget/env/github-production.env",
+    "variables": [
+      "DEPLOY_HOST",
+      "DEPLOY_USER",
+      "DEPLOY_PORT",
+      "DEPLOY_PATH",
+      "GHCR_DEPLOY_USER",
+      "CD_PUBLIC_SERVER_URL"
+    ],
+    "secrets": ["DEPLOY_PASSWORD", "GHCR_DEPLOY_TOKEN"],
+    "required_variables": ["DEPLOY_HOST", "DEPLOY_USER"],
+    "ssh_key_secret": "DEPLOY_SSH_KEY"
+  }
+}

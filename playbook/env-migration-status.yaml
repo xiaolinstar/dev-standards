@@ -12,9 +12,8 @@ projects:
     vps_host: 101.34.78.2
     local_config: done
     vps_runtime: done
-    github_l2: partial
-    blockers:
-      - GitHub CD SERVER_HOST 应指向 101.34.78.2（若在 Secrets 中仍为旧 IP 需人工更新）
+    github_l2: done
+    blockers: []
 
   xiaolin-docs:
     category: content
@@ -23,9 +22,8 @@ projects:
     local_config: done
     vps_runtime: done
     vps_note: VPS 无 .env 为预期（compose 不读 env 文件）
-    github_l2: partial
-    blockers:
-      - 核对 GitHub Variables DOCKER_BAIDU_ANALYTICS_ID
+    github_l2: done
+    blockers: []
 
   xiaolin-life:
     category: content

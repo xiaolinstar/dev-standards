@@ -28,6 +28,8 @@ projects:
     local_config:
       local: local.env
       production: production.env
+    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD]
+    l2_scope: repository
     github_environments: [production]
     docs: [docs/runtime-env-management.md, docs/env/README.md]
 
@@ -98,6 +100,8 @@ projects:
       local: local.env
       production: production.env
     l2_github_vars: [DOCKER_BAIDU_ANALYTICS_ID, PAGES_BAIDU_ANALYTICS_ID]
+    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD, MAIL_USERNAME, MAIL_PASSWORD]
+    l2_scope: repository
     github_environments: [production]
     docs: [docs/env/README.md, docs/sre/planning/media-standards.md]
 
@@ -115,5 +119,7 @@ projects:
     local_config:
       local: local.env
       production: production.env
+    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD]
+    l2_scope: repository
     github_environments: [production]
     docs: [docs/env/README.md, docs/MEDIA-NAMESPACE.md]

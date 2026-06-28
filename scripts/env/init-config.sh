@@ -19,12 +19,14 @@ if [[ ! -f "$readme" ]]; then
 
 ```text
 ~/.config/xiaolinstar/<project>/<env>.env
+~/.config/xiaolinstar/<project>/github-production.env   # L2 可选备份
 ```
 
 例如：
 
 - `ai-todo/production.env`
 - `xiaolin-gateway/production.env`
+- `xiaolin-docs/github-production.env`
 
 ## 规则
 
@@ -60,5 +62,19 @@ while IFS= read -r proj; do
     fi
   done
 done < <(grep -E '^  (xiaolin-gateway|ai-todo|party-helper|drink-budget|xiaolin-docs|xiaolin-life):$' "$REGISTRY" | sed 's/://;s/^  //')
+
+profiles="$ROOT/scripts/env/github-sync-profiles.json"
+if [[ -f "$profiles" ]] && command -v node >/dev/null 2>&1; then
+  while IFS= read -r proj; do
+    dir="$CONFIG_ROOT/$proj"
+    mkdir -p "$dir"
+    f="$dir/github-production.env"
+    if [[ ! -f "$f" ]]; then
+      touch "$f"
+      chmod 600 "$f"
+      echo "→ created $f (empty; copy from repo docs/env/github-production.env)"
+    fi
+  done < <(node -e "const p=require('$profiles'); console.log(Object.keys(p).join('\n'))")
+fi
 
 echo "→ config root: $CONFIG_ROOT"
