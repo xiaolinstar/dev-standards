@@ -1,0 +1,123 @@
+{
+  "$schema": "./manifest.schema.json",
+  "version": 1,
+  "updated": "2026-06-28",
+  "description": "跨 Agent 只读 check / deny 规则真源。由 sync.sh permissions 分发到 Cursor、Claude Code、Codex、OpenCode、Antigravity。",
+  "autoRun": {
+    "allow_instructions": [
+      "Read-only verification and CI check commands (typecheck, lint, format:check, test, pytest, check:wechat, gitleaks protect --staged on staged files only) may run without approval.",
+      "Compound shells that only chain read-only checks, e.g. cd into a repo then pnpm typecheck && pnpm lint, are fine.",
+      "git status, git diff, git log, and gh run view for inspecting CI are fine."
+    ],
+    "block_instructions": [
+      "Do not auto-run git push, git commit, pnpm publish, docker push, deploy scripts, or rm -rf without approval.",
+      "Do not auto-run commands that modify production databases or remote infrastructure."
+    ]
+  },
+  "rules": [
+    {
+      "id": "pnpm-typecheck",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["pnpm typecheck", "pnpm -r typecheck", "pnpm --filter"],
+      "note": "Monorepo / filter typecheck"
+    },
+    {
+      "id": "pnpm-lint",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["pnpm lint", "pnpm -r lint"],
+      "note": "Lint gate"
+    },
+    {
+      "id": "pnpm-check",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["pnpm check"],
+      "note": "Matches pnpm check:wechat etc."
+    },
+    {
+      "id": "pnpm-format-check",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["pnpm format:check"],
+      "note": "Prettier check"
+    },
+    {
+      "id": "pnpm-test",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["pnpm test", "pnpm -r test"],
+      "note": "Test suites (read-only verification)"
+    },
+    {
+      "id": "python-pytest",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["python -m pytest", "cd apps/api && .venv/bin/python -m pytest"],
+      "note": "API pytest"
+    },
+    {
+      "id": "python-ruff",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["python -m ruff check", "ruff check", "cd apps/api && python -m ruff check"],
+      "note": "Python lint"
+    },
+    {
+      "id": "static-js",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["eslint", "prettier --check", "tsc -p", "tsc --noEmit", "vitest run", "node --test"],
+      "note": "Direct static analysis invocations"
+    },
+    {
+      "id": "git-readonly",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["git status", "git diff", "git log", "git branch", "git show"],
+      "note": "Read-only git"
+    },
+    {
+      "id": "gh-readonly",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["gh run list", "gh run view", "gh pr list", "gh pr view"],
+      "note": "Read-only GitHub CLI"
+    },
+    {
+      "id": "rm-rf",
+      "tier": "deny",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["rm -rf"],
+      "note": "Destructive delete"
+    },
+    {
+      "id": "git-push",
+      "tier": "deny",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["git push"],
+      "note": "Require approval for push"
+    },
+    {
+      "id": "pnpm-publish",
+      "tier": "deny",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["pnpm publish"],
+      "note": "Require approval for publish"
+    }
+  ]
+}

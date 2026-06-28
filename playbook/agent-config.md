@@ -48,6 +48,15 @@ Cursor **不会**自动读 `.claude/`、`.agents/`。跨工具共享内容放 **
 3. 需要 Cursor glob 规则时：`sync.sh adapters cursor <project>`
 4. **禁止**在 AGENTS.md 与 CLAUDE.md 各写一份完整 playbook 副本
 
+## Cursor：check 命令免审批
+
+见 Skill **`agent-permissions`** 与 `permissions/manifest.json`（真源）。
+
+1. 编辑 manifest → `sync.sh permissions --user`（全局）或加 `--project PATH`（含 overlay）
+2. Cursor 另需 Run Mode：**Auto-review** 或 **Allowlist**（Settings → Agents → Approvals）
+
+旧说明（单文件手维护）仍可用 `~/.cursor/permissions.json`，但**推荐改 manifest + sync** 以同步 Claude / Codex / OpenCode / Antigravity。
+
 ## 与 adapters 的关系
 
 `adapters/cursor/` 是 playbook 的**派生镜像**，不是第三套真源。仅 Cursor 的 `.mdc` frontmatter（globs）无法由 AGENTS.md 表达时才部署。

@@ -46,6 +46,7 @@
 | Skill | 用途 |
 |-------|------|
 | dev-bootstrap | 新建或整理项目时的检查清单 |
+| agent-permissions | 跨 Agent check/deny 规则生命周期（manifest → sync） |
 | wechat-mp | 原生 + TS 微信小程序开发模式与坑点 |
 
 ## Hooks（一等公民，源码在 `../hooks/`）

@@ -18,6 +18,8 @@ Commands:
   hooks <project>     Copy Claude hooks → <project>/.claude/hooks/
   hooks-precommit <project>
                       Install Husky pre-commit templates (see hooks/pre-commit/)
+  permissions [--user] [--project PATH]
+                      Sync permissions/manifest.json → Cursor / Claude / Codex / OpenCode / Antigravity
   template <name> <dest>
                       Copy templates/<name>/ → <dest>/ (e.g. template wechat-mp ./my-app)
   all [project]       skills + print adapters/hooks usage (optional project path for adapters cursor)
@@ -29,6 +31,8 @@ Examples:
   $(basename "$0") adapters cursor ~/AgentProjects/my-app
   $(basename "$0") hooks-precommit ~/AgentProjects/my-app
   $(basename "$0") template wechat-mp ~/AgentProjects/my-miniapp
+  $(basename "$0") permissions --user
+  $(basename "$0") permissions --user --project ~/AgentProjects/ai-todo
   $(basename "$0") all ~/AgentProjects/my-app
 EOF
 }
@@ -180,6 +184,10 @@ cmd_all() {
   fi
 }
 
+cmd_permissions() {
+  node "$ROOT/scripts/permissions-sync.mjs" "$@"
+}
+
 cmd_validate() {
   local script failed=0
   for script in lint.sh adr-validate.sh baselines-validate.sh; do
@@ -203,6 +211,7 @@ main() {
     adapters) cmd_adapters "$@" ;;
     hooks)    cmd_hooks "$@" ;;
     hooks-precommit) cmd_hooks_precommit "$@" ;;
+    permissions) cmd_permissions "$@" ;;
     template) cmd_template "$@" ;;
     all)      cmd_all "$@" ;;
     validate) cmd_validate ;;

@@ -1,0 +1,18 @@
+{
+  "project": "ai-todo",
+  "rules": [
+    {
+      "id": "ai-todo-check-wechat",
+      "tier": "check",
+      "status": "active",
+      "since": "2026-06-28",
+      "patterns": ["pnpm check:wechat", "pnpm test:api"],
+      "note": "ai-todo miniapp + API tests"
+    }
+  ],
+  "autoRun": {
+    "block_instructions": [
+      "Do not auto-run CD deploy, docker push, or miniapp upload against production."
+    ]
+  }
+}

@@ -24,3 +24,6 @@ __pycache__/
 node_modules/
 dist/
 build/
+
+# Derived permission previews (source: permissions/manifest.json)
+permissions/generated/
