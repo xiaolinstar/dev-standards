@@ -53,7 +53,7 @@ for project in "${projects[@]}"; do
     if file_nonempty "$repo/$rel"; then
       local_count=$((local_count + 1))
     fi
-    if [[ "$rel" == "env/production.env" ]]; then
+    if [[ "$rel" == "env/production.env" ]] && file_nonempty "$repo/$rel"; then
       notes+=("legacy env/production.env present")
     fi
   done

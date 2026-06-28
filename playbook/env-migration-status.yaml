@@ -9,8 +9,8 @@ projects:
   xiaolin-gateway:
     category: platform
     priority: 1
-    local_config: pending
-    vps_runtime: pending
+    local_config: in_progress
+    vps_runtime: in_progress
     github_l2: partial
     blockers:
       - 若 VPS 仍有 env/production.env，合并到 .env / .env.production 后删除
