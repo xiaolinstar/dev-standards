@@ -105,7 +105,7 @@ docker compose --env-file .env.production -f docker-compose.yml config >/dev/nul
 - [x] staging VPS 121.199.175.147：ai-todo `.env` + `.env.staging` 通过
 - [x] `~/.config/xiaolinstar/{ai-todo,party-helper,drink-budget}/` 已填
 - [x] `env-migration-status.yaml` 应用项 `local_config` + `vps_runtime` → `done`
-- [ ] 再启动 probe / healthz 扩展（全部 env 迁移完成后）
+- [x] 启动 probe / healthz 统一（见 gateway healthz-probe-standard.md；uptime.yml 已全部 /healthz）
 
 ## VPS 前置
 

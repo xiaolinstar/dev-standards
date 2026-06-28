@@ -118,8 +118,8 @@ bash ~/AgentProjects/dev-standards/scripts/env/check-env-keys.sh \
 ## 完成后
 
 1. 更新 [env-migration-status.yaml](env-migration-status.yaml) 各项为 `done`
-2. ~~再启动 gateway healthz 探活迁移~~ → **进行中**（见 gateway healthz-probe-standard.md）
-3. 各应用 `/healthz` 合并后 **先 CD 再** 观察 `uptime.yml`
+2. gateway [healthz 探活规范](https://github.com/xiaolinstar/xiaolin-gateway/blob/main/docs/healthz-probe-standard.md) — **已全部切换 `/healthz`**
+3. 业务仓 CD 后观察 gateway `uptime.yml`
 
 ## Agent 边界
 

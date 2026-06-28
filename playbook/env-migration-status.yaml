@@ -3,7 +3,7 @@
 
 version: 1
 blocked_until_done: false
-note: env 迁移已完成；healthz/uptime 探活迁移进行中（2026-06）。各仓 /healthz 合并后需按序 CD 再观察 gateway uptime.yml
+note: env 与 healthz 规范已对齐；uptime.yml 与各仓 docs/env 均使用 GET /healthz。待业务仓 CD 后公网探活全绿。
 
 projects:
   xiaolin-gateway:
