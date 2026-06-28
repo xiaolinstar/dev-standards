@@ -2,8 +2,8 @@
 
 个人开发标准库（方案 B）：跨项目的规范、Skills、Hooks、Adapter 的**唯一真相来源**。
 
-**一等公民**：Claude Code（Skills、hooks、CLAUDE.md）。
-**Adapter**：Cursor 等其他 Agent/IDE 通过 `adapters/` 镜像兼容。
+**一等公民**：Claude Code（`.claude/`、Skills、hooks）+ 跨工具 **AGENTS.md**。  
+**可选**：Cursor `.cursor/rules/`（glob 作用域，见 [playbook/agent-config.md](playbook/agent-config.md)）。
 
 ## 定位
 

@@ -11,8 +11,8 @@ description: Bootstrap or audit a software project against personal dev standard
 
 1. 确认项目类型：Web API / CLI / monorepo / 小程序 / 文档站
 2. 读标准库 `playbook/principles.md`（原则）、`playbook/ci-minimum-gate.md`（CI/hook 必选）、`playbook/wechat-mp.md`（小程序主题）
-3. 读项目已有 README / CLAUDE.md / AGENTS.md
-4. 项目特例写在项目自己的 `CLAUDE.md`，不要复制整个标准库
+3. 读项目已有 README / **AGENTS.md** / CLAUDE.md
+4. 项目特例写在 **AGENTS.md**；CLAUDE.md 仅 `@AGENTS.md` + Claude 专有段
 
 ## 审计 checklist（漏一项 = 不合格）
 
@@ -31,11 +31,11 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 
 - [ ] README、LICENSE（若开源）、.gitignore
 - [ ] `.env.example`，无密钥进库
-- [ ] Agent：CLAUDE.md（Claude Code）和/或 AGENTS.md
+- [ ] Agent：**AGENTS.md**（跨工具）+ **CLAUDE.md**（`@AGENTS.md` + Claude 补充）
 
-### Adapter（仅非 Claude Code 项目）
+### Cursor 作用域规则（可选）
 
-- [ ] 从 dev-standards 部署 `adapters/cursor/`（如适用）
+- [ ] 需要 glob 触发时：`sync.sh adapters cursor <project>`（见 [agent-config.md](../../playbook/agent-config.md)）
 
 ### 工具（本地可跑）
 
@@ -87,9 +87,7 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 # 1b. （可选）以 Plugin 安装：claude plugin marketplace add ./marketplace.json
 #     然后 claude plugin install dev-standards@dev-standards
 
-# 2. 部署 Cursor adapter 到项目（仅当项目用 Cursor 时）
-~/AgentProjects/dev-standards/scripts/sync.sh adapters cursor /path/to/project
-
+# 2. （可选）Cursor glob 规则：sync.sh adapters cursor /path/to/project
 # 3. 部署 pre-commit 模板（Husky + lint-staged + commitlint）
 ~/AgentProjects/dev-standards/scripts/sync.sh hooks-precommit /path/to/project
 # 合并 .dev-standards-package.json.snippet → package.json；见 ci-minimum-gate.md
@@ -122,4 +120,5 @@ pnpm install --frozen-lockfile
 - [references/monorepo.md](references/monorepo.md)
 - [../../playbook/ci-minimum-gate.md](../../playbook/ci-minimum-gate.md) — **审计必读**
 - [../../playbook/wechat-mp.md](../../playbook/wechat-mp.md) — 小程序主题
+- [../../playbook/agent-config.md](../../playbook/agent-config.md) — **Agent 配置最小维护**
 - [../../playbook/audit-feedback-loop.md](../../playbook/audit-feedback-loop.md) — **循环审计 → 标准反馈**

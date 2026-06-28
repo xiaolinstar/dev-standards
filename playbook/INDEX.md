@@ -6,6 +6,7 @@
 
 - [L1 开发原则](principles.md)
 - [Monorepo 实践指南](monorepo.md)
+- [Agent 配置最小维护（Claude + AGENTS）](agent-config.md)
 - [循环审计与标准反馈](audit-feedback-loop.md)
 
 ## 主题（跨项目技术约定）
