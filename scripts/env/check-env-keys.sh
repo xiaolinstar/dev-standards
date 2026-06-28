@@ -117,11 +117,16 @@ while IFS= read -r template; do
   fi
 
   if [[ ${#runtime_files[@]} -gt 0 ]]; then
+    target_base="$(basename "$base")"
     for rf in "${runtime_files[@]}"; do
       if [[ "$rf" = /* ]]; then
         rt="$rf"
       else
         rt="$project_path/$rf"
+      fi
+      rt_base="$(basename "$rf")"
+      if [[ "$target_base" != "$rt_base" ]]; then
+        continue
       fi
       check_pair "$template" "$rt" "runtime:$rf ← $rel"
     done

@@ -29,7 +29,7 @@ projects:
       local: local.env
       production: production.env
     github_environments: [production]
-    docs: [docs/runtime-env-management.md]
+    docs: [docs/runtime-env-management.md, docs/env/README.md]
 
   ai-todo:
     category: application
