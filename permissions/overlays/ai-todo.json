@@ -6,8 +6,13 @@
       "tier": "check",
       "status": "active",
       "since": "2026-06-28",
-      "patterns": ["pnpm check:wechat", "pnpm test:api"],
-      "note": "ai-todo miniapp + API tests"
+      "patterns": [
+        "pnpm check:wechat",
+        "pnpm test:api",
+        "cd apps/api && .venv/bin/python -m pytest",
+        "cd apps/api && python -m ruff check"
+      ],
+      "note": "ai-todo monorepo CI parity (merged with global manifest via sync.sh permissions)"
     }
   ],
   "autoRun": {
