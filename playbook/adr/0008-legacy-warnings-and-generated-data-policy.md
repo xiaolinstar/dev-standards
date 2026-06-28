@@ -1,7 +1,7 @@
 ---
 ID: 0008
 Title: 遗留项目门禁升级时的 Lint 警告与生成数据格式规范
-Status: Proposed
+Status: Accepted
 Date: 2026-06-28
 Deciders: xingxiaolin
 ---
@@ -30,7 +30,7 @@ Deciders: xingxiaolin
 - **优点**：代码库质量得到最纯粹的提升，标准门禁不打折扣。
 - **缺点**：首次补差重构工作量大，且对大范围的历史代码进行类型重构可能引入潜在的运行时回归风险。
 
-#### 选项 B：使用过渡期警告阈值（Gradual Zero-Warning Policy）
+#### 选项 B：使用过渡期警告阈值（Gradual Zero-Warning Policy）[已采纳 - 默认]
 - **做法**：在项目根目录 `package.json` 的 `lint-staged` 中，不使用 `--max-warnings 0`，而是根据当前项目警告基线设定一个特定的硬性阈值（例如 `eslint --max-warnings 20`）。在后续的迭代中，以任务卡形式将阈值逐步递减为 0。
 - **优点**：避免了一次性大范围类型修改的风险，同时在 CI 阶段保持了递减的约束力。
 - **缺点**：在过渡期内，容忍了部分警告的存在。
@@ -42,7 +42,7 @@ Deciders: xingxiaolin
 
 ### 议题二：自动生成数据与 Prettier 的冲突处理
 
-#### 选项 A：生成脚本自符合格式规范（Self-Formatting Generator）
+#### 选项 A：生成脚本自符合格式规范（Self-Formatting Generator）[已采纳]
 - **做法**：修改数据生成/同步脚本，在写入 JSON 或者是 TS 模块文件后，脚本在内部同步执行 `prettier --write <output-file>`，或者用代码格式化库对其进行格式化后再写入。
 - **优点**：数据文件既能完美符合 Prettier 规范，又不会在重新同步时产生格式差异。
 - **缺点**：增加了数据生成脚本的复杂度和运行开销。
@@ -54,4 +54,15 @@ Deciders: xingxiaolin
 
 ## 后果与决定
 
-*(本段保留，等待 Decider 决定并批准具体选项)*
+经 Decider `xingxiaolin` 裁决，最终决定如下：
+
+1. **议题一 (Lint 警告级) 决定**：
+   - 采纳 **选项 B (使用过渡期警告阈值)**。
+   - 遗留项目目前在 `lint-staged` 中将警告上限放宽至项目基线（如 `--max-warnings 20`），以避免阻碍日常提交。
+   - **关键约束**：CI 报告和本地 hook 必须打印出所有警告的细节，将警告透明化。
+   - **长期计划**：在未来特定的代码重构版本中，会规划专项任务消除全部 warnings，届时将门禁级别收紧为 **选项 A (max-warnings 0)**。
+
+2. **议题二 (数据同步) 决定**：
+   - 采纳 **选项 A (生成脚本自符合格式规范)**。
+   - 数据生成/同步脚本生成完 JSON 或 TS 文件后，必须在脚本尾部自动调用 `prettier --write` 进行格式化。
+   - 这能保证入库的代码格式始终合规，且 `pre-push` 时重构数据不会和 `prettier --check` 产生冲突。
