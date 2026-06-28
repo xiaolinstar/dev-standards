@@ -324,6 +324,7 @@ L3  运行时（VPS / 容器）      apps/<app>/.env + .env.<env>
 - [ ] 生产 CD 使用 GitHub Environment（`environment: production`），非 repo 级 secret 混用
 - [ ] 运行时密钥只在 L3（服务器文件 / 密钥管理），不在镜像
 - [ ] staging / production Variables 分离（URL、阈值等）
+- [ ] 仓库的 Node.js 运行/CI 版本与标准对齐（默认 Node 24）；若有兼容性偏差，须在项目级 `CLAUDE.md` 中登记例外说明
 - [ ] 文档说明各环境加载顺序与 `gh secret set --env` 示例
 
 业务仓完整清单示例：`docs/env/README.md`、`docs/env/github-environments.md`（ai-todo，**不复制进本库**）。
