@@ -1,6 +1,6 @@
 # 环境变量迁移 Runbook
 
-> 在 **全部项目** 完成本 runbook 前，**暂停** gateway `/healthz` 探活切换与可观测性 probe 扩展。
+> env 迁移已完成。**healthz / uptime 探活**见 gateway [healthz-probe-standard](https://github.com/xiaolinstar/xiaolin-gateway/blob/main/docs/healthz-probe-standard.md)。
 > 进度文件：[env-migration-status.yaml](env-migration-status.yaml) · 扫描：`sync.sh env status`
 
 ## 目标状态
@@ -118,8 +118,8 @@ bash ~/AgentProjects/dev-standards/scripts/env/check-env-keys.sh \
 ## 完成后
 
 1. 更新 [env-migration-status.yaml](env-migration-status.yaml) 各项为 `done`
-2. 再启动 gateway [healthz 探活迁移](https://github.com/xiaolinstar/xiaolin-gateway/blob/main/docs/healthz-probe-standard.md)
-3. 各应用实现 `GET /healthz` 并改 `uptime.yml`
+2. ~~再启动 gateway healthz 探活迁移~~ → **进行中**（见 gateway healthz-probe-standard.md）
+3. 各应用 `/healthz` 合并后 **先 CD 再** 观察 `uptime.yml`
 
 ## Agent 边界
 

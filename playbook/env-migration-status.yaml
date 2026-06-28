@@ -2,8 +2,8 @@
 # 机器扫描：scripts/sync.sh env status
 
 version: 1
-blocked_until_done: true
-note: 全部项目 local_config + vps_runtime 为 done 后，再启动 /healthz 与 uptime 探活迁移
+blocked_until_done: false
+note: env 迁移已完成；healthz/uptime 探活迁移进行中（2026-06）。各仓 /healthz 合并后需按序 CD 再观察 gateway uptime.yml
 
 projects:
   xiaolin-gateway:
@@ -32,8 +32,9 @@ projects:
     local_config: done
     vps_runtime: done
     vps_note: VPS 无 .env 为预期；COS 凭证在 ~/.cos.yaml（暂不纳入 config 备份）
-    github_l2: partial
-    blockers: []
+    github_l2: tooling
+    blockers:
+      - 填写 ~/.config/xiaolinstar/xiaolin-life/github-production.env 后 sync
 
   ai-todo:
     category: application
@@ -53,8 +54,9 @@ projects:
     upstream: 124.222.98.227:8021
     local_config: done
     vps_runtime: done
-    github_l2: partial
-    blockers: []
+    github_l2: tooling
+    blockers:
+      - 填写 ~/.config/xiaolinstar/party-helper/github-production.env 后 sync
 
   drink-budget:
     category: application
@@ -62,5 +64,6 @@ projects:
     upstream: 124.222.98.227:8020
     local_config: done
     vps_runtime: done
-    github_l2: partial
-    blockers: []
+    github_l2: tooling
+    blockers:
+      - 填写 ~/.config/xiaolinstar/drink-budget/github-production.env 后 sync
