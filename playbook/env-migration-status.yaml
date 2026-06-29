@@ -3,7 +3,7 @@
 
 version: 1
 blocked_until_done: false
-note: env 与 healthz 规范已对齐；uptime.yml 与各仓 docs/env 均使用 GET /healthz。待业务仓 CD 后公网探活全绿。
+note: env 与 healthz 规范已对齐；L2 文档标准见 ADR-0009。uptime.yml 与各仓 docs/env 均使用 GET /healthz。
 
 projects:
   xiaolin-gateway:
@@ -46,7 +46,8 @@ projects:
     vps_staging: done
     vps_prod: done
     github_l2: documented
-    blockers: []
+    blockers:
+      - ai-todo 已纳入 github-sync-profiles.json；本地 github-production.env 填值后可 sync
 
   party-helper:
     category: application

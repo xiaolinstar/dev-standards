@@ -1,6 +1,7 @@
 {
   "xiaolin-gateway": {
     "repository": "xiaolinstar/xiaolin-gateway",
+    "l2_category": "platform",
     "scope": "repository",
     "config_file": "~/.config/xiaolinstar/xiaolin-gateway/github-production.env",
     "variables": [],
@@ -9,28 +10,43 @@
   },
   "xiaolin-docs": {
     "repository": "xiaolinstar/xiaolin-docs",
+    "l2_category": "content",
     "scope": "repository",
     "config_file": "~/.config/xiaolinstar/xiaolin-docs/github-production.env",
     "variables": ["DOCKER_BAIDU_ANALYTICS_ID", "PAGES_BAIDU_ANALYTICS_ID"],
-    "secrets": [
-      "SERVER_HOST",
-      "SERVER_USER",
-      "SERVER_PASSWORD",
-      "MAIL_USERNAME",
-      "MAIL_PASSWORD"
-    ],
+    "secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"],
     "required_secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"]
   },
   "xiaolin-life": {
     "repository": "xiaolinstar/xiaolin-life",
+    "l2_category": "content",
     "scope": "repository",
     "config_file": "~/.config/xiaolinstar/xiaolin-life/github-production.env",
     "variables": [],
     "secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"],
     "required_secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"]
   },
+  "ai-todo": {
+    "repository": "xiaolinstar/ai-todo",
+    "l2_category": "application",
+    "scope": "environment",
+    "environment": "production",
+    "config_file": "~/.config/xiaolinstar/ai-todo/github-production.env",
+    "variables": [
+      "DEPLOY_HOST",
+      "DEPLOY_USER",
+      "DEPLOY_PORT",
+      "DEPLOY_PATH",
+      "GHCR_DEPLOY_USER",
+      "CD_PUBLIC_API_URL"
+    ],
+    "secrets": ["DEPLOY_PASSWORD", "GHCR_DEPLOY_TOKEN", "CD_SMOKE_PAT"],
+    "required_variables": ["DEPLOY_HOST", "DEPLOY_USER"],
+    "ssh_key_secret": "DEPLOY_SSH_KEY"
+  },
   "party-helper": {
     "repository": "xiaolinstar/party-helper",
+    "l2_category": "application",
     "scope": "environment",
     "environment": "production",
     "config_file": "~/.config/xiaolinstar/party-helper/github-production.env",
@@ -48,6 +64,7 @@
   },
   "drink-budget": {
     "repository": "xiaolinstar/drink-budget",
+    "l2_category": "application",
     "scope": "environment",
     "environment": "production",
     "config_file": "~/.config/xiaolinstar/drink-budget/github-production.env",

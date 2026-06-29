@@ -1,5 +1,6 @@
 # 跨项目环境变量键名注册表（L0 元数据真源）
 # 真实值只在 L3：~/.config/xiaolinstar/<project>/<env>.env 或 VPS 运行时文件
+# L2 标准：playbook/adr/0009-l2-github-env-by-category.md
 # 机器校验：scripts/env/validate-registry.sh
 
 version: 1
@@ -9,17 +10,26 @@ categories:
   platform:
     description: 公网入口、TLS、监控栈
     projects: [xiaolin-gateway]
+    l2_scope: repository
+    l2_secret_prefix: SERVER_
   application:
     description: 业务 API / monorepo 可部署产物
     projects: [ai-todo, party-helper, drink-budget]
+    l2_scope: environment
+    l2_secret_prefix: DEPLOY_
   content:
     description: 文档站 / 内容站（容器静态服务）
     projects: [xiaolin-docs, xiaolin-life]
+    l2_scope: repository
+    l2_secret_prefix: SERVER_
 
 projects:
   xiaolin-gateway:
     category: platform
     repo: xiaolinstar/xiaolin-gateway
+    l2_category: platform
+    l2_scope: repository
+    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD]
     runtime_layout: root-dotenv
     load_order: [.env, .env.production]
     templates:
@@ -28,14 +38,15 @@ projects:
     local_config:
       local: local.env
       production: production.env
-    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD]
-    l2_scope: repository
-    github_environments: [production]
     docs: [docs/runtime-env-management.md, docs/env/README.md]
 
   ai-todo:
     category: application
     repo: xiaolinstar/ai-todo
+    l2_category: application
+    l2_scope: environment
+    l2_github_vars: [DEPLOY_HOST, DEPLOY_USER, DEPLOY_PORT, DEPLOY_PATH, GHCR_DEPLOY_USER, CD_PUBLIC_API_URL]
+    l2_github_secrets: [DEPLOY_SSH_KEY, DEPLOY_PASSWORD, GHCR_DEPLOY_TOKEN, CD_SMOKE_PAT]
     runtime_layout: app-scoped
     runtime_root: apps/api
     load_order: [.env, .env.local, .env.staging, .env.production]
@@ -54,6 +65,10 @@ projects:
   party-helper:
     category: application
     repo: xiaolinstar/party-helper
+    l2_category: application
+    l2_scope: environment
+    l2_github_vars: [DEPLOY_HOST, DEPLOY_USER, DEPLOY_PORT, DEPLOY_PATH, GHCR_DEPLOY_USER]
+    l2_github_secrets: [DEPLOY_SSH_KEY, DEPLOY_PASSWORD, GHCR_DEPLOY_TOKEN]
     runtime_layout: app-scoped
     runtime_root: apps/api
     templates:
@@ -68,6 +83,10 @@ projects:
   drink-budget:
     category: application
     repo: xiaolinstar/drink-budget
+    l2_category: application
+    l2_scope: environment
+    l2_github_vars: [DEPLOY_HOST, DEPLOY_USER, DEPLOY_PORT, DEPLOY_PATH, GHCR_DEPLOY_USER, CD_PUBLIC_SERVER_URL]
+    l2_github_secrets: [DEPLOY_SSH_KEY, DEPLOY_PASSWORD, GHCR_DEPLOY_TOKEN]
     runtime_layout: app-scoped
     runtime_root: apps/api
     vps_runtime_files: [.env.production]
@@ -87,6 +106,10 @@ projects:
   xiaolin-docs:
     category: content
     repo: xiaolinstar/xiaolin-docs
+    l2_category: content
+    l2_scope: repository
+    l2_github_vars: [DOCKER_BAIDU_ANALYTICS_ID, PAGES_BAIDU_ANALYTICS_ID]
+    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD]
     runtime_layout: root-dotenv
     vps_runtime_env: false
     upstream_host: 124.222.98.227
@@ -99,15 +122,14 @@ projects:
     local_config:
       local: local.env
       production: production.env
-    l2_github_vars: [DOCKER_BAIDU_ANALYTICS_ID, PAGES_BAIDU_ANALYTICS_ID]
-    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD, MAIL_USERNAME, MAIL_PASSWORD]
-    l2_scope: repository
-    github_environments: [production]
     docs: [docs/env/README.md, docs/sre/planning/media-standards.md]
 
   xiaolin-life:
     category: content
     repo: xiaolinstar/xiaolin-life
+    l2_category: content
+    l2_scope: repository
+    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD]
     runtime_layout: root-dotenv
     vps_runtime_env: false
     upstream_host: 124.222.98.227
@@ -119,7 +141,4 @@ projects:
     local_config:
       local: local.env
       production: production.env
-    l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD]
-    l2_scope: repository
-    github_environments: [production]
     docs: [docs/env/README.md, docs/MEDIA-NAMESPACE.md]

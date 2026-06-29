@@ -10,7 +10,7 @@ description: Bootstrap or audit a software project against personal dev standard
 ## 前置
 
 1. 确认项目类型：Web API / CLI / monorepo / 小程序 / 文档站
-2. 读标准库 `playbook/principles.md`（原则）、`playbook/ci-minimum-gate.md`（CI/hook 必选）、`playbook/wechat-mp.md`（小程序主题）
+2. 读标准库 `playbook/principles.md`（原则）、`playbook/ci-minimum-gate.md`（CI/hook 必选）、`playbook/env-management.md`（L0–L3）、`playbook/wechat-mp.md`（小程序主题）
 3. 读项目已有 README / **AGENTS.md** / CLAUDE.md
 4. 项目特例写在 **AGENTS.md**；CLAUDE.md 仅 `@AGENTS.md` + Claude 专有段
 
@@ -67,6 +67,29 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 - [ ] 版本号策略 / CHANGELOG / releases/（若有对外发布）
 - [ ] `scripts/bump-version.{ts,mjs}`（如适用，自动同步版本到 manifest）
 
+### L2 GitHub 环境（[ADR-0009](../../playbook/adr/0009-l2-github-env-by-category.md)）
+
+对有 CD / GitHub Secrets 的仓库必查。先读 `playbook/env-registry.yaml` 中该项目的 `l2_category` / `l2_scope`。
+
+| category | 典型项目 | L2 作用域 | 键名前缀 |
+|----------|----------|-----------|----------|
+| platform | xiaolin-gateway | 仓库 Secrets | `SERVER_*` |
+| content | xiaolin-docs、xiaolin-life | 仓库 Secrets / Variables | `SERVER_*` |
+| application | ai-todo、party-helper、drink-budget | GitHub Environment | `DEPLOY_*` |
+
+**Checklist（漏一项 = L2 不合格）：**
+
+- [ ] `env-registry.yaml` 存在该项目，`l2_category` 与 `category` 一致
+- [ ] 存在 `docs/env/github-environments.example.env` 或等效 L0 清单（如 `github-environments.md`）
+- [ ] 本地 `github-*.env` 模板键名 ⊆ registry 声明；无未文档化的 Secrets
+- [ ] **application** 仓：GitHub 上存在 `production` Environment；ai-todo 另有 `staging`
+- [ ] **content / platform** 仓：CD 密钥在**仓库级** Secrets，**未**误放进 Environment（除非 ADR 偏离）
+- [ ] **content** 仓：workflow **无** `MAIL_*` / `action-send-mail`；CD 通知靠 GitHub 账户通知
+- [ ] L3 业务密钥（DB、JWT、`ADMIN_TOKEN` 等）**不在** L2
+- [ ] （可选）`~/.config/xiaolinstar/<project>/github-*.env` + `sync.sh env sync-github --dry-run` 可推
+
+偏离双轨键名或 category 表 → 新建 ADR 或在审计报告「标准库待反馈」段说明。
+
 ## 按项目类型追加
 
 **Monorepo** — 读 [references/monorepo.md](references/monorepo.md)；
@@ -119,6 +142,9 @@ pnpm install --frozen-lockfile
 - [references/standards-overview.md](references/standards-overview.md)
 - [references/monorepo.md](references/monorepo.md)
 - [../../playbook/ci-minimum-gate.md](../../playbook/ci-minimum-gate.md) — **审计必读**
+- [../../playbook/env-management.md](../../playbook/env-management.md) — L0–L3 分层
+- [../../playbook/adr/0009-l2-github-env-by-category.md](../../playbook/adr/0009-l2-github-env-by-category.md)
+  — **L2 按 category 审计**
 - [../../playbook/wechat-mp.md](../../playbook/wechat-mp.md) — 小程序主题
 - [../../playbook/agent-config.md](../../playbook/agent-config.md) — **Agent 配置最小维护**
 - [../../playbook/audit-feedback-loop.md](../../playbook/audit-feedback-loop.md) — **循环审计 → 标准反馈**

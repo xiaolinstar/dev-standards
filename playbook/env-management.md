@@ -103,6 +103,41 @@ sync.sh env check --project ~/AgentProjects/xiaolin-gateway --local --env local 
 
 ## GitHub Environments（L2）
 
+> **标准真源**：[ADR-0009](adr/0009-l2-github-env-by-category.md)（按 category 双轨键名 + 审计 checklist）。  
+> **机器 profile**：`scripts/env/github-sync-profiles.json` · **项目元数据**：`env-registry.yaml` 的 `l2_category` / `l2_scope`。
+
+### 按 category 分层（双轨）
+
+| category | 项目 | GitHub 作用域 | 键名前缀 | Environment |
+|----------|------|---------------|----------|-------------|
+| **platform** | xiaolin-gateway | 仓库 Secrets | `SERVER_*` | 无 |
+| **content** | xiaolin-docs、xiaolin-life | 仓库 Secrets / Variables | `SERVER_*` | 无 |
+| **application** | ai-todo、party-helper、drink-budget | Environment secrets / vars | `DEPLOY_*` | `production`（ai-todo 另有 `staging`） |
+
+**content · xiaolin-docs 额外 Variables**：`DOCKER_BAIDU_ANALYTICS_ID`、`PAGES_BAIDU_ANALYTICS_ID`（仅 docs）。
+
+**content · 不再使用邮件 Secrets**：CD 通知由 GitHub 承担；L2 不再包含 `MAIL_*`（删 workflow 邮件 job 见 ADR-0009）。
+
+#### platform / content 标准键（仓库级）
+
+| 类型 | 键 | 必填 |
+|------|-----|------|
+| Secret | `SERVER_HOST`、`SERVER_USER` | ✅ |
+| Secret | `SERVER_PASSWORD` | ✅（或未来 `SERVER_SSH_KEY`） |
+
+#### application 标准键（Environment）
+
+| 类型 | 键 | 必填 |
+|------|-----|------|
+| Variable | `DEPLOY_HOST`、`DEPLOY_USER` | ✅ |
+| Variable | `DEPLOY_PORT`、`DEPLOY_PATH`、`GHCR_DEPLOY_USER` | 可选 |
+| Secret | `DEPLOY_SSH_KEY` 或 `DEPLOY_PASSWORD` | ✅ 二选一 |
+| Secret | `GHCR_DEPLOY_TOKEN` | 可选 |
+
+按项目扩展：`CD_PUBLIC_API_URL`（ai-todo）、`CD_PUBLIC_SERVER_URL`（drink-budget）等见 ADR-0009 §2。
+
+审计新项目：对照 ADR-0009 checklist 与 `env-registry.yaml` 条目。
+
 ### 真源与职责
 
 | 角色 | 位置 | 说明 |
