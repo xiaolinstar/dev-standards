@@ -49,6 +49,7 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 - [ ] `commitlint.config.{js,cjs}` 存在
 - [ ] 根 `package.json` 含 `"prepare": "husky"`
 - [ ] 根 `package.json` 含 `lint-staged` 配置
+- [ ] **lint-staged 与 CI `format:check` glob 对齐**（monorepo 子 app 逐项对照；见 [ci-minimum-gate.md §hook ↔ CI 对齐](../../playbook/ci-minimum-gate.md#hook--ci-对齐monorepo-必查)）
 
 ### CI（必选 4 项，对应 [ci-minimum-gate.md §必选 4 项](../../playbook/ci-minimum-gate.md#必选-4-项local--ci-双段)）
 

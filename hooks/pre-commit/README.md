@@ -25,7 +25,7 @@
 ```bash
 cd /path/to/project
 # 1. 合并 .dev-standards-package.json.snippet 到 package.json
-# 2. monorepo 须按 ci-minimum-gate.md §lint-staged 调整路径分流
+# 2. monorepo 须按 ci-minimum-gate.md §lint-staged 调整路径分流，且 hook glob 与 CI format:check 对齐
 pnpm install
 pnpm exec husky   # 若 prepare 未自动跑
 ```
