@@ -103,7 +103,8 @@ module.exports = {
 
 #### hook ↔ CI 对齐（monorepo 必查）
 
-凡 CI job 对某 glob 跑 `format:check` / `prettier --check`，**同一 glob** 须在 `lint-staged` 含 `prettier --write`（可与 `eslint --fix` 同 pattern、多 step）。
+凡 CI job 对某 glob 跑 `format:check` / `prettier --check`，**同一 glob** 须在 `lint-staged` 含 `prettier --write`
+（可与 `eslint --fix` 同 pattern、多 step）。
 
 **禁止**：子 app 在 hook 只跑 eslint、在 CI 的 `check` / `format:check` 再跑 prettier——会绕过 pre-commit，在 CI 才暴露格式问题。
 
@@ -145,7 +146,8 @@ module.exports = {
 }
 ```
 
-> miniapp 示例与 [wechat-mp 模板](../templates/wechat-mp/package.json) 的 `check`（含 `format:check`）对齐；`.ts` 须 eslint **与** prettier 双 step。
+> miniapp 示例与 [wechat-mp 模板](../templates/wechat-mp/package.json) 的 `check`（含 `format:check`）对齐；
+> `.ts` 须 eslint **与** prettier 双 step。
 
 Python（`apps/api`）本地 hook 可选：`"apps/api/**/*.py": ["cd apps/api && python -m ruff check"]`（CI 必跑即可）。
 
