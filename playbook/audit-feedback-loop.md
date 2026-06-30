@@ -86,6 +86,7 @@ Cursor 写法派生？
 | Monorepo 内嵌小程序 | [wechat-mp.md §Monorepo 嵌套](wechat-mp.md#monorepo-嵌套appsminiapp) |
 | 混合发布（API CD + 客户端人工） | [monorepo.md §混合发布](monorepo.md#混合发布多-artifact-不同节奏) |
 | lint-staged 路径分流 | [ci-minimum-gate.md §lint-staged](ci-minimum-gate.md#lint-staged-范围最小集) |
+| lint-staged 与 CI format 对齐 | [ci-minimum-gate.md §hook ↔ CI 对齐](ci-minimum-gate.md#hook--ci-对齐monorepo-必查) · 来源：ai-todo v0.8.7 发布路径 CI（prettier 漏 hook） |
 
 ## 例外 ADR 最小模板
 

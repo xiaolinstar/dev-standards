@@ -101,13 +101,27 @@ module.exports = {
 
 ### lint-staged 范围（最小集）
 
+#### hook ↔ CI 对齐（monorepo 必查）
+
+凡 CI job 对某 glob 跑 `format:check` / `prettier --check`，**同一 glob** 须在 `lint-staged` 含 `prettier --write`（可与 `eslint --fix` 同 pattern、多 step）。
+
+**禁止**：子 app 在 hook 只跑 eslint、在 CI 的 `check` / `format:check` 再跑 prettier——会绕过 pre-commit，在 CI 才暴露格式问题。
+
+审计时对照表：
+
+| 来源 | 查什么 |
+|------|--------|
+| 子 app `package.json` §`format:check` / `check` | prettier glob |
+| 根 `package.json` §`lint-staged` | 同 glob 是否有 `prettier --write` |
+| CI workflow（如 `scan-miniapp` → `check:wechat`） | 与上两行一致 |
+
 **单包仓库**：
 
 ```json
 {
   "lint-staged": {
-    "**/*.{ts,tsx}": ["eslint --fix --max-warnings 0"],
-    "**/*.{js,jsx}": ["eslint --fix"],
+    "**/*.{ts,tsx}": ["eslint --fix --max-warnings 0", "prettier --write"],
+    "**/*.{js,jsx}": ["eslint --fix", "prettier --write"],
     "**/*.{json,md,yml,yaml}": ["prettier --write"]
   }
 }
@@ -118,7 +132,12 @@ module.exports = {
 ```json
 {
   "lint-staged": {
-    "apps/miniapp/**/*.ts": ["pnpm --filter @scope/miniapp exec eslint --fix --max-warnings 0"],
+    "apps/miniapp/miniprogram/**/*.ts": [
+      "pnpm --filter @scope/miniapp exec eslint --fix --max-warnings 0",
+      "prettier --write"
+    ],
+    "apps/miniapp/scripts/**/*.mjs": ["prettier --write"],
+    "apps/miniapp/**/*.{scss,json}": ["prettier --write"],
     "apps/cli/**/*.ts": ["pnpm --filter @scope/cli exec tsc -b tsconfig.json --pretty false"],
     "packages/**/*.ts": ["prettier --write"],
     "**/*.{json,md,yml,yaml,cjs}": ["prettier --write"]
@@ -126,9 +145,11 @@ module.exports = {
 }
 ```
 
+> miniapp 示例与 [wechat-mp 模板](../templates/wechat-mp/package.json) 的 `check`（含 `format:check`）对齐；`.ts` 须 eslint **与** prettier 双 step。
+
 Python（`apps/api`）本地 hook 可选：`"apps/api/**/*.py": ["cd apps/api && python -m ruff check"]`（CI 必跑即可）。
 
-参考实现：[ai-todo](https://github.com/xiaolinstar/ai-todo) 根 `package.json` §`lint-staged`。
+参考实现：[ai-todo](https://github.com/xiaolinstar/ai-todo) 根 `package.json` §`lint-staged`（v0.8.7 路径 CI 失败后已对齐）。
 
 **Gitleaks 本地安装**（推荐）：
 
@@ -192,6 +213,7 @@ jobs:
 - [ ] 根 `package.json` 含 `lint-staged` 配置（monorepo 须路径分流，见 §lint-staged）
 - [ ] 根 `package.json` 含 `lint` script（或等价编排入口）
 - [ ] 根或各 app 有可发现的 `format` / `format:check` 入口，且 README/CLAUDE.md 写明路径
+- [ ] **lint-staged 与 CI `format:check` glob 对齐**（monorepo 子 app 逐项对照；见 §lint-staged hook ↔ CI 对齐）
 - [ ] CI workflow 含 **gitleaks / secret-scan** job（阻断式）
 - [ ] CI workflow 含 **lint** + **typecheck/test** job
 - [ ] 项目最近 5 个 commit message 符合 conventional commits
