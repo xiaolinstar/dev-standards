@@ -2,6 +2,13 @@
 
 All notable changes to the dev-standards Claude Code plugin follow [Semantic Versioning](https://semver.org/).
 
+## [3.3.0] - 2026-07-01
+
+- **Added** — `skills/h5/`（H5 移动端开发 Skill：vw 适配、组件交互、WebView 兼容、坑点）
+- **Added** — `adapters/cursor/h5.mdc`（Cursor Rules，派生自 h5.md + h5-admin.md）
+- **Changed** — `playbook/INDEX.md` 注册 H5 通用规范主题、h5 Skill；修正 ADR-0010 链接
+- **Changed** — `README.md` 目录树补充 skills/h5/ + templates/h5-admin/ + adapter 计数
+
 ## [3.2.1] - 2026-06-27
 
 - **Added** — `playbook/env-migration-runbook.md` 与 `env-migration-status.yaml`

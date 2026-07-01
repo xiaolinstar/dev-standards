@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh" 2>/dev/null || true
 
 # 1. Secret scan (降级：本地未装 gitleaks 不阻断，CI 兜底)
 if command -v gitleaks >/dev/null 2>&1; then

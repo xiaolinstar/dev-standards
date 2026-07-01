@@ -139,7 +139,7 @@ Monorepo Progress:
 - [ ] 各子包 name 符合 @scope 约定，内部依赖 workspace:*
 - [ ] README 或 developer-guide 说明如何 install / build / test
 - [ ] 多组件时：releases/compatibility 或等价兼容矩阵
-- [ ] .gitignore：node_modules、dist、.venv
+- [ ] .gitignore：node_modules、dist、.venv、以及 AI 编码工具本地缓存（如 `.claude/`）
 ```
 
 ## 混合发布（多 artifact 不同节奏）

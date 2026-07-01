@@ -41,7 +41,8 @@ dev-standards/
 ├── skills/                # Claude Code Skill 源码（一等公民）
 │   ├── dev-bootstrap/
 │   ├── agent-permissions/
-│   └── wechat-mp/
+│   ├── wechat-mp/
+│   └── h5/
 ├── permissions/           # 跨 Agent check/deny 规则真源
 │   ├── manifest.json
 │   └── overlays/        # 项目特例（如 ai-todo.json）
@@ -49,7 +50,7 @@ dev-standards/
 │   ├── git-commit-guard.py
 │   └── pre-commit/        # Husky 模板（hooks-precommit 部署）
 ├── adapters/              # 非 Claude Code Agent 的兼容镜像
-│   └── cursor/            # 5 个 .mdc（派生自 playbook/）
+│   └── cursor/            # 6 个 .mdc（派生自 playbook/）
 ├── scripts/               # 同步 / 校验脚本
 │   ├── sync.sh            # 入口
 │   ├── permissions-sync.mjs  # permissions 分发
@@ -60,8 +61,9 @@ dev-standards/
 ├── .claude-plugin/        # Claude Code plugin manifest（v3.1.0）
 ├── marketplace.json       # 自托管 plugin marketplace
 ├── CHANGELOG.md           # Plugin / 标准库版本变更
-├── templates/             # 项目脚手架（wechat-mp 已激活）
-│   └── wechat-mp/
+├── templates/             # 项目脚手架（wechat-mp / h5-admin 已激活）
+│   ├── wechat-mp/
+│   └── h5-admin/
 ```
 
 ## 快速开始

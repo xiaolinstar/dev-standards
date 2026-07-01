@@ -17,6 +17,8 @@
 - [环境变量迁移 Runbook](env-migration-runbook.md)（进度：[env-migration-status.yaml](env-migration-status.yaml) · `sync.sh env status`）
 - [Phase 3 应用层清单](env-phase3-checklist.md)
 - [微信小程序项目标准（原生 + TypeScript）](wechat-mp.md)
+- [H5 项目通用开发规范（移动端 vw 适配、UI 交互、WebView 兼容）](h5.md)
+- [H5 运营管理后台项目标准（Vue 3 + TypeScript + Vant）](h5-admin.md)
 
 ## 实现片段（可复制参考）
 
@@ -44,38 +46,4 @@
 | [0007](adr/0007-wechat-miniprogram-baseline.md) | 微信小程序项目标准（原生 + TypeScript） | Accepted |
 | [0008](adr/0008-templates-wechat-mp-scaffold.md) | 激活 templates/wechat-mp 脚手架（Phase 3） | Accepted |
 | [0009](adr/0009-l2-github-env-by-category.md) | L2 GitHub 配置按项目类别分层（双轨键名） | Accepted |
-
-## Skills（一等公民，源码在 `../skills/`）
-
-| Skill | 用途 |
-|-------|------|
-| dev-bootstrap | 新建或整理项目时的检查清单 |
-| agent-permissions | 跨 Agent check/deny 规则生命周期（manifest → sync） |
-| wechat-mp | 原生 + TS 微信小程序开发模式与坑点 |
-
-## Hooks（一等公民，源码在 `../hooks/`）
-
-| 类型 | 部署命令 | 用途 |
-|------|----------|------|
-| Claude PreToolUse | `sync.sh hooks <project>` | `git-commit-guard.py` 等 |
-| Husky pre-commit | `sync.sh hooks-precommit <project>` | lint-staged + gitleaks + commitlint |
-
-## Adapters（派生镜像，源码在 `../adapters/`）
-
-| Adapter | 用途 | 部署目标 |
-|---------|------|----------|
-| [cursor](../adapters/cursor/) | Cursor Rules（5 个 `.mdc`，派生自 playbook/） | `<project>/.cursor/rules/` |
-
-## Templates（方案 C，源码在 `../templates/`）
-
-| 模板 | 部署 |
-|------|------|
-| [wechat-mp](../templates/wechat-mp/) | `sync.sh template wechat-mp <dest>` |
-
-## Plugin（Claude Code 打包）
-
-| 文件 | 用途 |
-|------|------|
-| [.claude-plugin/plugin.json](../.claude-plugin/plugin.json) | Plugin 元数据 v3.0.0 |
-| [marketplace.json](../marketplace.json) | 自托管 marketplace 入口 |
-| [CHANGELOG.md](../CHANGELOG.md) | 版本变更记录 |
+| [0010](adr/0010-h5-project-baseline.md) | H5 项目通用标准与技术选型 | Accepted |
