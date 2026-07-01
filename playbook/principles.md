@@ -30,6 +30,7 @@
 ## 6. Git 与发布
 
 - Conventional Commits 风格（与现有 user rules 一致）
+- 任何项目在开发前以及推送前，必须执行 `git pull`（优先 `--rebase`）提前同步远程最新修改，最大程度预防和解决潜在的代码冲突
 - 不主动 commit/push，除非明确要求
 - 发布与兼容性变更写 release note 或 ADR
 
