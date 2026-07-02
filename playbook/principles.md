@@ -31,6 +31,7 @@
 
 - Conventional Commits 风格（与现有 user rules 一致）
 - 任何项目在开发前以及推送前，必须执行 `git pull`（优先 `--rebase`）提前同步远程最新修改，最大程度预防和解决潜在的代码冲突
+- 严禁使用 `--no-verify` 绕过本地 Git hooks。本地拦截的质量标准在 CI 阶段同样会被阻断，绕过本地检查只会浪费 CI 资源并产生无效的构建失败记录
 - 不主动 commit/push，除非明确要求
 - 发布与兼容性变更写 release note 或 ADR
 
