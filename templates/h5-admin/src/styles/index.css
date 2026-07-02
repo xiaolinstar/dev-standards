@@ -42,7 +42,9 @@
   --van-field-label-color: var(--project-neutral-color);
 }
 
-/* 全局基线 */
+/* =============================================================================
+ * 全局基线
+ * ===========================================================================*/
 * {
   box-sizing: border-box;
 }
@@ -64,8 +66,88 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* iOS 底部安全区适配（TabBar 等 fixed 元素） */
-.van-tabbar {
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
+/* =============================================================================
+ * view 二级页头 / 操作按钮工具类
+ * 用法：每个 view 内容区顶部用 <header class="page-header">，含标题 + 副标题 +
+ * 右侧操作按钮。统一由本文件提供，避免每个 view 重复 scoped 样式。
+ * ===========================================================================*/
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: var(--project-text-xl);
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  margin: 4px 0 0;
+  color: var(--project-neutral-color);
+  font-size: var(--project-text-sm);
+}
+
+.sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--project-radius-sm);
+  background: var(--project-primary-color);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: var(--project-text-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sync-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.sync-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--project-radius-sm);
+  background: #ffffff;
+  color: var(--project-neutral-color);
+  font-weight: 500;
+  font-size: var(--project-text-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.back-btn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+/* =============================================================================
+ * 工具动画
+ * ===========================================================================*/
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
