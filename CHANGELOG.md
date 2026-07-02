@@ -2,6 +2,15 @@
 
 All notable changes to the dev-standards Claude Code plugin follow [Semantic Versioning](https://semver.org/).
 
+## [3.4.0] - 2026-07-02
+
+- **Added** — `playbook/web.md`（Web 项目统一规范：PC 优先自适应 + Vant 4 + Tailwind + Design Tokens）
+- **Added** — `playbook/adr/0011-web-admin-baseline.md`（Web 后台基线决策，含两份 admin 差异对照附录）
+- **Changed** — `playbook/h5-admin.md` 改为继承 web.md，聚焦运营后台特有规则（卡片列表、高危操作二次确认、图表、品牌色覆盖）；废弃旧"PC 沙盒伪手机壳"方案
+- **Changed** — `playbook/principles.md` 移除「Web 前端目录约定」显式延后项，已落地于 web.md
+- **Changed** — `templates/h5-admin/` 同步升级：App.vue 改为三段式骨架、删除 vw 适配插件、styles 引入 design tokens、login/dashboard 改为 PC 优先自适应栅格
+- **Changed** — `templates/h5-admin/package.json` 移除 `postcss-px-to-viewport-8-plugin`（PC 优先场景不再需要 vw 适配）
+
 ## [3.3.0] - 2026-07-01
 
 - **Added** — `skills/h5/`（H5 移动端开发 Skill：vw 适配、组件交互、WebView 兼容、坑点）

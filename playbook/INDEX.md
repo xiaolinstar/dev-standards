@@ -18,7 +18,8 @@
 - [Phase 3 应用层清单](env-phase3-checklist.md)
 - [微信小程序项目标准（原生 + TypeScript）](wechat-mp.md)
 - [H5 项目通用开发规范（移动端 vw 适配、UI 交互、WebView 兼容）](h5.md)
-- [H5 运营管理后台项目标准（Vue 3 + TypeScript + Vant）](h5-admin.md)
+- [Web 项目统一规范（PC 优先自适应 + Vant 4 + Tailwind + Design Tokens）](web.md)
+- [H5 运营管理后台项目标准（继承 Web 基线，运营后台特有规则）](h5-admin.md)
 
 ## 实现片段（可复制参考）
 
@@ -47,3 +48,4 @@
 | [0008](adr/0008-templates-wechat-mp-scaffold.md) | 激活 templates/wechat-mp 脚手架（Phase 3） | Accepted |
 | [0009](adr/0009-l2-github-env-by-category.md) | L2 GitHub 配置按项目类别分层（双轨键名） | Accepted |
 | [0010](adr/0010-h5-project-baseline.md) | H5 项目通用标准与技术选型 | Accepted |
+| [0011](adr/0011-web-admin-baseline.md) | Web 后台基线（PC 优先自适应 + Vant 4 + Tailwind + 品牌色变量） | Accepted |
