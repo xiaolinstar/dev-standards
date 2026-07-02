@@ -354,6 +354,24 @@ L3  运行时（VPS / 容器）      apps/<app>/.env + .env.<env>
 
 详见 [env-management.md](env-management.md) 与 [env-registry.yaml](env-registry.yaml)。业务仓示例：`docs/env/README.md`（ai-todo，**不复制进本库**）。
 
+## 容器化部署与数据迁移规约
+
+当项目使用 Docker 或 Docker Compose 进行容器化部署时，必须遵循以下迁移与启动规范：
+
+### 1. 迁移脚本本地化与高内聚
+- 涉及子服务（如 `apps/api`）的数据库迁移脚本（如 `migrate-to-sqlite.mjs`）**必须**存放在该服务的子目录下（如 `apps/api/scripts/`），严禁将其作为全局根目录脚本进行强绑定，以确保该服务能够作为独立组件被打包、复制和容器化。
+
+### 2. 容器启动时自动执行迁移
+- 在 Dockerfile 中，服务的启动命令（`CMD`）**必须**在主进程运行前，以链式方式自动运行迁移脚本。
+- 迁移脚本自身必须具有**幂等性**（即：若数据已迁移或无须迁移，须以退出码 `0` 瞬间结束），以防多次拉起容器导致主进程阻塞或数据被重复写入。
+- 示例：
+  ```dockerfile
+  CMD ["sh", "-c", "node scripts/migrate-to-sqlite.mjs && node src/index.mjs"]
+  ```
+
+### 3. 数据持久化挂载安全
+- 对于 SQLite 等本地文件数据库，在 `docker-compose.yml` 中，**必须**将数据库所在目录（如 `DATA_DIR`）挂载到宿主机持久化卷（如 `volumes: - api_data:/data`），严禁写入容器易失层，以防容器销毁重建时导致数据库丢失。
+
 ## 不在 CI 范围
 
 - 端到端测试（Playwright / Cypress）→ 单独流水线
