@@ -21,6 +21,13 @@
 - [Web 项目统一规范（PC 优先自适应 + Vant 4 + Tailwind + Design Tokens）](web.md)
 - [H5 运营管理后台项目标准（继承 Web 基线，运营后台特有规则）](h5-admin.md)
 
+## 项目审计（差距 → 标准迭代）
+
+- [audits/ — 项目审计报告归档](audits/README.md)
+  - [2026-07 drink-budget/apps/admin](audits/2026-07-drink-budget-admin.md)
+  - [2026-07 party-helper/apps/admin](audits/2026-07-party-helper-admin.md)
+  - [2026-07 Admin 迁移路线图](audits/2026-07-admin-migration-roadmap.md)
+
 ## 实现片段（可复制参考）
 
 - [traceId middleware（FastAPI / Express）](snippets/trace-id-middleware.md)
