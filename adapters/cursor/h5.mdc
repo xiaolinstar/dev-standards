@@ -1,17 +1,17 @@
 ---
-description: Vue 3 + Vant 4 移动端 H5 规范（vw 适配、组件交互、WebView 兼容，派生自 h5.md + h5-admin.md）
+description: Vue 3 + Vant 4 移动端 H5 及运营后台规范（PC 优先自适应、组件交互、WebView 兼容，派生自 h5.md + h5-admin.md）
 globs: apps/admin/**,apps/h5/**,**/*.vue
 alwaysApply: false
 ---
 
-# 移动端 H5 开发规范（Vue 3 + Vant 4 + TypeScript）
+# 移动端 H5 与后台开发规范（Vue 3 + Vant 4 + TypeScript）
 
 来源：`~/AgentProjects/dev-standards/playbook/h5.md` + `h5-admin.md`
 
-## 视口适配
+## 视口适配与布局
 
-- 设计基准 `375px`；使用 `postcss-px-to-viewport-8-plugin` 编译时 px → vw
-- PC 端沙盒居中（375px~480px 限宽 + shadow），不转换沙盒外层容器
+- **传统纯移动端 H5**：设计基准 `375px`；使用 `postcss-px-to-viewport-8-plugin` 编译时 px → vw；PC 端采用沙盒限宽居中。
+- **运营后台类项目**（如 `apps/admin/**`）：**弃用 vw 适配，使用 PC 优先自适应布局**，配置三段式骨架与自适应栅格。
 - viewport meta 必须含 `viewport-fit=cover` + `user-scalable=no`
 - 安全区避让：`env(safe-area-inset-top)` / `env(safe-area-inset-bottom)`
 
@@ -41,13 +41,15 @@ alwaysApply: false
 ## 后台管理（apps/admin 专有）
 
 - 表格数据 → 卡片式列表（禁止移动端横向大表格）
-- 高危操作必须 `van-dialog` 二次确认 + Danger 色按钮
+- 高危操作优先使用 `useConfirmDanger` 组合式函数 — 两步确认（确认提示 + 强制输入不少于 10 字的操作原因）
 - 图表选型：AntV F2 / ECharts 移动版；禁止双指缩放手势
 - 品牌色换肤：`--van-primary-color: var(--project-primary-color, #1989fa)`
-- PC 沙盒布局：`App.vue` sandbox-container 375px 限宽居中
+- 界面页头与按钮：优先使用全局公共工具类 `.page-header`、`.page-title`、`.page-subtitle`、`.sync-btn`、`.back-btn`，严禁在 view 内重复 scoped 声明。
+- 路由标题注入：定义路由 `meta.title`，并在全局路由守卫中拼接环境变量 `${to.meta.title} - ${import.meta.env.VITE_PROJECT_NAME}`
 
 ## 模式与坑
 
 详细代码参考、拦截器模板、PostCSS 配置：`skills/h5/`（Claude Code Skill）
 
 > 来源：`playbook/h5.md` + `playbook/h5-admin.md`
+
