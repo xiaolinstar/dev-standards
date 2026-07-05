@@ -1,0 +1,22 @@
+{
+  "name": "dev-standards",
+  "version": "1.0.0",
+  "private": true,
+  "description": "个人跨项目开发标准库",
+  "scripts": {
+    "prepare": "husky",
+    "validate": "./scripts/sync.sh validate"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0"
+  },
+  "lint-staged": {
+    "**/*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  }
+}
