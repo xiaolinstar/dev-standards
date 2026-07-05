@@ -29,6 +29,7 @@
 ## 三、各自 P0（项目特有问题）
 
 ### drink-budget 独有
+
 - products/edit.vue 4 个 `van-radio checked-color` 硬编码（:43/53/63/73）
 - products/edit.vue `<van-loading color="#1989fa">`（:15）
 - editRole 直接写无确认（users/index.vue:158-162）
@@ -38,6 +39,7 @@
 - 品牌枚举写死（review:203-208、publish:130-135）
 
 ### party-helper 独有（量更大）
+
 - 30 个自写 CSS class（455 + 107 = **562 行 CSS**）
 - 7 处原生 `<input>`
 - **4 处原生 `<select>`**（违反 web.md §5.3）
@@ -58,6 +60,7 @@
 ## 五、迁移执行计划（5 个 Phase）
 
 ### Phase 1 — 基建升级（半天 / 项目）
+
 基础设施就位，不改 view。
 
 - 1.1 `package.json`：移除 `postcss-px-to-viewport-8-plugin`；加 `unplugin-vue-components`
@@ -74,11 +77,13 @@
 > 验证：`pnpm typecheck && pnpm build`
 
 ### Phase 2 — 布局重构（半天~1 天 / 项目）
+
 - 2.1 `App.vue` → 三段式骨架
 - 2.2 `router/index.ts` → title 拼接 `VITE_PROJECT_NAME`
 - 2.3 删除 sandbox/desktop-copy 残留 CSS
 
 ### Phase 3 — 视图迁移（1~2 天 / 项目）
+
 - 3.1 login view → `van-form` + `van-cell-group` + `van-button`
 - 3.2 dashboard view → 自适应栅格 + `van-pull-refresh`
 - 3.3 列表 view → 卡片化（按 web.md §5.1）
@@ -86,11 +91,13 @@
 - 3.5 party-helper 专属：清空 `UsersView.vue` scoped CSS 107 行
 
 ### Phase 4 — 高危操作合规（半天 / 项目）
+
 - 4.1 抽 `composables/useConfirmDanger.ts`（confirmDialog + prompt 双步）
 - 4.2 所有写操作接入 reason 必填
 - 4.3 `confirmButtonColor` 改 `var(--project-danger-color)`
 
 ### Phase 5 — 收尾（半天 / 项目）
+
 - 5.1 `router/index.ts` 加 `/403` `/404` + 路由懒加载
 - 5.2 错误页 `view/error/{403,404}.vue`
 - 5.3 dashboard 改为 PC 优先栅格 + 移除 `van-tabbar`

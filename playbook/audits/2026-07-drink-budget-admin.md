@@ -8,7 +8,8 @@
 
 - **A1. TypeScript strict**：✅ — `tsconfig.json:7` `strict: true`
 - **A2. Vant 按需**：⚠ — `vite.config.ts:11-15` 已配 `unplugin-vue-components + VantResolver`，但 `src/main.ts:8` 仍 `import 'vant/lib/index.css'`（全量样式）。需删除该行。
-- **A3. Tailwind token 对齐**：⚠ — `tailwind.config.js:10` `colors.primary = '#1989fa'`（硬编码）。`screens` / `borderRadius` / `spacing.safe-*` / `maxWidth.container` 全缺失。
+- **A3. Tailwind token 对齐**：⚠ — `tailwind.config.js:10` `colors.primary = '#1989fa'`（硬编码）。
+  `screens` / `borderRadius` / `spacing.safe-*` / `maxWidth.container` 全缺失。
 - **A4. PostCSS 配置**：✗ — `postcss.config.js:5-13` 仍启用 `postcss-px-to-viewport-8-plugin`（viewportWidth=375）。**必须删除**。
 - **A5. Vite 配置**：⚠ — `host 0.0.0.0 / port 3000 / proxy /api → 127.0.0.1:8000` 满足要求；端口未走 `.env`。
 
@@ -39,7 +40,8 @@
 - **D1. van-form + van-cell-group + van-field**：✅ — login/users/products/edit/review 均使用此范式
 - **D2. 原生 select / input[type="date"]**：✅ 无残留
 - **D3. 原生 select → van-popup + van-picker 范式**：✅ — 状态选择通过 `van-dropdown-item`，表单用 `van-radio-group`
-- **D4. 列表卡片化 + van-pull-refresh + 无限加载**：⚠ — products/index、review/index、publish/index 均有 `van-pull-refresh`；但 `review/index.vue:23-67` 缺 `van-list` 分页
+- **D4. 列表卡片化 + van-pull-refresh + 无限加载**：⚠ — products/index、review/index、publish/index
+  均有 `van-pull-refresh`；但 `review/index.vue:23-67` 缺 `van-list` 分页
 - **D5. PC 端横向大表格**：✅ — 纯卡片化，无 `<table>`
 
 ## E. 按钮与高危操作
@@ -54,7 +56,8 @@
 
 ## F. 错误处理与路由守卫
 
-- **F1. Axios 拦截器**：✅ — `src/services/http.ts:23-50` 实现 401/403/422/500 四分支 + `data.detail`/`data.message` 双取值 + 业务 `res.code !== 200` 分支
+- **F1. Axios 拦截器**：✅ — `src/services/http.ts:23-50` 实现 401/403/422/500 四分支
+  `data.detail`/`data.message` 双取值 + 业务 `res.code !== 200` 分支
 - **F2. 路由守卫**：⚠ — 实现白名单 + token 校验 + `meta.permission`；但 `:93` 二次拉用户信息后未比对权限即放行
 - **F3. 路由 meta.title 拼接项目名**：✗ — `router/index.ts:73` 硬编码"运营后台"，未用 `VITE_PROJECT_NAME`
 
@@ -81,6 +84,7 @@
 ## 差距汇总（按优先级）
 
 ### P0 必修
+
 1. 删除手机壳沙盒（`App.vue:1-71` + `postcss.config.js:5-13` + `package.json:36`）
 2. 替换为三段式骨架（按 web.md §4.1）
 3. 建立完整 design tokens（重写 `styles/index.css`，新增 `tokens.css` / `brand.css`）
@@ -89,6 +93,7 @@
 6. 修复路由 meta.title（拼接 `VITE_PROJECT_NAME`）
 
 ### P1 重要
+
 1. 路由守卫权限漏洞（`router/index.ts:91-100` 在 `getUserInfo()` 后必须先比对 `meta.permission`）
 2. 补齐高危操作 reason 输入（8 处 view）
 3. 消除组件内硬编码色值（`products/edit.vue` 五处）
@@ -96,6 +101,7 @@
 5. 品牌枚举改动态（`review/index.vue:203-208`、`publish/index.vue:130-135`）
 
 ### P2 建议
+
 1. 路由过渡动效方向改为 `translateY(6px)`
 2. 图标统一抽组件
 3. 路由懒加载拆 static/dynamic
@@ -114,4 +120,7 @@
 
 ## 整体评价
 
-drink-budget/apps/admin 当前是**彻底的 mobile-first / 手机壳沙盒优先**实现，与 ADR-0011 决策的 **PC 优先自适应** 完全相反；`App.vue` 的手机壳装饰、`postcss-px-to-viewport-8-plugin`、`#1989fa` 硬编码、全量 Vant CSS 引入是四块"硬伤"。组件层（`van-form/cell-group/field/pull-refresh/list/radio/popup`）的范式基本到位，业务代码质量尚可——主要工作是 **布局重构 + Token 体系重建 + 守卫/高危操作规范化**，而非业务重写。
+drink-budget/apps/admin 当前是**彻底的 mobile-first / 手机壳沙盒优先**实现，与 ADR-0011 决策的
+**PC 优先自适应** 完全相反；`App.vue` 的手机壳装饰、`postcss-px-to-viewport-8-plugin`、`#1989fa`
+硬编码、全量 Vant CSS 引入是四块"硬伤"。组件层（`van-form/cell-group/field/pull-refresh/list/radio/popup`）
+的范式基本到位，业务代码质量尚可——主要工作是 **布局重构 + Token 体系重建 + 守卫/高危操作规范化**，而非业务重写。

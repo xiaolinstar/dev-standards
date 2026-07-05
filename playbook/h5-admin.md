@@ -92,54 +92,24 @@ apps/admin/
 
 移动端触控的误触概率极高，运营后台的写操作（删除、禁用、扣减预算等）必须加入强制安全机制。
 
-**强制规范**：
-
-- 所有有副作用（Side Effects）的写操作，必须绑定 `showConfirmDialog` 二次确认：
-  - "确认"按钮颜色统一为 Danger 色（`var(--project-danger-color)`）。
-  - 高危操作（涉及资金、不可逆数据变更）的 Dialog 内**必须**包含简易输入框，
-    强制运营人员**输入操作原因（Reason）**后方可点击确认提交。
+**推荐做法**：使用 `useConfirmDanger` 组合式函数（已经内置在 `templates/h5-admin` 模板中），
+实现两步确认（风险确认提示 + 强制输入操作原因）。
 
 ```vue
 <script setup lang="ts">
-import { showConfirmDialog, showDialog, showToast } from 'vant'
-import { ref } from 'vue'
-
-const reason = ref('')
+import { useConfirmDanger } from '@/composables/useConfirmDanger'
 
 const handleDangerAction = async () => {
-  try {
-    await showConfirmDialog({
-      title: '高危操作警告',
-      message: '确定要废弃此条打卡审批预算吗？此操作无法撤销。',
-      confirmButtonColor: 'var(--project-danger-color)',
-      showCancelButton: true,
-      cancelButtonText: '取消',
-      confirmButtonText: '继续',
-    })
+  const { confirmed, reason } = await useConfirmDanger({
+    title: '高危操作警告',
+    message: '确定要废弃此条打卡审批预算吗？此操作无法撤销。',
+    reasonPlaceholder: '请填写废弃原因（至少 10 字）',
+    reasonMinLength: 10,
+  })
+  if (!confirmed) return
 
-    // 第二步：强制填写原因
-    await showDialog({
-      title: '填写操作原因',
-      message: '请填写本次废弃的具体原因（将记录到审计日志）',
-      prompt: {
-        placeholder: '至少 10 个字',
-        maxlength: 200,
-      },
-      showCancelButton: true,
-    }).then(({ value }: { value?: string }) => {
-      if (!value || value.length < 10) {
-        showToast('原因长度不足，操作已取消')
-        throw new Error('REASON_TOO_SHORT')
-      }
-      reason.value = value
-    })
-
-    // 调用 API 提交
-    await submitDangerAction({ reason: reason.value })
-    showToast({ type: 'success', message: '操作完成' })
-  } catch (err) {
-    // 用户取消或校验失败
-  }
+  // 调用 API 提交
+  await submitDangerAction({ reason })
 }
 </script>
 ```
@@ -191,13 +161,38 @@ const handleDangerAction = async () => {
 
 二级菜单（账号管理、设置等）放在侧栏 / 用户菜单中，不要堆到 tabbar。
 
+### 3.7 全局页面布局与共享工具类
+
+为了防止业务页面在 scoped 样式中重复定义，全局 `src/styles/index.css` 提供以下共享类，新创建的页面与组件应直接引用：
+
+- `.page-header` / `.page-title` / `.page-subtitle`：统一的页头布局、主标题与副标题排版。
+- `.sync-btn`：同步/加载操作按钮。
+- `.back-btn`：返回/次要操作按钮（背景白、带细边框，可用作常规刷新或取消按钮）。
+- `.animate-spin`：旋转 loading 动画。
+
+**使用示例**：
+
+```html
+<header class="page-header">
+  <div>
+    <h1 class="page-title">页面标题</h1>
+    <p class="page-subtitle">页面副标题/描述信息</p>
+  </div>
+  <button class="back-btn" :disabled="loading" @click="refresh">
+    <van-icon name="replay" :class="{ 'animate-spin': loading }" />
+    <span>刷新数据</span>
+  </button>
+</header>
+```
+
 ---
 
 ## 4. 部署规范
 
 1. **环境区分**：通过 `.env.development`、`.env.production` 注入：
    - `VITE_API_BASE_URL`
-   - `VITE_PROJECT_NAME`（影响 `document.title`）
+   - `VITE_PROJECT_NAME`（影响 `document.title`，必须在全局路由守卫中与 `to.meta.title` 拼接，
+     详见 [web.md §8](web.md#8-路由与-rbac)）
    - `VITE_PRIMARY_COLOR`（可选，影响默认品牌色）
 2. **Nginx 配置**：HTML5 history 模式需要 `try_files` 兜底（继承 [web.md §10](web.md#10-部署规范)）。
 3. **CI 最低门槛**：typecheck + lint + build（参考 [ci-minimum-gate.md](ci-minimum-gate.md)）。

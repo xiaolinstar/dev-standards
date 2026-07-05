@@ -2,13 +2,18 @@
 
 > **审计日期**：2026-07-02
 > **审计依据**：[web.md](../web.md)、[h5-admin.md](../h5-admin.md)、[ADR-0011](../adr/0011-web-admin-baseline.md)
-> **结论摘要**：项目**完全偏离基线** —— 全量 Vant CSS、455 行自写 CSS（30 个 class）、零 design token、零三段式骨架、零 `unplugin-vue-components`。**唯一合规**的部分是 TypeScript strict、Pinia + 持久化、Axios + 拦截器骨架、路由守卫的 token 校验。迁移策略是 **"删旧换新"** 而非 "原地 patch"。
+> **结论摘要**：项目**完全偏离基线** —— 全量 Vant CSS、455 行自写 CSS（30 个 class）、零 design token、
+> 零三段式骨架、零 `unplugin-vue-components`。**唯一合规**的部分是 TypeScript strict、Pinia + 持久化、
+> Axios + 拦截器骨架、路由守卫的 token 校验。迁移策略是 **"删旧换新"** 而非 "原地 patch"。
 
 ## A. 技术栈与配置
 
-- **A1. TypeScript strict**：✅ — `tsconfig.json:7` `strict: true`，target ESNext、moduleResolution bundler、isolatedModules 全齐
-- **A2. Vant 按需**：✗ — `vite.config.ts:1-23` 无 `unplugin-vue-components` / `VantResolver`；`main.ts:4` `import 'vant/lib/index.css'` 全量
-- **A3. Tailwind 配置**：⚠ — `tailwind.config.js:5-9` 仅 `colors.primary: '#246bfe'`（裸硬编码），未引用 token，未配置 screens/borderRadius/spacing 扩展
+- **A1. TypeScript strict**：✅ — `tsconfig.json:7` `strict: true`，target ESNext、moduleResolution bundler、
+  isolatedModules 全齐
+- **A2. Vant 按需**：✗ — `vite.config.ts:1-23` 无 `unplugin-vue-components` / `VantResolver`；
+  `main.ts:4` `import 'vant/lib/index.css'` 全量
+- **A3. Tailwind 配置**：⚠ — `tailwind.config.js:5-9` 仅 `colors.primary: '#246bfe'`（裸硬编码），
+  未引用 token，未配置 screens/borderRadius/spacing 扩展
 - **A4. PostCSS 配置**：✗ — 仍启用 `postcss-px-to-viewport-8-plugin`
 - **A5. Vite 配置**：⚠ — 仅 alias + dev server proxy，缺 unplugin-vue-components
 
@@ -76,7 +81,8 @@
 
 ## D. 布局与导航
 
-- **D1. 三段式骨架**：✗ 完全缺失 —— `App.vue:1-13` 仅 `<aside class="desktop-copy">` + `<main class="sandbox-container admin-container">` 两段
+- **D1. 三段式骨架**：✗ 完全缺失 —— `App.vue:1-13`
+  仅 `<aside class="desktop-copy">` + `<main class="sandbox-container admin-container">` 两段
 - **D2. PC 端处理**：✗ —— `index.css:417-455` `@media (min-width:900px)` flex 左右两栏 + 420px 中间卡片 + 阴影 + 圆角；无侧栏、顶部 nav、用户菜单
 - **D3. 移动端处理**：⚠ —— 无侧栏抽屉、无底部 `van-tabbar`；nav 用文字链接不规范
 - **D4. 路由切换动画**：✗ —— `App.vue:9` 裸 `<RouterView />`
@@ -98,8 +104,10 @@
 
 ## G. 错误处理与路由守卫
 
-- **G1. Axios 拦截器**：⚠ — `services/http.ts:22-35` 仅 401 + fallback toast，**缺** 403/422/500 分支，**缺** `router.replace({ name: '403' })`
-- **G2. 路由守卫**：⚠ — `router/index.ts:22-54` 有 token/login/users 权限校验；**缺**白名单数组、**缺** `/403` `/404` 路由（直接 redirect），**缺** `meta.permission`
+- **G1. Axios 拦截器**：⚠ — `services/http.ts:22-35` 仅 401 + fallback toast，
+  **缺** 403/422/500 分支，**缺** `router.replace({ name: '403' })`
+- **G2. 路由守卫**：⚠ — `router/index.ts:22-54` 有 token/login/users 权限校验；
+  **缺**白名单数组、**缺** `/403` `/404` 路由（直接 redirect），**缺** `meta.permission`
 - **G3. 路由 meta.title 拼接项目名**：⚠ — `router/index.ts:23` 硬编码"Party Helper"，未用 `VITE_PROJECT_NAME`
 
 ## H. 视图页面覆盖度
@@ -118,6 +126,7 @@
 ## 差距汇总（按优先级）
 
 ### P0 必修
+
 1. Vant 全量 CSS 引入（删除 `main.ts:4` + vite.config 加 unplugin-vue-components）
 2. Design Tokens 缺失（新建 `tokens.css` + `brand.css`）
 3. Tailwind token 化（`tailwind.config.js` 5 个语义色 + screens/borderRadius/spacing/maxWidth）
@@ -128,6 +137,7 @@
 8. 按钮全替换（14 处）
 
 ### P1 重要
+
 1. 列表卡片化
 2. 弹窗 `van-popup` 化
 3. 删除 `UsersView.vue` scoped CSS 107 行
@@ -141,6 +151,7 @@
 11. 路由懒加载
 
 ### P2 建议
+
 1. 路由切换动画
 2. iOS 输入回弹统一为指令
 3. 构建产物分析（rollup-plugin-visualizer）
@@ -168,4 +179,8 @@
 
 ## 整体评价
 
-party-helper/apps/admin 是**当前两套 admin 中最偏离基线的一个**：全量 `import 'vant/lib/index.css'`、455 行自写 CSS（30 个 class）、零 design token、零三段式骨架、零 `unplugin-vue-components`，并且还在跑 `postcss-px-to-viewport-8-plugin`。**唯一合规的部分**是 TypeScript strict、Pinia + 持久化、Axios + 拦截器骨架、路由守卫的 token 校验。迁移应**先重写 App.vue + styles/index.css，再迁移 3 个 view**，而不是逐 class 替换。
+party-helper/apps/admin 是**当前两套 admin 中最偏离基线的一个**：全量 `import 'vant/lib/index.css'`、
+455 行自写 CSS（30 个 class）、零 design token、零三段式骨架、零 `unplugin-vue-components`，
+并且还在跑 `postcss-px-to-viewport-8-plugin`。**唯一合规的部分**是 TypeScript strict、Pinia + 持久化、
+Axios + 拦截器骨架、路由守卫的 token 校验。迁移应**先重写 App.vue + styles/index.css，再迁移 3 个 view**，
+而不是逐 class 替换。

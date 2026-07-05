@@ -10,7 +10,7 @@
       "git status, git diff, git log, and gh run view for inspecting CI are fine."
     ],
     "block_instructions": [
-      "Do not auto-run git push, git commit, pnpm publish, docker push, deploy scripts, or rm -rf without approval.",
+      "Do not auto-run git push, git commit, pnpm publish, docker push, deploy scripts, or rm -rf without explicit user request and approval.",
       "Do not auto-run commands that modify production databases or remote infrastructure.",
       "Do not edit gitignored env files (.env, .env.production, etc.) or ~/.config/xiaolinstar/; only *.example and docs/env/ in repos."
     ]
@@ -107,10 +107,10 @@
     {
       "id": "git-push",
       "tier": "deny",
-      "status": "active",
+      "status": "inactive",
       "since": "2026-06-28",
       "patterns": ["git push"],
-      "note": "Require approval for push"
+      "note": "Do not auto-run; allow normal tool approval when the user explicitly requests GitHub push"
     },
     {
       "id": "write-runtime-env",

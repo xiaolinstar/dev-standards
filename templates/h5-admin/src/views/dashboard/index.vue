@@ -1,13 +1,13 @@
 <template>
   <!-- 概览页：PC 优先自适应栅格（继承 web.md §5.1） -->
   <div class="dashboard">
-    <header class="page-header mb-6">
+    <header class="page-header">
       <div>
-        <h1 class="text-xl font-bold text-slate-900">运营概览</h1>
-        <p class="text-sm text-neutral mt-1">实时掌握核心指标和最新动态</p>
+        <h1 class="page-title">运营概览</h1>
+        <p class="page-subtitle">实时掌握核心指标和最新动态</p>
       </div>
-      <button class="refresh-btn" :disabled="loading" @click="refresh">
-        <van-icon name="replay" size="16" />
+      <button class="back-btn" :disabled="loading" @click="refresh">
+        <van-icon name="replay" size="16" :class="{ 'animate-spin': loading }" />
         <span>{{ loading ? '刷新中...' : '刷新数据' }}</span>
       </button>
     </header>
@@ -131,38 +131,6 @@ const handleFeature = (label: string) => {
 <style scoped>
 .dashboard {
   width: 100%;
-}
-
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.refresh-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: var(--project-radius-sm);
-  background: #ffffff;
-  color: var(--project-neutral-color);
-  font-size: var(--project-text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.refresh-btn:hover:not(:disabled) {
-  background: #f8fafc;
-  color: #0f172a;
-}
-
-.refresh-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .metric-grid {
