@@ -28,7 +28,7 @@ fi
 
 # 2. TODO / TBD / 待定 scan
 echo "lint: scanning for TODO / TBD / 待定"
-todo_hits="$(grep -rnE '(TODO|TBD|待定)' "$ROOT" --include='*.md' \
+todo_hits="$(grep -rnE '(\bTODO\b|\bTBD\b|待定)' "$ROOT" --include='*.md' \
              --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=superpowers || true)"
 if [[ -n "$todo_hits" ]]; then
   # Whitelist: this very file mentions TODO/TBD in its own comments and the spec says it's ok

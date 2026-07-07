@@ -117,7 +117,9 @@ GitHub Environment 描述 **部署面**；应用 `production` 描述 **产品档
 | Variable | `DEPLOY_HOST`、`DEPLOY_USER`、`DEPLOY_PORT`、`DEPLOY_PATH` |
 | Secret | `DEPLOY_PASSWORD`（默认）或 `DEPLOY_SSH_KEY`（备选） |
 
-**ai-todo L2 扩展**（所有 GitHub Environment **键名相同**，仅值因部署面而异）：`CD_PUBLIC_API_URL`、`CD_LOCAL_HEALTH_URL`（可选）、`DEPLOY_BACKEND`、`K8S_*`（`DEPLOY_BACKEND=k8s` 时生效）、`GHCR_*`、`CD_SMOKE_PAT`（可选）。
+**ai-todo L2 扩展**（所有 GitHub Environment **键名相同**，仅值因部署面而异）：
+`CD_PUBLIC_API_URL`、`CD_LOCAL_HEALTH_URL`（可选）、`DEPLOY_BACKEND`、`K8S_*`
+（`DEPLOY_BACKEND=k8s` 时生效）、`GHCR_*`、`CD_SMOKE_PAT`（可选）。
 
 **不放 L2**：`POSTGRES_PASSWORD`、`AI_TODO_WECHAT_APP_SECRET` 等业务密钥——仅 L3。
 

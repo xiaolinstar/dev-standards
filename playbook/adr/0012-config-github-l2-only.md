@@ -14,7 +14,9 @@ Supersedes: env-management.md §L3 备份至 ~/.config（部分）
 1. **L2 备份**：`github-*.env`（GitHub Actions Variables / Secrets）
 2. **L3 备份**：`production.env`、`staging.env`（VPS 业务运行时副本）
 
-实践中 L3 备份与 VPS 上的 `.env.production` **极易漂移**（改了一处忘另一处），违背单一受控源与云原生运维原则。随着 deploy target 增多（Compose `production`、K8s `production-k8s`），扁平 `github-<env>.env` 文件名也趋于混乱。
+实践中 L3 备份与 VPS 上的 `.env.production` **极易漂移**（改了一处忘另一处），
+违背单一受控源与云原生运维原则。随着 deploy target 增多（Compose `production`、
+K8s `production-k8s`），扁平 `github-<env>.env` 文件名也趋于混乱。
 
 ## 决策
 
@@ -27,7 +29,9 @@ Supersedes: env-management.md §L3 备份至 ~/.config（部分）
 | L2 | CD / SSH / 探活 | **GitHub Environments**（Actions 运行时读） | `github/<name>/variables.env` + `secrets.env` → `sync-github` 推送 |
 | L3 | 业务密钥（DB、微信等） | **VPS / 本机 gitignore 运行时文件** | **不再**备份到 `~/.config` |
 
-L2 工作流：编辑本地 `variables.env` + `secrets.env` → `sync.sh env sync-github` → GitHub。GitHub 是 CD **运行时**真源；本地是 L2 **编写**真源（类似 Terraform 源码 vs 远端 state 的分工，但 L2 无 state 分叉需求时以 GitHub 为准即可）。
+L2 工作流：编辑本地 `variables.env` + `secrets.env` → `sync.sh env sync-github` → GitHub。
+GitHub 是 CD **运行时**真源；本地是 L2 **编写**真源（类似 Terraform 源码 vs 远端 state 的分工，
+但 L2 无 state 分叉需求时以 GitHub 为准即可）。
 
 L3 工作流：只在 VPS（或开发者本机）维护 `apps/api/.env.production` 等；**禁止** `import-config` / `apply-config` 在 config 与 runtime 间双向复制。
 

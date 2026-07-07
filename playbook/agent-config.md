@@ -47,7 +47,8 @@ Cursor **不会**自动读 `.claude/`、`.agents/`。跨工具共享内容放 **
 2. 各项目 **AGENTS.md** 只更新项目特例摘要
 3. 需要 Cursor glob 规则时：`sync.sh adapters cursor <project>`
 4. **禁止**在 AGENTS.md 与 CLAUDE.md 各写一份完整 playbook 副本
-5. **环境变量**：L0 在 `docs/env/github/`（`variables.env.example` + `secrets.env.example`）；L2 IaC 在 `~/.config/.../github/<env>/`；L3 仅在 VPS
+5. **环境变量**：L0 在 `docs/env/github/`（`variables.env.example` + `secrets.env.example`）；
+   L2 IaC 在 `~/.config/.../github/<env>/`；L3 仅在 VPS
 
 ## Cursor：check 命令免审批
 
