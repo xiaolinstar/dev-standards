@@ -24,12 +24,13 @@ Commands:
                       Copy templates/<name>/ → <dest>/ (e.g. template wechat-mp ./my-app)
   all [project]       skills + print adapters/hooks usage (optional project path for adapters cursor)
   validate            Run all validators (lint + adr + baselines + env registry)
-  env init-config     Create ~/.config/xiaolinstar layout (never overwrites values)
-  env check           Compare *.example keys vs runtime (see scripts/env/check-env-keys.sh)
+  env init-config     Create ~/.config/xiaolinstar/github/ layout (L2 only, ADR-0012)
+  env init-github-env Copy docs/env/github/<env>/{variables,secrets}.env.example → ~/.config
+  env check           Compare *.example keys vs runtime or --github L2 files
   env status          Migration progress for all registered projects
-  env import-config   Copy repo runtime → ~/.config/xiaolinstar (human/ops)
-  env apply-config    Copy ~/.config/xiaolinstar → repo runtime (human/ops)
-  env sync-github     Push ~/.config/.../github-*.env → GitHub (L2, see sync-github-env.mjs)
+  env import-config   DEPRECATED (ADR-0012)
+  env apply-config    DEPRECATED (ADR-0012)
+  env sync-github     Push variables.env + secrets.env → GitHub L2
   help                Show this message
 
 Examples:
@@ -40,10 +41,9 @@ Examples:
   $(basename "$0") permissions --user
   $(basename "$0") permissions --user --project ~/AgentProjects/ai-todo
   $(basename "$0") env init-config
-  $(basename "$0") env status
-  $(basename "$0") env import-config --project ai-todo
-  $(basename "$0") env apply-config --project ai-todo --env production --force
-  $(basename "$0") env check --project ~/AgentProjects/ai-todo --local production
+  $(basename "$0") env init-github-env --project ai-todo --environment production
+  $(basename "$0") env sync-github --project ai-todo --environment production-k8s --dry-run
+  $(basename "$0") env check --project ~/AgentProjects/ai-todo --github --env production
   $(basename "$0") all ~/AgentProjects/my-app
 EOF
 }
@@ -204,19 +204,18 @@ cmd_env() {
   shift || true
   case "$sub" in
     init-config) bash "$ROOT/scripts/env/init-config.sh" "$@" ;;
+    init-github-env) bash "$ROOT/scripts/env/init-github-env.sh" "$@" ;;
     check) bash "$ROOT/scripts/env/check-env-keys.sh" "$@" ;;
     status) bash "$ROOT/scripts/env/migration-status.sh" "$@" ;;
     import-config) bash "$ROOT/scripts/env/import-to-config.sh" "$@" ;;
     apply-config) bash "$ROOT/scripts/env/apply-to-runtime.sh" "$@" ;;
     sync-github) node "$ROOT/scripts/env/sync-github-env.mjs" "$@" ;;
     *)
-      echo "Usage: $0 env {init-config|check|status|import-config|apply-config|sync-github} [args]" >&2
-      echo "  init-config     → ~/.config/xiaolinstar/" >&2
-      echo "  check           → scripts/env/check-env-keys.sh --help" >&2
-      echo "  status          → migration progress table" >&2
-      echo "  import-config   → repo runtime → ~/.config/xiaolinstar (human/ops)" >&2
-      echo "  apply-config    → ~/.config/xiaolinstar → repo runtime (human/ops)" >&2
-      echo "  sync-github     → L2 github-*.env → gh secret/variable (see github-sync-profiles.json)" >&2
+      echo "Usage: $0 env {init-config|init-github-env|check|status|import-config|apply-config|sync-github} [args]" >&2
+      echo "  init-config       → ~/.config/xiaolinstar/<project>/github/<env>/" >&2
+      echo "  init-github-env   → copy L0 template from business repo to ~/.config" >&2
+      echo "  check             → scripts/env/check-env-keys.sh --help" >&2
+      echo "  sync-github       → variables.env + secrets.env → gh (ADR-0012)" >&2
       exit 1
       ;;
   esac

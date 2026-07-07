@@ -2,6 +2,15 @@
 
 All notable changes to the dev-standards Claude Code plugin follow [Semantic Versioning](https://semver.org/).
 
+## [3.5.0] - 2026-07-07
+
+- **Added** — [ADR-0012](playbook/adr/0012-config-github-l2-only.md)：`~/.config` 仅 GitHub L2 IaC；L3 运行时单一真源在 VPS
+- **Added** — `github/<environment>/{variables,secrets}.env` 目录布局；`env init-github-env` 从 L0 模板初始化
+- **Changed** — `env-management.md` 重写：废弃 L3 备份至 ~/.config；`import-config` / `apply-config` 退出并提示
+- **Changed** — `github-sync-profiles.json` 使用 `config_dir` + `config_basename`；`sync-github-env.mjs` 兼容旧扁平路径
+- **Changed** — L2 文件拆为 `variables.env` + `secrets.env`（对齐 GitHub Actions 官方名称）
+- **Changed** — `check-env-keys.sh` 新增 `--github`；`--local` 废弃
+
 ## [3.4.0] - 2026-07-02
 
 - **Added** — `playbook/web.md`（Web 项目统一规范：PC 优先自适应 + Vant 4 + Tailwind + Design Tokens）

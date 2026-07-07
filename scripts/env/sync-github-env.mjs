@@ -10,13 +10,18 @@ const PROFILES = JSON.parse(
   readFileSync(join(ROOT, 'scripts/env/github-sync-profiles.json'), 'utf8'),
 )
 
+const VARIABLES_FILE = 'variables.env'
+const SECRETS_FILE = 'secrets.env'
+
 const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
 const project = readArgValue('--project')
 const environmentArg = readArgValue('--environment') || readArgValue('--env') || 'production'
 
 if (!project) {
-  console.error('Usage: sync-github-env.mjs --project <name> [--dry-run] [--env-file path]')
+  console.error(
+    'Usage: sync-github-env.mjs --project <name> [--dry-run] [--environment NAME] [--env-file path]',
+  )
   console.error(`Known projects: ${Object.keys(PROFILES).join(', ')}`)
   process.exit(1)
 }
@@ -28,11 +33,14 @@ if (!profile) {
 }
 
 const envFileArg = readArgValue('--env-file')
-const envFile = resolveConfigFile(profile, envFileArg, environmentArg)
-const values = parseEnvFile(readFileSync(envFile, 'utf8'))
+const { values, loadedPaths } = loadConfigValues(profile, envFileArg, environmentArg)
 const repository = values.GITHUB_REPOSITORY || profile.repository
 const environment = values.GITHUB_ENVIRONMENT || profile.environment || environmentArg
 const scope = profile.scope || 'repository'
+
+for (const path of loadedPaths) {
+  console.log(`→ loaded ${path}`)
+}
 
 for (const key of profile.variables || []) {
   setGithubValue({
@@ -73,31 +81,87 @@ for (const key of profile.secrets || []) {
 
 if (profile.ssh_key_secret && !sshKey && !values.DEPLOY_PASSWORD) {
   console.error(
-    'Missing deployment credential: set DEPLOY_SSH_KEY_FILE, DEPLOY_SSH_KEY, DEPLOY_SSH_KEY_B64, or DEPLOY_PASSWORD.',
+    'Missing deployment credential: set DEPLOY_SSH_KEY_FILE in secrets.env, or DEPLOY_SSH_KEY / DEPLOY_PASSWORD.',
   )
   process.exit(1)
 }
 
-console.log(`GitHub L2 sync complete for ${project} (${repository}, scope=${scope}).`)
+console.log(`GitHub L2 sync complete for ${project} (${repository}, env=${environment}, scope=${scope}).`)
 
-function resolveConfigFile(profile, override, environmentName) {
+function loadConfigValues(profile, override, environmentName) {
   if (override) {
     const path = expandHome(override)
     if (!existsSync(path)) {
       console.error(`Missing env file: ${path}`)
       process.exit(1)
     }
-    return path
+    return { values: parseEnvFile(readFileSync(path, 'utf8')), loadedPaths: [path] }
   }
 
-  const candidates = [
-    expandHome(
-      profile.config_file.replace('github-production.env', `github-${environmentName}.env`),
-    ),
-    expandHome(profile.config_file),
-  ]
+  const variablesName = profile.config_variables_file || VARIABLES_FILE
+  const secretsName = profile.config_secrets_file || SECRETS_FILE
+  const paths = resolveConfigPaths(profile, environmentName, variablesName, secretsName)
+  const values = {}
+  const loadedPaths = []
+
+  for (const path of paths) {
+    if (!path || !existsSync(path)) continue
+    Object.assign(values, parseEnvFile(readFileSync(path, 'utf8')))
+    loadedPaths.push(path)
+  }
+
+  if (loadedPaths.length === 0) {
+    console.error(`Missing L2 config for ${project} (environment=${environmentName}). Expected:`)
+    for (const path of paths.filter(Boolean)) {
+      console.error(`  - ${path}`)
+    }
+    console.error('Run: sync.sh env init-github-env --project <name> --environment <name>')
+    process.exit(1)
+  }
+
+  const hasVariables = paths[0] && loadedPaths.includes(paths[0])
+  const hasSecrets = paths[1] && loadedPaths.includes(paths[1])
+  if (!hasVariables || !hasSecrets) {
+    console.warn(
+      `::warning::Incomplete L2 pair for ${environmentName}: variables=${hasVariables} secrets=${hasSecrets}`,
+    )
+  }
+
+  return { values, loadedPaths }
+}
+
+function resolveConfigPaths(profile, environmentName, variablesName, secretsName) {
+  const paths = []
+
+  if (profile.config_dir) {
+    const dir = expandHome(profile.config_dir)
+    if (profile.scope === 'repository') {
+      paths.push(join(dir, variablesName), join(dir, secretsName))
+    } else {
+      paths.push(
+        join(dir, environmentName, variablesName),
+        join(dir, environmentName, secretsName),
+      )
+    }
+  }
+
+  const projectDir = profile.config_dir ? dirname(expandHome(profile.config_dir)) : ''
+
+  if (projectDir) {
+    // Legacy single-file env.env
+    if (profile.scope === 'repository') {
+      paths.push(join(expandHome(profile.config_dir), 'env.env'))
+    } else {
+      paths.push(join(expandHome(profile.config_dir), environmentName, 'env.env'))
+    }
+    paths.push(join(projectDir, `github-${environmentName}.env`))
+    if (environmentName === 'production') {
+      paths.push(join(projectDir, 'github-production.env'))
+    }
+  }
+
   if (profile.legacy_config_file) {
-    candidates.push(
+    paths.push(
       expandHome(
         profile.legacy_config_file.replace('github-production.env', `github-${environmentName}.env`),
       ),
@@ -105,18 +169,7 @@ function resolveConfigFile(profile, override, environmentName) {
     )
   }
 
-  for (const path of candidates) {
-    if (existsSync(path)) {
-      return path
-    }
-  }
-
-  console.error(`Missing env file for ${project}. Tried:`)
-  for (const path of candidates) {
-    console.error(`  - ${path}`)
-  }
-  console.error('Copy docs/env/github-production.env to the config path and fill values first.')
-  process.exit(1)
+  return [...new Set(paths.filter(Boolean))]
 }
 
 function readArgValue(name) {
@@ -190,11 +243,7 @@ function setGithubValue({ kind, key, value, repository, environment, scope, requ
   if (scope === 'environment') {
     command.push('--env', environment)
   }
-  if (kind === 'variable') {
-    command.push('--body', value)
-  } else {
-    command.push('--body', value)
-  }
+  command.push('--body', value)
 
   if (dryRun) {
     const target = scope === 'environment' ? `${repository}/${environment}` : repository

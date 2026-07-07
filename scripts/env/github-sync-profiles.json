@@ -3,7 +3,7 @@
     "repository": "xiaolinstar/xiaolin-gateway",
     "l2_category": "platform",
     "scope": "repository",
-    "config_file": "~/.config/xiaolinstar/xiaolin-gateway/github-production.env",
+    "config_dir": "~/.config/xiaolinstar/xiaolin-gateway/github",
     "variables": [],
     "secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"],
     "required_secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"]
@@ -12,7 +12,7 @@
     "repository": "xiaolinstar/xiaolin-docs",
     "l2_category": "content",
     "scope": "repository",
-    "config_file": "~/.config/xiaolinstar/xiaolin-docs/github-production.env",
+    "config_dir": "~/.config/xiaolinstar/xiaolin-docs/github",
     "variables": ["DOCKER_BAIDU_ANALYTICS_ID", "PAGES_BAIDU_ANALYTICS_ID"],
     "secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"],
     "required_secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"]
@@ -21,7 +21,7 @@
     "repository": "xiaolinstar/xiaolin-life",
     "l2_category": "content",
     "scope": "repository",
-    "config_file": "~/.config/xiaolinstar/xiaolin-life/github-production.env",
+    "config_dir": "~/.config/xiaolinstar/xiaolin-life/github",
     "variables": [],
     "secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"],
     "required_secrets": ["SERVER_HOST", "SERVER_USER", "SERVER_PASSWORD"]
@@ -30,15 +30,19 @@
     "repository": "xiaolinstar/ai-todo",
     "l2_category": "application",
     "scope": "environment",
-    "environment": "production",
-    "config_file": "~/.config/xiaolinstar/ai-todo/github-production.env",
+    "config_dir": "~/.config/xiaolinstar/ai-todo/github",
     "variables": [
       "DEPLOY_HOST",
       "DEPLOY_USER",
       "DEPLOY_PORT",
       "DEPLOY_PATH",
       "GHCR_DEPLOY_USER",
-      "CD_PUBLIC_API_URL"
+      "CD_PUBLIC_API_URL",
+      "CD_LOCAL_HEALTH_URL",
+      "DEPLOY_BACKEND",
+      "K8S_OVERLAY",
+      "K8S_NAMESPACE",
+      "K8S_REGISTRY_MIRROR"
     ],
     "secrets": ["DEPLOY_PASSWORD", "GHCR_DEPLOY_TOKEN", "CD_SMOKE_PAT"],
     "required_variables": ["DEPLOY_HOST", "DEPLOY_USER"],
@@ -48,9 +52,7 @@
     "repository": "xiaolinstar/party-helper",
     "l2_category": "application",
     "scope": "environment",
-    "environment": "production",
-    "config_file": "~/.config/xiaolinstar/party-helper/github-production.env",
-    "legacy_config_file": "~/.config/party-helper/env/github-production.env",
+    "config_dir": "~/.config/xiaolinstar/party-helper/github",
     "variables": [
       "DEPLOY_HOST",
       "DEPLOY_USER",
@@ -60,15 +62,14 @@
     ],
     "secrets": ["DEPLOY_PASSWORD", "GHCR_DEPLOY_TOKEN"],
     "required_variables": ["DEPLOY_HOST"],
-    "ssh_key_secret": "DEPLOY_SSH_KEY"
+    "ssh_key_secret": "DEPLOY_SSH_KEY",
+    "legacy_config_file": "~/.config/party-helper/env/github-production.env"
   },
   "drink-budget": {
     "repository": "xiaolinstar/drink-budget",
     "l2_category": "application",
     "scope": "environment",
-    "environment": "production",
-    "config_file": "~/.config/xiaolinstar/drink-budget/github-production.env",
-    "legacy_config_file": "~/.config/drink-budget/env/github-production.env",
+    "config_dir": "~/.config/xiaolinstar/drink-budget/github",
     "variables": [
       "DEPLOY_HOST",
       "DEPLOY_USER",
@@ -79,6 +80,7 @@
     ],
     "secrets": ["DEPLOY_PASSWORD", "GHCR_DEPLOY_TOKEN"],
     "required_variables": ["DEPLOY_HOST", "DEPLOY_USER"],
-    "ssh_key_secret": "DEPLOY_SSH_KEY"
+    "ssh_key_secret": "DEPLOY_SSH_KEY",
+    "legacy_config_file": "~/.config/drink-budget/env/github-production.env"
   }
 }

@@ -1,10 +1,16 @@
 # 跨项目环境变量键名注册表（L0 元数据真源）
-# 真实值只在 L3：~/.config/xiaolinstar/<project>/<env>.env 或 VPS 运行时文件
-# L2 标准：playbook/adr/0009-l2-github-env-by-category.md
+# L3 运行时真源：VPS / 本机 gitignore 文件（不备份到 ~/.config）
+# L2 本地 IaC：~/.config/xiaolinstar/<project>/github/<environment>/{variables,secrets}.env
+# 结构：playbook/adr/0012-config-github-l2-only.md
 # 机器校验：scripts/env/validate-registry.sh
 
-version: 1
+version: 2
 config_root: ~/.config/xiaolinstar
+github_config:
+  variables_file: variables.env
+  secrets_file: secrets.env
+  layout: github/<environment>/{variables,secrets}.env
+  repository_scope_path: github/{variables,secrets}.env
 
 categories:
   platform:
@@ -35,9 +41,6 @@ projects:
     templates:
       - { path: .env.example, env: base }
       - { path: .env.production.example, env: production }
-    local_config:
-      local: local.env
-      production: production.env
     docs: [docs/runtime-env-management.md, docs/env/README.md]
 
   ai-todo:
@@ -45,7 +48,18 @@ projects:
     repo: xiaolinstar/ai-todo
     l2_category: application
     l2_scope: environment
-    l2_github_vars: [DEPLOY_HOST, DEPLOY_USER, DEPLOY_PORT, DEPLOY_PATH, GHCR_DEPLOY_USER, CD_PUBLIC_API_URL]
+    l2_github_vars:
+      - DEPLOY_HOST
+      - DEPLOY_USER
+      - DEPLOY_PORT
+      - DEPLOY_PATH
+      - GHCR_DEPLOY_USER
+      - CD_PUBLIC_API_URL
+      - CD_LOCAL_HEALTH_URL
+      - DEPLOY_BACKEND
+      - K8S_OVERLAY
+      - K8S_NAMESPACE
+      - K8S_REGISTRY_MIRROR
     l2_github_secrets: [DEPLOY_SSH_KEY, DEPLOY_PASSWORD, GHCR_DEPLOY_TOKEN, CD_SMOKE_PAT]
     runtime_layout: app-scoped
     runtime_root: apps/api
@@ -55,11 +69,17 @@ projects:
       - { path: apps/api/.env.local.example, env: local }
       - { path: apps/api/.env.staging.example, env: staging }
       - { path: apps/api/.env.production.example, env: production }
-    local_config:
-      local: local.env
-      staging: staging.env
-      production: production.env
-    github_environments: [staging, production]
+    github_environments:
+      - name: staging
+        l0_variables: docs/env/github/staging/variables.env.example
+        l0_secrets: docs/env/github/staging/secrets.env.example
+      - name: production
+        l0_variables: docs/env/github/production/variables.env.example
+        l0_secrets: docs/env/github/production/secrets.env.example
+      - name: production-k8s
+        l0_variables: docs/env/github/production-k8s/variables.env.example
+        l0_secrets: docs/env/github/production-k8s/secrets.env.example
+        notes: GitHub CD deploy target (111 k3s); app runtime remains AI_TODO_ENVIRONMENT=production
     docs: [docs/env/README.md, docs/env/github-environments.md]
 
   party-helper:
@@ -74,10 +94,8 @@ projects:
     templates:
       - { path: apps/api/.env.example, env: base }
       - { path: apps/api/.env.production.example, env: production }
-    local_config:
-      local: local.env
-      production: production.env
-    github_environments: [production]
+    github_environments:
+      - name: production
     docs: [docs/env/README.md, docs/deploy-api.md]
 
   drink-budget:
@@ -97,10 +115,8 @@ projects:
       - { path: apps/api/.env.example, env: base }
       - { path: apps/api/.env.local.example, env: local }
       - { path: apps/api/.env.production.example, env: production }
-    local_config:
-      local: local.env
-      production: production.env
-    github_environments: [production]
+    github_environments:
+      - name: production
     docs: [docs/env/README.md, docs/21-github-cd-config.md]
 
   xiaolin-docs:
@@ -119,9 +135,6 @@ projects:
     load_order: [.env]
     templates:
       - { path: .env.example, env: base }
-    local_config:
-      local: local.env
-      production: production.env
     docs: [docs/env/README.md, docs/sre/planning/media-standards.md]
 
   xiaolin-life:
@@ -138,7 +151,4 @@ projects:
     load_order: [.env]
     templates:
       - { path: .env.example, env: base }
-    local_config:
-      local: local.env
-      production: production.env
     docs: [docs/env/README.md, docs/MEDIA-NAMESPACE.md]

@@ -29,7 +29,7 @@ for cat in platform application content; do
 done
 
 for project in xiaolin-gateway ai-todo party-helper drink-budget xiaolin-docs xiaolin-life; do
-  block=$(grep -A20 "^  ${project}:" "$REGISTRY" || true)
+  block=$(grep -A40 "^  ${project}:" "$REGISTRY" || true)
   if [[ -z "$block" ]]; then
     echo "env-registry: missing project block → $project" >&2
     errors=$((errors + 1))

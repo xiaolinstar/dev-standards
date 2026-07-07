@@ -15,8 +15,9 @@ Usage: $(basename "$0") --project PATH [options]
 Options:
   --project PATH     Business repo root (required)
   --name NAME        Project id in env-registry (default: basename of PATH)
-  --env ENV          Environment for --local (default: production)
-  --local            Compare templates to ~/.config/xiaolinstar/<name>/<env>.env
+  --env ENV          Environment name for --github (default: production)
+  --github           Compare docs/env/github/<env>/*.env.example to ~/.config L2 files
+  --local            DEPRECATED: use --github instead (ADR-0012)
   --runtime FILE     Compare templates to a specific runtime file (repeatable)
   --strict           Exit 1 if runtime file missing when checking pairs
   --warn-extra       Warn on keys in runtime but not in any template for that target
@@ -24,7 +25,7 @@ Options:
 Examples:
   $(basename "$0") --project ~/AgentProjects/ai-todo
   $(basename "$0") --project ~/AgentProjects/xiaolin-gateway --runtime .env.production
-  $(basename "$0") --project ~/AgentProjects/ai-todo --local --env staging
+  $(basename "$0") --project ~/AgentProjects/ai-todo --github --env production-k8s
 EOF
 }
 
@@ -32,6 +33,7 @@ project_path=""
 project_name=""
 env_name="production"
 use_local=0
+use_github=0
 strict=0
 warn_extra=0
 declare -a runtime_files=()
@@ -41,7 +43,12 @@ while [[ $# -gt 0 ]]; do
     --project) project_path=$(cd "$2" && pwd); shift 2 ;;
     --name) project_name=$2; shift 2 ;;
     --env) env_name=$2; shift 2 ;;
-    --local) use_local=1; shift ;;
+    --local)
+      echo "warn: --local is deprecated; use --github (ADR-0012)" >&2
+      use_github=1
+      shift
+      ;;
+    --github) use_github=1; shift ;;
     --runtime) runtime_files+=("$2"); shift 2 ;;
     --strict) strict=1; shift ;;
     --warn-extra) warn_extra=1; shift ;;
@@ -103,6 +110,20 @@ check_pair() {
     fi
   fi
 }
+
+if [[ $use_github -eq 1 ]]; then
+  for kind in variables secrets; do
+    gh_template="$project_path/docs/env/github/$env_name/${kind}.env.example"
+    gh_runtime="$CONFIG_ROOT/$project_name/github/$env_name/${kind}.env"
+    check_pair "$gh_template" "$gh_runtime" "github:$env_name:$kind"
+  done
+  if [[ $errors -gt 0 ]]; then
+    echo "check-env-keys: FAIL ($errors error group(s), $warnings warning(s))" >&2
+    exit 1
+  fi
+  echo "check-env-keys: ok ($warnings warning(s))"
+  exit 0
+fi
 
 # Discover *.env*.example under project (skip node_modules, .git)
 while IFS= read -r template; do
