@@ -81,7 +81,7 @@ for (const key of profile.secrets || []) {
 
 if (profile.ssh_key_secret && !sshKey && !values.DEPLOY_PASSWORD) {
   console.error(
-    'Missing deployment credential: set DEPLOY_SSH_KEY_FILE in secrets.env, or DEPLOY_SSH_KEY / DEPLOY_PASSWORD.',
+    'Missing deployment credential: set DEPLOY_PASSWORD in secrets.env (default), or DEPLOY_SSH_KEY_FILE / DEPLOY_SSH_KEY.',
   )
   process.exit(1)
 }
