@@ -17,7 +17,12 @@
   - PersistentVolumeClaim: `[app-name]-pvc`
   - Ingress: `[app-name]-ingress`
 
-### 2. 元数据标签 (Labels) 标准
+### 2. 命名空间 (Namespace) 规范
+
+- **环境无后缀原则**：不要在 `Namespace` 的名称上追加环境后缀（如 `-local`、`-production`）。跨环境的同名项目应保持相同的 `Namespace` 名称（例如统一使用 `ai-todo`）。
+- **环境隔离**：不同环境的隔离应当依靠目标部署集群自身（如 Local K3s 与 Production K8s 分离），或通过规范中的 `app.kubernetes.io/instance` 标签进行逻辑区分。
+
+### 3. 元数据标签 (Labels) 标准
 
 应用层核心资源（Deployment、Service、Ingress、StatefulSet）必须包含 Kubernetes 官方推荐 of 系统标签
 （`app.kubernetes.io/*`），严禁使用团队自定义的简写标签（如 `app: todo`）。标准标签定义如下：
