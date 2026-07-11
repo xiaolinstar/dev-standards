@@ -190,3 +190,21 @@ readinessProbe:
     # 精确挂载覆盖生产配置，容器内不存在 local 物理文件，从根本上避开通配符多重扫描冲突
     - ./app/ai-todo/ai-todo.local.overlay:/etc/nginx/app/ai-todo/ai-todo.conf:ro
   ```
+
+---
+
+## 七、 基础设施即代码 (IaC) 的 CI 门禁
+
+由于 Kubernetes 声明式资源（YAML）本质上也是代码（Infrastructure as Code），它们必须像源码一样受到严格的 CI（Continuous Integration）校验。严禁未经自动校验的配置合入主干。
+
+### 1. 强制的 Kustomize 渲染检查
+
+- **规范**：在代码仓库中必须配置专属的 `k8s-ci.yml`（或在主 CI 中隔离 Job），在 Pull Request 及 Push 阶段使用 `kubectl kustomize` 尝试渲染所有环境和资源变体。
+- **目的**：拦截因缩进错误、拼写错误（如 `imagePulPolicy`）、或 base/overlay 层级引用断裂导致的致命语法错误。如果渲染失败，绝对不允许合入代码。
+
+### 2. 进阶 Schema 及安全合规检查（可选推荐）
+
+- 推荐使用 `kubeval` 或 `kubeconform` 在 CI 流程中检查渲染后的资源是否符合目标版本 Kubernetes 的 OpenAPI Schema 规范，防止使用已废弃的 API 字段。
+- 推荐使用 `checkov` 或 `trivy` 扫描特权容器逃逸、过大权限暴露（如未经限制的 Root 用户运行）等云原生安全漏洞。
+
+**底线原则**：把错误拦在 CI 大门外，绝不能让配置错误渗透至线上引发 CD（kubectl apply）中断或部分资源处于悬挂的错误状态。

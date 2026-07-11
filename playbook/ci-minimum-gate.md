@@ -16,12 +16,12 @@
 
 ## 必选 4 项（local + CI 双段）
 
-| # | 项 | 本地触发 | CI 触发 | 工具（推荐） |
-|---|---|---|---|---|
-| 1 | **Lint** | pre-commit（lint-staged） | PR / main push | ESLint / biome / golangci-lint / ruff |
-| 2 | **Typecheck or Test** | — | PR / main push | tsc --noEmit / mypy / pytest / go test |
-| 3 | **Secret Scan** | pre-commit（gitleaks） | PR / main push（**必跑**） | gitleaks / trufflehog / detect-secrets |
-| 4 | **Commit Message Format** | commit-msg（commitlint） | — | commitlint + `@commitlint/config-conventional` |
+| #   | 项                        | 本地触发                  | CI 触发                    | 工具（推荐）                                   |
+| --- | ------------------------- | ------------------------- | -------------------------- | ---------------------------------------------- |
+| 1   | **Lint**                  | pre-commit（lint-staged） | PR / main push             | ESLint / biome / golangci-lint / ruff          |
+| 2   | **Typecheck or Test**     | —                         | PR / main push             | tsc --noEmit / mypy / pytest / go test         |
+| 3   | **Secret Scan**           | pre-commit（gitleaks）    | PR / main push（**必跑**） | gitleaks / trufflehog / detect-secrets         |
+| 4   | **Commit Message Format** | commit-msg（commitlint）  | —                          | commitlint + `@commitlint/config-conventional` |
 
 ### 1. Lint
 
@@ -55,13 +55,13 @@
 
 ### 文件清单
 
-| 路径 | 作用 |
-|---|---|
-| `.husky/pre-commit` | gitleaks 暂存区扫描 + lint-staged（eslint --fix + prettier --write） |
-| `.husky/commit-msg` | commitlint 编辑校验 |
-| `commitlint.config.{js,cjs}` | conventional commits 规则 |
-| 根 `package.json` §`lint-staged` | staged 文件处理规则 |
-| 根 `package.json` §`scripts.prepare` | `"prepare": "husky"`（pnpm install 时自动初始化） |
+| 路径                                 | 作用                                                                 |
+| ------------------------------------ | -------------------------------------------------------------------- |
+| `.husky/pre-commit`                  | gitleaks 暂存区扫描 + lint-staged（eslint --fix + prettier --write） |
+| `.husky/commit-msg`                  | commitlint 编辑校验                                                  |
+| `commitlint.config.{js,cjs}`         | conventional commits 规则                                            |
+| 根 `package.json` §`lint-staged`     | staged 文件处理规则                                                  |
+| 根 `package.json` §`scripts.prepare` | `"prepare": "husky"`（pnpm install 时自动初始化）                    |
 
 ### pre-commit hook 模板
 
@@ -90,13 +90,26 @@ npx --no -- commitlint --edit "$1"
 
 ```js
 module.exports = {
-  extends: ['@commitlint/config-conventional'],
+  extends: ["@commitlint/config-conventional"],
   rules: {
-    'header-max-length': [2, 'always', 100],
-    'type-enum': [2, 'always', [
-      'feat', 'fix', 'docs', 'style', 'refactor', 'perf',
-      'test', 'build', 'ci', 'chore', 'revert',
-    ]],
+    "header-max-length": [2, "always", 100],
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "build",
+        "ci",
+        "chore",
+        "revert",
+      ],
+    ],
   },
 };
 ```
@@ -112,11 +125,11 @@ module.exports = {
 
 审计时对照表：
 
-| 来源 | 查什么 |
-|------|--------|
-| 子 app `package.json` §`format:check` / `check` | prettier glob |
-| 根 `package.json` §`lint-staged` | 同 glob 是否有 `prettier --write` |
-| CI workflow（如 `scan-miniapp` → `check:wechat`） | 与上两行一致 |
+| 来源                                              | 查什么                            |
+| ------------------------------------------------- | --------------------------------- |
+| 子 app `package.json` §`format:check` / `check`   | prettier glob                     |
+| 根 `package.json` §`lint-staged`                  | 同 glob 是否有 `prettier --write` |
+| CI workflow（如 `scan-miniapp` → `check:wechat`） | 与上两行一致                      |
 
 **单包仓库**：
 
@@ -141,7 +154,9 @@ module.exports = {
     ],
     "apps/miniapp/scripts/**/*.mjs": ["prettier --write"],
     "apps/miniapp/**/*.{scss,json}": ["prettier --write"],
-    "apps/cli/**/*.ts": ["pnpm --filter @scope/cli exec tsc -b tsconfig.json --pretty false"],
+    "apps/cli/**/*.ts": [
+      "pnpm --filter @scope/cli exec tsc -b tsconfig.json --pretty false"
+    ],
     "packages/**/*.ts": ["prettier --write"],
     "**/*.{json,md,yml,yaml,cjs}": ["prettier --write"]
   }
@@ -166,12 +181,12 @@ brew install gitleaks
 
 ## 可选 4 项
 
-| 项 | 推荐触发 |
-|---|---|
-| test | CI（与 typecheck 并行） |
-| build | CI（PR 阶段） |
-| dep audit | CI（每日 / 每周） |
-| sbom | release 时 |
+| 项        | 推荐触发                |
+| --------- | ----------------------- |
+| test      | CI（与 typecheck 并行） |
+| build     | CI（PR 阶段）           |
+| dep audit | CI（每日 / 每周）       |
+| sbom      | release 时              |
 
 ## 流水线骨架（GitHub Actions 示例）
 
@@ -232,11 +247,11 @@ jobs:
 
 ## 三阶段门禁（Hooks → CI → CD）
 
-| 阶段 | 回答的问题 | 阻断？ | dev-standards 模板 |
-|------|------------|--------|-------------------|
-| **1. 本地 hooks** | 本次 commit 有无 secret / 格式 / 暂存 lint 问题？ | 本地应阻断（gitleaks 可降级） | ✅ `hooks/pre-commit/` → `sync.sh hooks-precommit` |
-| **2. CI** | 合并后全仓能否 lint / typecheck / test / build？制品可复现？ | **必须阻断** | ⚠️ 本文 §流水线骨架；复杂 monorepo 参考业务仓 |
-| **3. CD** | 是否部署了正确版本？公网是否健康？ | 生产应阻断 | ❌ 无通用模板（domain 差异大） |
+| 阶段              | 回答的问题                                                   | 阻断？                        | dev-standards 模板                                 |
+| ----------------- | ------------------------------------------------------------ | ----------------------------- | -------------------------------------------------- |
+| **1. 本地 hooks** | 本次 commit 有无 secret / 格式 / 暂存 lint 问题？            | 本地应阻断（gitleaks 可降级） | ✅ `hooks/pre-commit/` → `sync.sh hooks-precommit` |
+| **2. CI**         | 合并后全仓能否 lint / typecheck / test / build？制品可复现？ | **必须阻断**                  | ⚠️ 本文 §流水线骨架；复杂 monorepo 参考业务仓      |
+| **3. CD**         | 是否部署了正确版本？公网是否健康？                           | 生产应阻断                    | ❌ 无通用模板（domain 差异大）                     |
 
 **职责边界：**
 
@@ -268,26 +283,29 @@ jobs:
 
 ### CI job 命名惯例（并行 scan → build → test）
 
-| Job 前缀 | 典型内容 | 对应 app |
-|----------|----------|----------|
-| `scan-secrets` | gitleaks，阻断后续 | 全仓 |
-| `scan-node` | pnpm lint / typecheck | TS 子包 + CLI |
-| `scan-api` | ruff / mypy / migration guard | `apps/api` |
-| `scan-miniapp` | `check:wechat` 等 | `apps/miniapp` |
-| `build-*` | 镜像 / artifact | 各栈 |
-| `test-*` | pytest / e2e | 各栈 |
-| `publish-manifest` | 仅 main；绑 fingerprint | 全仓 CD 输入 |
+| Job 前缀           | 典型内容                      | 对应 app       |
+| ------------------ | ----------------------------- | -------------- |
+| `scan-secrets`     | gitleaks，阻断后续            | 全仓           |
+| `scan-node`        | pnpm lint / typecheck         | TS 子包 + CLI  |
+| `scan-api`         | ruff / mypy / migration guard | `apps/api`     |
+| `scan-miniapp`     | `check:wechat` 等             | `apps/miniapp` |
+| `build-*`          | 镜像 / artifact               | 各栈           |
+| `test-*`           | pytest / e2e                  | 各栈           |
+| `publish-manifest` | 仅 main；绑 fingerprint       | 全仓 CD 输入   |
 
 根 `package.json` 提供编排入口（如 `pnpm lint`、`pnpm test:api`、`pnpm check:wechat`）；各子包暴露 `lint` / `typecheck` / `build`。
 
-### 何时才拆成多个 workflow
+### 何时才拆成多个 workflow (Path Filtering 最佳实践)
 
-| 场景 | 做法 |
-|------|------|
-| 某 app 发布节奏完全独立、且不共享 deploy manifest | 可加 `release-<app>.yml` |
-| 不同 environment 密钥 | CD job 级 `environment: staging \| production` |
-| 移动端需 Xcode / Gradle | 独立 workflow 可以，仍放根 `.github/workflows/` |
-| CI > 15min | path filter / Turborepo 缓存，优先于拆仓库 |
+在 Monorepo 中，强烈建议按照**关注点分离（Separation of Concerns）**与**路径过滤（Path Filtering）**原则，将不同技术栈或应用域的 CI 拆分为多个独立的 workflow（例如 `api-ci.yml`、`admin-ci.yml`、`k8s-ci.yml`）。
+
+| 场景                                              | 做法                                               | 收益                                                                                             |
+| ------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 技术栈差异过大（如 Python vs Node.js vs K8s）     | 按语言或领域拆分 `*-ci.yml`，通过 `paths` 过滤触发 | 隔离运行环境，避免单台 Runner 上安装过于臃肿的工具链导致冲突，同时提升启动速度。                 |
+| 某 app 发布节奏完全独立、且不共享 deploy manifest | 拆分 `release-<app>.yml` 或 `<app>-ci.yml`         | 实现真正独立的按需构建，不干扰其他子项目。                                                       |
+| CI > 15min 或 单个 Workflow 负担过重              | path filter / Turborepo 缓存，优先于拆仓库         | **极大节省 CI 额度和时间**：修改后端代码不会触发前端全量构建测试；发生构建失败时，报错域更明确。 |
+| 不同 environment 密钥                             | CD job 级 `environment: staging \| production`     | 安全隔离，确保仅在部署特定环境时获取对应环境的 Secret。                                          |
+| 移动端需 Xcode / Gradle                           | 独立 workflow 可以，仍放根 `.github/workflows/`    | 避免占用昂贵的 macOS runner 跑通用 Node.js 任务。                                                |
 
 参考实现：业务仓 `docs/ci-cd.md` + `.github/workflows/ci.yml`（不在本库复制）。
 
@@ -312,34 +330,34 @@ L3  运行时（VPS / 容器）      apps/<app>/.env + .env.<env>
       ↓ 进程真正读取；DB URL、微信 AppSecret、JWT 等
 ```
 
-| 层 | 放什么 | 不放什么 |
-|----|--------|----------|
-| **L0 模板** | 键名、默认端口、feature flag 默认 | 密码、AppSecret、私钥 |
-| **L1 CI** | `NODE_VERSION`、`PYTHON_VERSION`、registry 地址 | 生产 DB 密码、部署 SSH 私钥 |
-| **L2 GitHub Env** | `DEPLOY_HOST`、`CD_PUBLIC_API_URL`（Variables）；`DEPLOY_SSH_KEY`（Secrets） | 与 L3 重复且无必要的副本 |
-| **L3 运行时** | 数据库 DSN、第三方 API 密钥、session 密钥 | 不应回写到 Git |
+| 层                | 放什么                                                                       | 不放什么                    |
+| ----------------- | ---------------------------------------------------------------------------- | --------------------------- |
+| **L0 模板**       | 键名、默认端口、feature flag 默认                                            | 密码、AppSecret、私钥       |
+| **L1 CI**         | `NODE_VERSION`、`PYTHON_VERSION`、registry 地址                              | 生产 DB 密码、部署 SSH 私钥 |
+| **L2 GitHub Env** | `DEPLOY_HOST`、`CD_PUBLIC_API_URL`（Variables）；`DEPLOY_SSH_KEY`（Secrets） | 与 L3 重复且无必要的副本    |
+| **L3 运行时**     | 数据库 DSN、第三方 API 密钥、session 密钥                                    | 不应回写到 Git              |
 
 ### 多版本 / 多环境命名
 
-| 概念 | 建议 |
-|------|------|
-| **Git 版本** | tag `v0.x.y`；CD 输入 `release_tag` 指向 manifest |
-| **运行时环境** | `local` / `staging` / `production`（或 `prod`）；与 GitHub Environment 名对齐 |
-| **镜像 / 制品** | 不可变 digest（`sha256:…`）；manifest fingerprint 防篡改 |
-| **小程序 / 客户端** | 独立 `package.json` version；与服务端 manifest 在发布手册中对齐 |
+| 概念                | 建议                                                                          |
+| ------------------- | ----------------------------------------------------------------------------- |
+| **Git 版本**        | tag `v0.x.y`；CD 输入 `release_tag` 指向 manifest                             |
+| **运行时环境**      | `local` / `staging` / `production`（或 `prod`）；与 GitHub Environment 名对齐 |
+| **镜像 / 制品**     | 不可变 digest（`sha256:…`）；manifest fingerprint 防篡改                      |
+| **小程序 / 客户端** | 独立 `package.json` version；与服务端 manifest 在发布手册中对齐               |
 
 加载顺序（业务仓常见模式）：`.env`（共享非敏感默认）→ `.env.local` | `.env.staging` | `.env.production`（后者覆盖前者）。
 
 ### CI vs CD vs 容器：各用什么
 
-| 场景 | 配置来源 | 示例 |
-|------|----------|------|
-| CI 构建 API 镜像 | workflow `env` + `secrets.GITHUB_TOKEN` | push GHCR；**不把** DB 密码 build-arg 进镜像 |
-| CI 跑 pytest | 测试用 `.env.test` 或 job `env` 固定值 | 内存 DB / testcontainers |
-| CD SSH 部署 | GitHub Environment **Secrets** | `DEPLOY_SSH_KEY`、`DEPLOY_PASSWORD` |
-| CD 公网验收 | Environment **Variables** | `CD_PUBLIC_API_URL` |
-| 容器启动 API | 宿主机 **L3** 文件挂载或 compose `env_file` | `APP_*` 读自 `.env.production` |
-| Monitor 拨测 | Environment Variables + 可选 Secrets | `ALERT_*`、`CD_SMOKE_PAT` |
+| 场景             | 配置来源                                    | 示例                                         |
+| ---------------- | ------------------------------------------- | -------------------------------------------- |
+| CI 构建 API 镜像 | workflow `env` + `secrets.GITHUB_TOKEN`     | push GHCR；**不把** DB 密码 build-arg 进镜像 |
+| CI 跑 pytest     | 测试用 `.env.test` 或 job `env` 固定值      | 内存 DB / testcontainers                     |
+| CD SSH 部署      | GitHub Environment **Secrets**              | `DEPLOY_SSH_KEY`、`DEPLOY_PASSWORD`          |
+| CD 公网验收      | Environment **Variables**                   | `CD_PUBLIC_API_URL`                          |
+| 容器启动 API     | 宿主机 **L3** 文件挂载或 compose `env_file` | `APP_*` 读自 `.env.production`               |
+| Monitor 拨测     | Environment Variables + 可选 Secrets        | `ALERT_*`、`CD_SMOKE_PAT`                    |
 
 **禁止：** 在 workflow YAML 里写明文密钥；在 Docker 镜像 ENV 层 bake 生产 secret；在日志中打印 secret（gitleaks 双段即为此）。
 
