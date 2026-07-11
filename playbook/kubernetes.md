@@ -47,7 +47,7 @@ metadata:
 项目仓库中的部署声明必须统一组织为 Base 和 Overlays 架构：
 
 ```text
-deploy/kubernetes/
+deploy/k8s/
 ├── base/                     # 与环境无关的骨架配置
 │   ├── deployment.yaml
 │   ├── service.yaml

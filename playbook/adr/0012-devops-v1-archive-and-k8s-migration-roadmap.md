@@ -66,7 +66,7 @@ graph TD
 #### Phase 1: 容器配置标准化与 Kustomize 改造
 
 1. **Dockerfile 规范化**：所有应用支持标准 Docker 镜像构建，并暴露规范的健康检查接口（如 `/healthz`）。
-2. **Kustomize 脚手架建立**：在各个应用仓库中创建 `deploy/kubernetes` 目录：
+2. **Kustomize 脚手架建立**：在各个应用仓库中创建 `deploy/k8s` 目录：
    - `base/`：包含通用的 Deployment、Service 和 Ingress 基本骨架。
    - `overlays/staging/` 和 `overlays/production/`：包含针对不同环境的特定副本数、域名和环境变量补丁（Patches）。
 3. **配置与敏感信息映射**：定义如何在 overlays 中利用 `secretGenerator` 和 `configMapGenerator` 组装配置文件。
@@ -86,7 +86,7 @@ graph TD
    - 在 GitHub Settings 中添加 `KUBECONFIG` 凭证（只读或受限修改部署命名空间的权限），以实现安全连接。
 2. **CD 脚本替换**：
    - 替换 Actions 中原有的 SSH 登录发布任务。
-   - 新增 `kubectl` 命令任务：`kubectl apply -k deploy/kubernetes/overlays/production`。
+   - 新增 `kubectl` 命令任务：`kubectl apply -k deploy/k8s/overlays/production`。
 3. **滚动发布与回滚验证**：利用 K8s 内置 of `rollout` 机制验证滚动升级与一键回滚。
 
 #### Phase 4: 集群级可观测性与后期演进
