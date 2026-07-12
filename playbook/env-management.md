@@ -12,18 +12,23 @@ L2  GitHub Environments      CD、SSH、探活 URL（Actions 运行时读）
 L3  业务运行时               VPS .env.production / K8s Secret 文件（仅服务器）
 ```
 
-| 层 | 放什么 | **真源** | 不放什么 |
-|----|--------|----------|----------|
-| L0 | 键名、默认端口 | 仓库 `docs/env/` | 密码、私钥 |
-| L1 | `NODE_VERSION` | workflow | 生产 DSN |
-| L2 | `DEPLOY_*`、探活 URL | **GitHub**（由本地 IaC 同步） | 微信 AppSecret、DB 密码 |
-| L3 | DB、JWT、微信密钥 | **VPS / 本机 gitignore 文件** | 不应 commit；**不应**备份到 ~/.config |
+| 层  | 放什么               | **真源**                      | 不放什么                              |
+| --- | -------------------- | ----------------------------- | ------------------------------------- |
+| L0  | 键名、默认端口       | 仓库 `docs/env/`              | 密码、私钥                            |
+| L1  | `NODE_VERSION`       | workflow                      | 生产 DSN                              |
+| L2  | `DEPLOY_*`、探活 URL | **GitHub**（由本地 IaC 同步） | 微信 AppSecret、DB 密码               |
+| L3  | DB、JWT、微信密钥    | **VPS / 本机 gitignore 文件** | 不应 commit；**不应**备份到 ~/.config |
 
 ### 单一受控源原则
 
 - **L3**：只在目标机器维护一份（Compose `.env.production`、K8s overlay `.env.production.secrets`）。**不再** scp 到 `~/.config/xiaolinstar/<project>/production.env`。
 - **L2**：本地 `variables.env` + `secrets.env` 是 **编写 IaC**；`sync-github` 推到 GitHub 后，**CD 只读 GitHub**。
 - 避免「config 备份 + VPS 真源」双轨——后者是旧模型，已废弃（ADR-0012）。
+
+### 模板书写规范
+
+- 必须为 `.env.example` 模板中的每个变量提供清晰的注释（例如 `[Required]`，`[Optional]`），说明变量用途及默认值。
+- **强制或强烈推荐使用纯英文编写注释**，以避免在多种终端、CI/CD 系统和容器环境中可能引发的字符编码乱码问题。
 
 ## ~/.config/xiaolinstar（仅 GitHub L2）
 
@@ -51,12 +56,12 @@ L0 模板：`docs/env/github/<environment>/variables.env.example` 与 `secrets.e
 
 ### 命名对照（ai-todo）
 
-| 名称 | 示例 | 含义 |
-|------|------|------|
-| GitHub Environment | `production-k8s` | CD：SSH 到 111、K8s 后端 |
-| GitHub Environment | `production` | CD：SSH 到 124、Compose |
-| K8s overlay | `overlays/production` | 产品档位 infra |
-| 应用 ConfigMap | `AI_TODO_ENVIRONMENT=production` | API `/v1/health` 等 |
+| 名称               | 示例                             | 含义                     |
+| ------------------ | -------------------------------- | ------------------------ |
+| GitHub Environment | `production-k8s`                 | CD：SSH 到 111、K8s 后端 |
+| GitHub Environment | `production`                     | CD：SSH 到 124、Compose  |
+| K8s overlay        | `overlays/production`            | 产品档位 infra           |
+| 应用 ConfigMap     | `AI_TODO_ENVIRONMENT=production` | API `/v1/health` 等      |
 
 GitHub Environment 描述 **部署面**；应用 `production` 描述 **产品档位**——二者不必同名。
 
@@ -79,43 +84,43 @@ GitHub Environment 描述 **部署面**；应用 `production` 描述 **产品档
 
 ### 废弃路径（只读兼容，勿再写入）
 
-| 旧路径 | 替代 |
-|--------|------|
-| `<project>/github-production.env` | `github/production/{variables,secrets}.env` |
-| `<project>/production.env`（L3 备份） | VPS `apps/api/.env.production` **唯一** |
-| `env import-config` / `env apply-config` | 直接在 VPS 或本机改 runtime |
+| 旧路径                                   | 替代                                        |
+| ---------------------------------------- | ------------------------------------------- |
+| `<project>/github-production.env`        | `github/production/{variables,secrets}.env` |
+| `<project>/production.env`（L3 备份）    | VPS `apps/api/.env.production` **唯一**     |
+| `env import-config` / `env apply-config` | 直接在 VPS 或本机改 runtime                 |
 
 ## 每仓运行时布局（L3）
 
-| `runtime_layout` | 适用 | L3 路径 |
-|------------------|------|---------|
-| `root-dotenv` | gateway、内容站 | 仓库根 `.env` + `.env.production` |
-| `app-scoped` | API monorepo | `apps/api/.env` + `.env.<env>` |
+| `runtime_layout` | 适用            | L3 路径                           |
+| ---------------- | --------------- | --------------------------------- |
+| `root-dotenv`    | gateway、内容站 | 仓库根 `.env` + `.env.production` |
+| `app-scoped`     | API monorepo    | `apps/api/.env` + `.env.<env>`    |
 
 加载顺序：基础 `.env` → 环境覆盖（`.env.local` | `.env.staging` | `.env.production`）。
 
-| 场景 | 配置来源 |
-|------|----------|
-| 本地开发 | L0 复制为 gitignore runtime |
-| CI 测试 | job `env` 或假值 |
-| CD | GitHub L2 SSH + VPS L3 |
-| K8s | overlay `secretGenerator` + VPS 上 `.env.*.secrets` |
+| 场景     | 配置来源                                            |
+| -------- | --------------------------------------------------- |
+| 本地开发 | L0 复制为 gitignore runtime                         |
+| CI 测试  | job `env` 或假值                                    |
+| CD       | GitHub L2 SSH + VPS L3                              |
+| K8s      | overlay `secretGenerator` + VPS 上 `.env.*.secrets` |
 
 ## GitHub Environments（L2）
 
 > [ADR-0009](adr/0009-l2-github-env-by-category.md) · `scripts/env/github-sync-profiles.json`
 
-| category | Environment | 键名前缀 |
-|----------|-------------|----------|
-| platform / content | 无（仓库级） | `SERVER_*` |
-| application | `production`、`staging`；ai-todo 另有 **`production-k8s`** | `DEPLOY_*` |
+| category           | Environment                                                | 键名前缀   |
+| ------------------ | ---------------------------------------------------------- | ---------- |
+| platform / content | 无（仓库级）                                               | `SERVER_*` |
+| application        | `production`、`staging`；ai-todo 另有 **`production-k8s`** | `DEPLOY_*` |
 
 ### application 标准键
 
-| 类型 | 键 |
-|------|-----|
+| 类型     | 键                                                         |
+| -------- | ---------------------------------------------------------- |
 | Variable | `DEPLOY_HOST`、`DEPLOY_USER`、`DEPLOY_PORT`、`DEPLOY_PATH` |
-| Secret | `DEPLOY_PASSWORD`（默认）或 `DEPLOY_SSH_KEY`（备选） |
+| Secret   | `DEPLOY_PASSWORD`（默认）或 `DEPLOY_SSH_KEY`（备选）       |
 
 **ai-todo L2 扩展**（所有 GitHub Environment **键名相同**，仅值因部署面而异）：
 `CD_PUBLIC_API_URL`、`CD_LOCAL_HEALTH_URL`（可选）、`DEPLOY_BACKEND`、`K8S_*`
