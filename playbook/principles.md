@@ -37,17 +37,22 @@
 
 ## 7. 文档分层
 
-| 类型 | 放哪 |
-|------|------|
-| 为什么这样选 | ADR |
-| 怎么用 | 项目 README / developer-guide |
-| Agent 怎么执行 | Skill（Claude Code） |
+| 类型           | 放哪                                                        |
+| -------------- | ----------------------------------------------------------- |
+| 为什么这样选   | ADR                                                         |
+| 怎么用         | 项目 README / developer-guide                               |
+| Agent 怎么执行 | Skill（Claude Code）                                        |
 | 代码默认怎么写 | `adapters/cursor/`（Cursor）或项目自身 CLAUDE.md / 现有约定 |
 
 ## 8. 仓库形态
 
 - **默认单包**；≥2 个可运行产物或需共享 TS 库时再上 monorepo
 - **pnpm workspaces** + `apps/` / `packages/`；详见 [monorepo.md](monorepo.md) 与 [ADR-0002](adr/0002-monorepo-default-selection.md)
+
+## 9. 服务命名与本地网络 (Networking & Naming Parity)
+
+- **避免 Cookie 与跨域污染**：本地多项目并发开发时，强制/推荐使用 `api.<project>.localhost:<port>` 替代传统的 `localhost:<port>`（利用 OS 原生支持，无需配置 Hosts）。
+- **与生产拓扑对齐**：内部容器通信（如 docker-compose / K8s）的别名配置应采用 `api.<project>.local` 或 `.svc.cluster.local` 的级联域名形式，避免短名称（如 `api`、`db`）引发的跨网络冲突。
 
 ## 已落地的补全
 
