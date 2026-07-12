@@ -48,17 +48,18 @@
 
 仲裁顺序：principles ↔ baselines 冲突时，**ADR 优先**。详见 `baselines/README.md` §与本仓其他文件的关系。
 
-| ID                                                              | 标题                                                           | 状态     |
-| --------------------------------------------------------------- | -------------------------------------------------------------- | -------- |
-| [0001](adr/0001-standards-repo-structure.md)                    | 标准库仓库结构与 Claude Code 对齐                              | Accepted |
-| [0002](adr/0002-monorepo-default-selection.md)                  | Monorepo / 单包默认选型                                        | Accepted |
-| [0003](adr/0003-12-factor-adaptation.md)                        | 12-Factor 适配：solo dev 简化                                  | Accepted |
-| [0004](adr/0004-cncf-tag-app-delivery-adoption.md)              | CNCF TAG App Delivery 采用范围                                 | Accepted |
-| [0005](adr/0005-api-error-code-convention.md)                   | API 错误码与 HTTP 状态约定                                     | Accepted |
-| [0006](adr/0006-ci-minimum-gate.md)                             | CI 最低门槛                                                    | Accepted |
-| [0007](adr/0007-wechat-miniprogram-baseline.md)                 | 微信小程序项目标准（原生 + TypeScript）                        | Accepted |
-| [0008](adr/0008-templates-wechat-mp-scaffold.md)                | 激活 templates/wechat-mp 脚手架（Phase 3）                     | Accepted |
-| [0009](adr/0009-l2-github-env-by-category.md)                   | L2 GitHub 配置按项目类别分层（双轨键名）                       | Accepted |
-| [0010](adr/0010-h5-project-baseline.md)                         | H5 项目通用标准与技术选型                                      | Accepted |
-| [0011](adr/0011-web-admin-baseline.md)                          | Web 后台基线（PC 优先自适应 + Vant 4 + Tailwind + 品牌色变量） | Accepted |
-| [0012](adr/0012-devops-v1-archive-and-k8s-migration-roadmap.md) | DevOps v1 归档与云原生 K8s (K3s + Kustomize) 演进路线图        | Accepted |
+| ID                                                                 | 标题                                                           | 状态     |
+| ------------------------------------------------------------------ | -------------------------------------------------------------- | -------- |
+| [0001](adr/0001-standards-repo-structure.md)                       | 标准库仓库结构与 Claude Code 对齐                              | Accepted |
+| [0002](adr/0002-monorepo-default-selection.md)                     | Monorepo / 单包默认选型                                        | Accepted |
+| [0003](adr/0003-12-factor-adaptation.md)                           | 12-Factor 适配：solo dev 简化                                  | Accepted |
+| [0004](adr/0004-cncf-tag-app-delivery-adoption.md)                 | CNCF TAG App Delivery 采用范围                                 | Accepted |
+| [0005](adr/0005-api-error-code-convention.md)                      | API 错误码与 HTTP 状态约定                                     | Accepted |
+| [0006](adr/0006-ci-minimum-gate.md)                                | CI 最低门槛                                                    | Accepted |
+| [0007](adr/0007-wechat-miniprogram-baseline.md)                    | 微信小程序项目标准（原生 + TypeScript）                        | Accepted |
+| [0008](adr/0008-templates-wechat-mp-scaffold.md)                   | 激活 templates/wechat-mp 脚手架（Phase 3）                     | Accepted |
+| [0009](adr/0009-l2-github-env-by-category.md)                      | L2 GitHub 配置按项目类别分层（双轨键名）                       | Accepted |
+| [0010](adr/0010-h5-project-baseline.md)                            | H5 项目通用标准与技术选型                                      | Accepted |
+| [0011](adr/0011-web-admin-baseline.md)                             | Web 后台基线（PC 优先自适应 + Vant 4 + Tailwind + 品牌色变量） | Accepted |
+| [0012](adr/0012-devops-v1-archive-and-k8s-migration-roadmap.md)    | DevOps v1 归档与云原生 K8s (K3s + Kustomize) 演进路线图        | Accepted |
+| [0013](adr/0013-deployment-idempotency-and-immutable-artifacts.md) | 部署幂等性与不可变产物规范                                     | Accepted |
