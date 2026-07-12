@@ -106,6 +106,23 @@ GitHub Environment 描述 **部署面**；应用 `production` 描述 **产品档
 | CD       | GitHub L2 SSH + VPS L3                              |
 | K8s      | overlay `secretGenerator` + VPS 上 `.env.*.secrets` |
 
+### K8s Overlay 配置文件命名规范
+
+对于 Kubernetes Kustomize 环境使用的声明式配置文件（不上传 Git，仅在 VPS 运行时存在），全局统一采用以下后缀约束：
+
+- **ConfigMap 配置字典**：后缀统一为 **`.env.<environment>.config`**（单数）。
+- **Secret 密钥**：后缀统一为 **`.env.<environment>.secrets`**（复数）。
+
+示例：
+
+- `deploy/k8s/overlays/production/.env.production.config`
+- `deploy/k8s/overlays/production/.env.production.secrets`
+
+> **规范理由**：K8s 原生对象为 `ConfigMap` (单数，一个配置字典) 和 `Secret`
+> (但习惯称包含多个密钥的文件为 `secrets`)。统一约定该「单一 + 复数」模式，
+> 杜绝各项目间出现 `.configs` 与 `.config` 混用的情况
+> （例如 `party-helper` 曾使用的 `.configs` 应向此规范看齐）。
+
 ## GitHub Environments（L2）
 
 > [ADR-0009](adr/0009-l2-github-env-by-category.md) · `scripts/env/github-sync-profiles.json`
