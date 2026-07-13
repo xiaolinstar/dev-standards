@@ -171,11 +171,13 @@ readinessProbe:
 ### 1. 本地免 Ingress 依赖，直连 Service LoadBalancer
 
 - **规范**：对于不需要外部 Ingress Controller 复杂重定向规则的本地多项目服务调试，**严禁在本地 K8s base 中强行引入 Ingress 声明**。
+- **访问地址约定**：只替换主机名，不隐藏端口号。
+  - API：`http://api.<project>.localhost:<api-port>`
+  - 运营后台：`http://admin.<project>.localhost:<admin-port>`
 - **最佳实践**：
-  - 在本地覆盖层（如 `overlays/local/`）中，使用 Kustomize Patch 将后端 API 的 Service 类型修改为 `LoadBalancer`，
-    直接将端口暴露到宿主机（例如 `:8082`）。
-  - 在本地网关配置文件中，直接将 upstream 指向 `host.docker.internal:8082`，
-    绕过 Ingress 代理，实现网关与 K8s Pod 之间最轻量、最稳定的直连通道。
+  - 在本地覆盖层（如 `overlays/local/`）中，使用 Kustomize Patch 将服务类型修改为 `LoadBalancer`，直接将各服务端口暴露到宿主机。
+  - 项目文档中的默认本地入口必须优先写 `.localhost` 语义域名，但端口保持 Service 暴露端口，例如 `http://api.drink-budget.localhost:8000`。
+  - 不为了隐藏端口号而额外引入本地 Nginx/gateway 反向代理；只有项目本身已存在网关或确有多路由分流需求时，才允许显式说明后使用。
 
 ### 2. 精确挂载规避 Nginx 配置加载冲突
 

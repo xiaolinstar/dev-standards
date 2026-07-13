@@ -51,7 +51,8 @@
 
 ## 9. 服务命名与本地网络 (Networking & Naming Parity)
 
-- **避免 Cookie 与跨域污染**：本地多项目并发开发时，强制/推荐使用 `api.<project>.localhost:<port>` 替代传统的 `localhost:<port>`（利用 OS 原生支持，无需配置 Hosts）。
+- **避免 Cookie 与跨域污染**：本地多项目并发开发时，强制/推荐使用 `.localhost` 语义域名替代裸 `localhost` / `127.0.0.1`（利用 OS 原生支持，无需配置 Hosts）。
+- **本地访问地址命名**：只替换主机名，不隐藏端口号。API 使用 `api.<project>.localhost:<api-port>`，运营后台使用 `admin.<project>.localhost:<admin-port>`；端口保持该服务本地暴露端口。
 - **与生产拓扑对齐**：内部容器通信（如 docker-compose / K8s）的别名配置应采用 `api.<project>.local` 或 `.svc.cluster.local` 的级联域名形式，避免短名称（如 `api`、`db`）引发的跨网络冲突。
 
 ## 已落地的补全
