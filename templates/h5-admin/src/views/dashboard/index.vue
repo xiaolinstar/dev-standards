@@ -3,7 +3,7 @@
   <div class="dashboard">
     <header class="page-header">
       <div>
-        <h1 class="page-title">运营概览</h1>
+        <h1 class="page-title">{{ route.meta.title || '运营概览' }}</h1>
         <p class="page-subtitle">实时掌握核心指标和最新动态</p>
       </div>
       <button class="back-btn" :disabled="loading" @click="refresh">
@@ -76,7 +76,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { showToast } from 'vant'
+
+const route = useRoute()
 
 const loading = ref(false)
 

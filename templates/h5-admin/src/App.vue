@@ -10,17 +10,17 @@
         <h1 class="admin-brand">{{ projectName }}</h1>
         <nav class="admin-nav hidden md:flex">
           <RouterLink
-            v-for="item in navItems"
-            :key="item.path"
-            :to="item.path"
+            v-for="item in menuConfig"
+            :key="item.key"
+            :to="item.children[0]?.path || '/'"
             class="admin-nav-link"
-            active-class="admin-nav-link-active"
+            :class="{ 'admin-nav-link-active': activeTopKey === item.key }"
           >
             {{ item.label }}
           </RouterLink>
         </nav>
         <div class="admin-user">
-          <span class="text-sm text-neutral hidden sm:inline">{{ user?.displayName || 'Admin' }}</span>
+          <span class="text-sm text-neutral hidden sm:inline">{{ username }}</span>
           <button class="admin-logout" @click="handleLogout">
             <van-icon name="cross" size="18" />
           </button>
@@ -35,18 +35,36 @@
         :class="{ 'sidebar-open': sidebarOpen }"
         @click.self="sidebarOpen = false"
       >
-        <nav class="admin-sidebar-nav">
+        <!-- PC 侧栏导航：展示当前主导航下的子导航 -->
+        <nav class="admin-sidebar-nav hidden md:flex">
           <RouterLink
-            v-for="item in navItems"
+            v-for="item in sidebarItems"
             :key="item.path"
             :to="item.path"
             class="admin-sidebar-link"
             active-class="admin-sidebar-link-active"
-            @click="sidebarOpen = false"
           >
             <van-icon v-if="item.icon" :name="item.icon" size="18" />
             {{ item.label }}
           </RouterLink>
+        </nav>
+
+        <!-- 移动端侧栏导航：展示完整的分组菜单 -->
+        <nav class="admin-sidebar-nav flex md:hidden">
+          <div v-for="group in menuConfig" :key="group.key" class="menu-group">
+            <div class="menu-group-title">{{ group.label }}</div>
+            <RouterLink
+              v-for="item in group.children"
+              :key="item.path"
+              :to="item.path"
+              class="admin-sidebar-link"
+              active-class="admin-sidebar-link-active"
+              @click="sidebarOpen = false"
+            >
+              <van-icon v-if="item.icon" :name="item.icon" size="18" />
+              {{ item.label }}
+            </RouterLink>
+          </div>
         </nav>
       </aside>
 
@@ -63,25 +81,72 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { showConfirmDialog, showToast } from 'vant'
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
 
 const projectName = computed(() => import.meta.env.VITE_PROJECT_NAME || '运营后台')
-const user = computed(() => userStore.userInfo)
+const username = computed(() => userStore.username || 'Admin')
 
 const sidebarOpen = ref(false)
 
-// 占位的导航项；项目按需覆盖
-const navItems = [
-  { path: '/', label: '运营概览', icon: 'home-o' },
-  { path: '/products', label: '业务管理', icon: 'apps-o' },
-  { path: '/review', label: '审批中心', icon: 'records-o' },
-  { path: '/users', label: '账号管理', icon: 'friends-o' },
+interface MenuItem {
+  path: string
+  label: string
+  icon?: string
+}
+
+interface TopNavItem {
+  key: string
+  label: string
+  icon?: string
+  children: MenuItem[]
+}
+
+// 占位的两级导航项；项目按需覆盖
+const menuConfig: TopNavItem[] = [
+  {
+    key: 'overview',
+    label: '运营概览',
+    children: [
+      { path: '/', label: '数据看板', icon: 'chart-trending-o' },
+      { path: '/workbench', label: '工作台', icon: 'todo-list-o' }
+    ]
+  },
+  {
+    key: 'business',
+    label: '业务管理',
+    children: [
+      { path: '/products', label: '商品列表', icon: 'goods-collect-o' },
+      { path: '/review', label: '审批中心', icon: 'records-o' }
+    ]
+  },
+  {
+    key: 'system',
+    label: '系统管理',
+    children: [
+      { path: '/users', label: '账号管理', icon: 'friends-o' },
+      { path: '/operations', label: '运营配置', icon: 'setting-o' }
+    ]
+  }
 ]
+
+const activeTopKey = computed(() => {
+  const currentPath = route.path
+  const match = menuConfig.find((item) =>
+    item.children.some((child) => child.path === currentPath)
+  )
+  return match ? match.key : 'overview'
+})
+
+const sidebarItems = computed(() => {
+  const match = menuConfig.find((item) => item.key === activeTopKey.value)
+  return match ? match.children : []
+})
 
 const handleLogout = () => {
   showConfirmDialog({
@@ -231,10 +296,28 @@ const handleLogout = () => {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 100%;
 }
 
 .admin-sidebar-link {
   width: 100%;
+}
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.menu-group-title {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8; /* slate-400 */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .admin-main {

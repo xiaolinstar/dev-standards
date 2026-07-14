@@ -11,6 +11,30 @@ export const asyncRoutes: RouteRecordRaw[] = [
     meta: { title: '数据看板', permissions: ['admin', 'operator'] }
   },
   {
+    path: '/workbench',
+    name: 'Workbench',
+    component: () => import('@/views/dashboard/index.vue'),
+    meta: { title: '工作台', permissions: ['admin', 'operator'] }
+  },
+  {
+    path: '/products',
+    name: 'Products',
+    component: () => import('@/views/dashboard/index.vue'),
+    meta: { title: '商品列表', permissions: ['admin', 'operator'] }
+  },
+  {
+    path: '/review',
+    name: 'Review',
+    component: () => import('@/views/dashboard/index.vue'),
+    meta: { title: '审批中心', permissions: ['admin', 'operator'] }
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: () => import('@/views/dashboard/index.vue'),
+    meta: { title: '账号管理', permissions: ['admin'] }
+  },
+  {
     path: '/operations',
     name: 'Operations',
     component: () => import('@/views/dashboard/index.vue'), // 临时指向同一个

@@ -7,26 +7,26 @@
 
 ## 1. 设计原则
 
-| 原则 | 含义 |
-|------|------|
-| **PC 优先** | 视觉布局、操作密度、信息架构默认按 1280px 宽设计，向下逐级降级 |
-| **一套代码，两端共享** | 不做"PC 单独写一份、移动端单独写一份"，靠断点和组件自适应 |
-| **设计令牌化** | 所有色值、间距、圆角、字号必须走 CSS 变量，禁止散落硬编码 |
+| 原则                   | 含义                                                                   |
+| ---------------------- | ---------------------------------------------------------------------- |
+| **PC 优先**            | 视觉布局、操作密度、信息架构默认按 1280px 宽设计，向下逐级降级         |
+| **一套代码，两端共享** | 不做"PC 单独写一份、移动端单独写一份"，靠断点和组件自适应              |
+| **设计令牌化**         | 所有色值、间距、圆角、字号必须走 CSS 变量，禁止散落硬编码              |
 | **差异化收敛到 token** | 项目间允许差异，但只能发生在 `--project-primary-color` 等 token 覆盖处 |
 
 ## 2. 技术栈与版本基线
 
-| 维度 | 选型 | 理由 |
-|------|------|------|
-| 语言 | TypeScript `strict: true` | 与 [h5.md](h5.md) §1 一致 |
-| 核心框架 | Vue 3 (SFC, Composition API) | 与 H5 项目共享心智模型 |
-| 状态管理 | Pinia + `pinia-plugin-persistedstate` | token 持久化 |
-| 路由 | Vue Router (HTML5 history) | RBAC 动态路由 |
-| UI 组件库 | **Vant 4** | 保留移动端组件手感，同时支持桌面断点 |
-| 样式系统 | **Tailwind CSS** + CSS 变量 | utility-first + design tokens |
-| 适配方案 | **响应式断点**（非 vw 沙盒） | PC 优先场景下，vw 已不适用 |
-| HTTP | Axios + 拦截器 | 与 [api-error-codes.md](api-error-codes.md) 对齐 |
-| 包管理 | pnpm | 与 monorepo 一致 |
+| 维度      | 选型                                  | 理由                                             |
+| --------- | ------------------------------------- | ------------------------------------------------ |
+| 语言      | TypeScript `strict: true`             | 与 [h5.md](h5.md) §1 一致                        |
+| 核心框架  | Vue 3 (SFC, Composition API)          | 与 H5 项目共享心智模型                           |
+| 状态管理  | Pinia + `pinia-plugin-persistedstate` | token 持久化                                     |
+| 路由      | Vue Router (HTML5 history)            | RBAC 动态路由                                    |
+| UI 组件库 | **Vant 4**                            | 保留移动端组件手感，同时支持桌面断点             |
+| 样式系统  | **Tailwind CSS** + CSS 变量           | utility-first + design tokens                    |
+| 适配方案  | **响应式断点**（非 vw 沙盒）          | PC 优先场景下，vw 已不适用                       |
+| HTTP      | Axios + 拦截器                        | 与 [api-error-codes.md](api-error-codes.md) 对齐 |
+| 包管理    | pnpm                                  | 与 monorepo 一致                                 |
 
 > ⚠️ **Vant 必须按需引入**：通过 `unplugin-vue-components` + `VantResolver`，严禁 `import 'vant'`。
 > 错误示例：`import { Button } from 'vant'` 在多组件场景下仍会按需；但 `import 'vant/lib/index.css'` 全量引入样式**严禁**。
@@ -41,16 +41,16 @@
 /* src/styles/tokens.css —— 跨项目统一，禁止各项目私自新增 token */
 :root {
   /* === 色板（仅 5 个语义色，扩展色按需申请） === */
-  --project-primary-color: #2563eb;   /* 主色 —— 项目可覆盖 */
+  --project-primary-color: #2563eb; /* 主色 —— 项目可覆盖 */
   --project-success-color: #10b981;
   --project-warning-color: #f59e0b;
   --project-danger-color: #ef4444;
   --project-neutral-color: #64748b;
 
   /* === 圆角 === */
-  --project-radius-sm: 6px;     /* 按钮、tag、小卡片 */
-  --project-radius-md: 12px;    /* 卡片、面板 */
-  --project-radius-lg: 20px;    /* 弹窗、抽屉 */
+  --project-radius-sm: 6px; /* 按钮、tag、小卡片 */
+  --project-radius-md: 12px; /* 卡片、面板 */
+  --project-radius-lg: 20px; /* 弹窗、抽屉 */
   --project-radius-pill: 999px; /* pill 按钮 */
 
   /* === 间距（基于 4 倍数） === */
@@ -65,13 +65,13 @@
   --project-space-12: 48px;
 
   /* === 字号 === */
-  --project-text-xs: 12px;      /* 辅助文字、标签 */
-  --project-text-sm: 13px;      /* 表格、表单 */
-  --project-text-base: 14px;    /* 正文 */
-  --project-text-md: 16px;      /* 二级标题 */
-  --project-text-lg: 18px;      /* 一级标题 */
-  --project-text-xl: 22px;      /* 页面标题 */
-  --project-text-2xl: 28px;     /* 强调标题 */
+  --project-text-xs: 12px; /* 辅助文字、标签 */
+  --project-text-sm: 13px; /* 表格、表单 */
+  --project-text-base: 14px; /* 正文 */
+  --project-text-md: 16px; /* 二级标题 */
+  --project-text-lg: 18px; /* 一级标题 */
+  --project-text-xl: 22px; /* 页面标题 */
+  --project-text-2xl: 28px; /* 强调标题 */
 
   /* === 行高 === */
   --project-leading-tight: 1.2;
@@ -128,39 +128,39 @@
 // tailwind.config.js
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
     screens: {
-      sm: '640px',   // --project-bp-sm
-      md: '768px',   // --project-bp-md
-      lg: '1024px',  // --project-bp-lg
-      xl: '1280px',  // --project-bp-xl
+      sm: "640px", // --project-bp-sm
+      md: "768px", // --project-bp-md
+      lg: "1024px", // --project-bp-lg
+      xl: "1280px", // --project-bp-xl
     },
     extend: {
       colors: {
-        primary: 'var(--project-primary-color)',
-        success: 'var(--project-success-color)',
-        warning: 'var(--project-warning-color)',
-        danger: 'var(--project-danger-color)',
-        neutral: 'var(--project-neutral-color)',
+        primary: "var(--project-primary-color)",
+        success: "var(--project-success-color)",
+        warning: "var(--project-warning-color)",
+        danger: "var(--project-danger-color)",
+        neutral: "var(--project-neutral-color)",
       },
       borderRadius: {
-        sm: 'var(--project-radius-sm)',
-        md: 'var(--project-radius-md)',
-        lg: 'var(--project-radius-lg)',
-        pill: 'var(--project-radius-pill)',
+        sm: "var(--project-radius-sm)",
+        md: "var(--project-radius-md)",
+        lg: "var(--project-radius-lg)",
+        pill: "var(--project-radius-pill)",
       },
       spacing: {
-        'safe-top': 'env(safe-area-inset-top)',
-        'safe-bottom': 'env(safe-area-inset-bottom)',
+        "safe-top": "env(safe-area-inset-top)",
+        "safe-bottom": "env(safe-area-inset-bottom)",
       },
       maxWidth: {
-        container: 'var(--project-container-max)',
+        container: "var(--project-container-max)",
       },
     },
   },
   plugins: [],
-}
+};
 ```
 
 > ⚠️ Tailwind **不引入 `postcss-px-to-viewport` 插件**。PC 优先场景下 px 直写即可，
@@ -185,17 +185,19 @@ export default {
         <h1 class="admin-brand">{{ projectName }}</h1>
         <nav class="admin-nav hidden md:flex">
           <RouterLink
-            v-for="item in navItems"
-            :key="item.path"
-            :to="item.path"
+            v-for="item in menuConfig"
+            :key="item.key"
+            :to="item.children[0]?.path || '/'"
             class="admin-nav-link"
-            active-class="admin-nav-link-active"
+            :class="{ 'admin-nav-link-active': activeTopKey === item.key }"
           >
             {{ item.label }}
           </RouterLink>
         </nav>
         <div class="admin-user">
-          <span class="text-sm text-neutral hidden sm:inline">{{ user?.displayName }}</span>
+          <span class="text-sm text-neutral hidden sm:inline">{{
+            username
+          }}</span>
           <button class="admin-logout" @click="handleLogout">
             <van-icon name="cross" size="18" />
           </button>
@@ -210,18 +212,36 @@ export default {
         :class="{ 'sidebar-open': sidebarOpen }"
         @click.self="sidebarOpen = false"
       >
-        <nav class="admin-sidebar-nav">
+        <!-- PC 侧栏导航：展示当前主导航下的子导航 -->
+        <nav class="admin-sidebar-nav hidden md:flex">
           <RouterLink
-            v-for="item in navItems"
+            v-for="item in sidebarItems"
             :key="item.path"
             :to="item.path"
             class="admin-sidebar-link"
             active-class="admin-sidebar-link-active"
-            @click="sidebarOpen = false"
           >
             <van-icon v-if="item.icon" :name="item.icon" size="18" />
             {{ item.label }}
           </RouterLink>
+        </nav>
+
+        <!-- 移动端侧栏导航：展示完整的分组菜单 -->
+        <nav class="admin-sidebar-nav flex md:hidden">
+          <div v-for="group in menuConfig" :key="group.key" class="menu-group">
+            <div class="menu-group-title">{{ group.label }}</div>
+            <RouterLink
+              v-for="item in group.children"
+              :key="item.path"
+              :to="item.path"
+              class="admin-sidebar-link"
+              active-class="admin-sidebar-link-active"
+              @click="sidebarOpen = false"
+            >
+              <van-icon v-if="item.icon" :name="item.icon" size="18" />
+              {{ item.label }}
+            </RouterLink>
+          </div>
         </nav>
       </aside>
 
@@ -235,6 +255,93 @@ export default {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useUserStore } from "@/stores/user";
+import { showConfirmDialog, showToast } from "vant";
+
+const router = useRouter();
+const route = useRoute();
+const userStore = useUserStore();
+
+const projectName = computed(
+  () => import.meta.env.VITE_PROJECT_NAME || "运营后台",
+);
+const username = computed(() => userStore.username || "Admin");
+
+const sidebarOpen = ref(false);
+
+interface MenuItem {
+  path: string;
+  label: string;
+  icon?: string;
+}
+
+interface TopNavItem {
+  key: string;
+  label: string;
+  icon?: string;
+  children: MenuItem[];
+}
+
+// 两级主次菜单配置
+const menuConfig: TopNavItem[] = [
+  {
+    key: "overview",
+    label: "运营概览",
+    children: [
+      { path: "/", label: "数据看板", icon: "chart-trending-o" },
+      { path: "/workbench", label: "工作台", icon: "todo-list-o" },
+    ],
+  },
+  {
+    key: "business",
+    label: "业务管理",
+    children: [
+      { path: "/products", label: "商品列表", icon: "goods-collect-o" },
+      { path: "/review", label: "审批中心", icon: "records-o" },
+    ],
+  },
+  {
+    key: "system",
+    label: "系统管理",
+    children: [
+      { path: "/users", label: "账号管理", icon: "friends-o" },
+      { path: "/operations", label: "运营配置", icon: "setting-o" },
+    ],
+  },
+];
+
+// 监听路由计算当前高亮主导航
+const activeTopKey = computed(() => {
+  const currentPath = route.path;
+  const match = menuConfig.find((item) =>
+    item.children.some((child) => child.path === currentPath),
+  );
+  return match ? match.key : "overview";
+});
+
+// 根据主导航计算侧栏子导航
+const sidebarItems = computed(() => {
+  const match = menuConfig.find((item) => item.key === activeTopKey.value);
+  return match ? match.children : [];
+});
+
+const handleLogout = () => {
+  showConfirmDialog({
+    title: "确认退出",
+    message: "确定要退出当前运营账户吗？",
+  })
+    .then(() => {
+      userStore.clearUserInfo();
+      showToast("已安全退出");
+      router.replace({ name: "Login" });
+    })
+    .catch(() => {});
+};
+</script>
 
 <style scoped>
 .admin-shell {
@@ -359,10 +466,28 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 100%;
 }
 
 .admin-sidebar-link {
   width: 100%;
+}
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.menu-group-title {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .admin-main {
@@ -397,12 +522,12 @@ export default {
 
 ### 4.2 断点行为约定
 
-| 断点 | 宽度 | 行为 |
-|------|------|------|
-| `< 768px` (mobile) | 单列堆叠、底部 tabbar、卡片化列表、侧栏隐藏为抽屉 | |
-| `768~1023px` (tablet) | 双列卡片、抽屉式详情、顶部 nav 出现 | |
-| `≥ 1024px` (desktop) | 12 列栅格、侧栏常驻、抽屉变侧栏 | |
-| `≥ 1280px` (wide) | 内容容器 `max-width: 1280px` 居中 | |
+| 断点                  | 宽度                                              | 行为 |
+| --------------------- | ------------------------------------------------- | ---- |
+| `< 768px` (mobile)    | 单列堆叠、底部 tabbar、卡片化列表、侧栏隐藏为抽屉 |      |
+| `768~1023px` (tablet) | 双列卡片、抽屉式详情、顶部 nav 出现               |      |
+| `≥ 1024px` (desktop)  | 12 列栅格、侧栏常驻、抽屉变侧栏                   |      |
+| `≥ 1280px` (wide)     | 内容容器 `max-width: 1280px` 居中                 |      |
 
 ## 5. 列表 / 表格 / 表单
 
@@ -442,7 +567,10 @@ export default {
 表单统一使用 Vant 4 的 `van-form` + `van-cell-group` + `van-field`：
 
 ```vue
-<van-form @submit="onSubmit" class="bg-white rounded-md border border-slate-200 p-4">
+<van-form
+  @submit="onSubmit"
+  class="bg-white rounded-md border border-slate-200 p-4"
+>
   <van-cell-group inset>
     <van-field
       v-model="form.title"
@@ -483,13 +611,13 @@ export default {
 
 ## 6. 按钮规范
 
-| 场景 | 组件 / 类 | 高度 | 圆角 | 字体 |
-|------|-----------|------|------|------|
-| 主要操作（提交/保存/确认） | `van-button type="primary"` | 40px | `var(--project-radius-sm)` | `text-base font-semibold` |
-| 次要操作（取消/返回） | `van-button type="default"` | 40px | `var(--project-radius-sm)` | `text-base` |
-| 卡片内联操作 | `van-button size="small" plain` | 28px | `var(--project-radius-sm)` | `text-xs` |
-| 高危操作（删除/禁用） | `van-button type="danger" + showConfirmDialog` | 40px | `var(--project-radius-sm)` | `text-base font-semibold` |
-| 文字链接 | `RouterLink` 自定义样式 | - | - | `text-sm text-primary` |
+| 场景                       | 组件 / 类                                      | 高度 | 圆角                       | 字体                      |
+| -------------------------- | ---------------------------------------------- | ---- | -------------------------- | ------------------------- |
+| 主要操作（提交/保存/确认） | `van-button type="primary"`                    | 40px | `var(--project-radius-sm)` | `text-base font-semibold` |
+| 次要操作（取消/返回）      | `van-button type="default"`                    | 40px | `var(--project-radius-sm)` | `text-base`               |
+| 卡片内联操作               | `van-button size="small" plain`                | 28px | `var(--project-radius-sm)` | `text-xs`                 |
+| 高危操作（删除/禁用）      | `van-button type="danger" + showConfirmDialog` | 40px | `var(--project-radius-sm)` | `text-base font-semibold` |
+| 文字链接                   | `RouterLink` 自定义样式                        | -    | -                          | `text-sm text-primary`    |
 
 - **按压反馈**：Vant 按钮默认带 `active` 状态，**严禁**额外覆盖。
 - **防重提交**：所有写操作按钮绑定 `:loading="saving"`，通过 `disabled` 防止重复点击。
@@ -497,14 +625,14 @@ export default {
 
 ## 7. 状态反馈
 
-| 反馈类型 | Vant 组件 | 何时使用 |
-|----------|-----------|----------|
-| 轻提示（成功/失败/警告） | `showToast({ type, message })` | 操作结果的瞬时反馈，2 秒自动消失 |
-| 重提示（需要用户确认） | `showConfirmDialog` | 二次确认、删除、停用 |
-| 阻塞提示（强提示） | `showDialog` | 系统错误、强制公告 |
-| 加载中 | `showLoadingToast({ forbidClick: true })` | 写操作期间遮罩 |
-| 空状态 | `van-empty description="..."` | 列表为空 |
-| 长操作进度 | `van-circle` 或自定义进度条 | 批量导入/导出 |
+| 反馈类型                 | Vant 组件                                 | 何时使用                         |
+| ------------------------ | ----------------------------------------- | -------------------------------- |
+| 轻提示（成功/失败/警告） | `showToast({ type, message })`            | 操作结果的瞬时反馈，2 秒自动消失 |
+| 重提示（需要用户确认）   | `showConfirmDialog`                       | 二次确认、删除、停用             |
+| 阻塞提示（强提示）       | `showDialog`                              | 系统错误、强制公告               |
+| 加载中                   | `showLoadingToast({ forbidClick: true })` | 写操作期间遮罩                   |
+| 空状态                   | `van-empty description="..."`             | 列表为空                         |
+| 长操作进度               | `van-circle` 或自定义进度条               | 批量导入/导出                    |
 
 ### 7.1 错误码统一处理
 
@@ -512,10 +640,10 @@ axios 拦截器必须实现 [api-error-codes.md](api-error-codes.md) 的约定�
 
 ```typescript
 // services/http.ts
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { showToast, showDialog } from 'vant';
-import { useUserStore } from '@/stores/user';
-import router from '@/router';
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { showToast, showDialog } from "vant";
+import { useUserStore } from "@/stores/user";
+import router from "@/router";
 
 http.interceptors.response.use(
   (response) => response.data,
@@ -526,22 +654,25 @@ http.interceptors.response.use(
 
     switch (status) {
       case 401:
-        showToast('登录状态过期，请重新登录');
+        showToast("登录状态过期，请重新登录");
         userStore.clearAuth();
-        router.replace({ name: 'Login', query: { redirect: router.currentRoute.value.fullPath } });
+        router.replace({
+          name: "Login",
+          query: { redirect: router.currentRoute.value.fullPath },
+        });
         break;
       case 403:
-        showToast('权限不足');
-        router.replace({ name: '403' });
+        showToast("权限不足");
+        router.replace({ name: "403" });
         break;
       case 422:
-        showToast(data?.message || '输入校验失败');
+        showToast(data?.message || "输入校验失败");
         break;
       case 500:
-        showDialog({ title: '系统错误', message: '服务异常，请稍后重试' });
+        showDialog({ title: "系统错误", message: "服务异常，请稍后重试" });
         break;
       default:
-        showToast(data?.message || error.message || '网络错误');
+        showToast(data?.message || error.message || "网络错误");
     }
     return Promise.reject(error);
   },
@@ -557,32 +688,32 @@ http.interceptors.response.use(
 
 ```typescript
 router.beforeEach(async (to) => {
-  document.title = `${String(to.meta.title || '')} - ${import.meta.env.VITE_PROJECT_NAME}`
+  document.title = `${String(to.meta.title || "")} - ${import.meta.env.VITE_PROJECT_NAME}`;
 
-  const auth = useAuthStore()
+  const auth = useAuthStore();
   if (auth.token && !auth.user) {
     try {
-      const result = await getCurrentUser()
-      auth.setUser(result.user)
+      const result = await getCurrentUser();
+      auth.setUser(result.user);
     } catch {
-      auth.clearAuth()
+      auth.clearAuth();
     }
   }
 
-  if (to.name !== 'login' && !auth.token) {
-    return { name: 'login', query: { redirect: to.fullPath } }
+  if (to.name !== "login" && !auth.token) {
+    return { name: "login", query: { redirect: to.fullPath } };
   }
-  if (to.name === 'login' && auth.token) {
-    return { name: 'dashboard' }
+  if (to.name === "login" && auth.token) {
+    return { name: "dashboard" };
   }
 
-  const needPermission = to.meta?.permission as string | undefined
+  const needPermission = to.meta?.permission as string | undefined;
   if (needPermission && !auth.user?.permissions.includes(needPermission)) {
-    return { name: '403' }
+    return { name: "403" };
   }
 
-  return true
-})
+  return true;
+});
 ```
 
 ## 9. 性能与最佳实践
@@ -611,14 +742,14 @@ router.beforeEach(async (to) => {
 
 ## 11. 迁移指引（从 drink-budget / party-helper admin）
 
-| 来源 | 替换动作 |
-|------|----------|
-| `App.vue` 中的手机壳样式 | 删除，替换为 §4.1 的 `header + sidebar + main` 骨架 |
-| `styles/index.css` 中的硬编码色值 | 替换为 design tokens（§3.1） |
-| `tailwind.config.js` 中的 `primary: '#1989fa'` | 替换为 `primary: 'var(--project-primary-color)'` |
-| `postcss.config.js` 中的 `postcss-px-to-viewport-8-plugin` | **删除**（PC 优先场景不需要 vw 适配） |
-| 自写 CSS 组件（`.login-panel`、`.panel`、`.feedback-card` 等） | 替换为 Vant 4 组件 + Tailwind utility |
-| 原生 `<input>` / `<select>` | 替换为 `van-field` + `van-popup + van-picker` |
+| 来源                                                           | 替换动作                                            |
+| -------------------------------------------------------------- | --------------------------------------------------- |
+| `App.vue` 中的手机壳样式                                       | 删除，替换为 §4.1 的 `header + sidebar + main` 骨架 |
+| `styles/index.css` 中的硬编码色值                              | 替换为 design tokens（§3.1）                        |
+| `tailwind.config.js` 中的 `primary: '#1989fa'`                 | 替换为 `primary: 'var(--project-primary-color)'`    |
+| `postcss.config.js` 中的 `postcss-px-to-viewport-8-plugin`     | **删除**（PC 优先场景不需要 vw 适配）               |
+| 自写 CSS 组件（`.login-panel`、`.panel`、`.feedback-card` 等） | 替换为 Vant 4 组件 + Tailwind utility               |
+| 原生 `<input>` / `<select>`                                    | 替换为 `van-field` + `van-popup + van-picker`       |
 
 ## 12. 参考
 
