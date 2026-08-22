@@ -2,6 +2,14 @@
 
 All notable changes to the dev-standards Claude Code plugin follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+- **Added** — `hooks/pre-commit-python/` 模板：Python 项目专用 `.pre-commit-config.yaml`（gitleaks + ruff + uv-lock + mypy + conventional-pre-commit）
+- **Added** — `sync.sh hooks-precommit-python <project>` 部署命令
+- **Added** — [ADR-0006](playbook/adr/0006-ci-minimum-gate.md) §项目类型 → Hook 框架选型决策矩阵
+- **Changed** — gitleaks 从"降级可选"升级为"必须安装，未装则阻断 commit"
+- **Changed** — [ci-minimum-gate.md](playbook/ci-minimum-gate.md) 新增 Python 项目（pre-commit + uv）配置说明
+
 ## [3.5.0] - 2026-07-07
 
 - **Added** — [ADR-0012](playbook/adr/0012-config-github-l2-only.md)：`~/.config` 仅 GitHub L2 IaC；L3 运行时单一真源在 VPS

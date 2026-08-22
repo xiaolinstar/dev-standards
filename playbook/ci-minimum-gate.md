@@ -38,7 +38,7 @@
 ### 3. Secret Scan
 
 - 防止 API key / 私钥 / token 入库
-- **本地段：本地未装 gitleaks 时降级**（pre-commit 警告但不阻断，CI 兜底）
+- **本地段：必须安装 gitleaks**（未装则阻断 commit 并提示安装）
 - **CI 段：阻断式**（secret 检出 = fail 整个 pipeline）
 
 ### 4. Commit Message Format
@@ -51,9 +51,36 @@
 
 ## 本地 pre-commit 配置（必选）
 
-所有项目必须配置本地 Git hooks。**首推栈**：Husky 9 + lint-staged + commitlint。
+所有项目必须配置本地 Git hooks。
 
-### 文件清单
+## 项目类型 → Hook 框架选型
+
+根据项目技术栈选择不同的 hook 框架：
+
+| 判断条件 | 包管理器 | Hook 框架 | Staged 处理 | Commit 检查 | 部署命令 |
+|----------|----------|-----------|-------------|-------------|----------|
+| 有 `package.json` | pnpm | **Husky 9** | lint-staged | commitlint | `sync.sh hooks-precommit <project>` |
+| 有 `pyproject.toml` | uv | **pre-commit** (Python) | pre-commit 内置 | conventional-pre-commit | `sync.sh hooks-precommit-python <project>` |
+| Monorepo（两者都有） | pnpm + uv | **Husky**（根目录） | lint-staged（按路径分流） | commitlint | `sync.sh hooks-precommit <project>` |
+
+**决策逻辑**：
+
+```text
+if 项目根目录有 package.json:
+    → 使用 Husky（pnpm 生态原生）
+elif 项目根目录有 pyproject.toml:
+    → 使用 pre-commit + uv（Python 生态原生）
+elif Monorepo（根有 package.json，子目录有 pyproject.toml）:
+    → 根目录用 Husky，Python 子包通过 lint-staged 路径分流调用 ruff
+```
+
+### Node.js / TypeScript 项目（Husky）
+
+适用于：Vue、React、Next.js、Express、NestJS、CLI 工具、微信小程序等。
+
+**首推栈**：Husky 9 + lint-staged + commitlint。
+
+#### 文件清单
 
 | 路径                                 | 作用                                                                 |
 | ------------------------------------ | -------------------------------------------------------------------- |
@@ -63,17 +90,19 @@
 | 根 `package.json` §`lint-staged`     | staged 文件处理规则                                                  |
 | 根 `package.json` §`scripts.prepare` | `"prepare": "husky"`（pnpm install 时自动初始化）                    |
 
-### pre-commit hook 模板
+#### pre-commit hook 模板
 
 ```sh
 #!/usr/bin/env sh
 
-# 1. Secret scan (降级：本地未装 gitleaks 不阻断，CI 兜底)
-if command -v gitleaks >/dev/null 2>&1; then
-  gitleaks protect --staged --redact --no-banner || exit 1
-else
-  echo "⚠️  gitleaks 未装；CI 兜底（.github/workflows/ci.yml）"
+# 1. Secret scan (必须安装 gitleaks)
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "❌ gitleaks 未安装，请先安装："
+  echo "   macOS:  brew install gitleaks"
+  echo "   Linux:  https://github.com/gitleaks/gitleaks#installation"
+  exit 1
 fi
+gitleaks protect --staged --redact --no-banner || exit 1
 
 # 2. lint-staged
 npx --no -- lint-staged
@@ -179,6 +208,101 @@ brew install gitleaks
 # 见 https://github.com/gitleaks/gitleaks#installation
 ```
 
+### Python 项目（pre-commit + uv）
+
+适用于：Flask、FastAPI、Django、纯 Python CLI、数据处理等。
+
+**首推栈**：uv + pre-commit + ruff + mypy + conventional-pre-commit。
+
+#### Python 项目文件清单
+
+| 路径 | 作用 |
+|------|------|
+| `.pre-commit-config.yaml` | 所有 hook 配置（gitleaks + ruff + uv-lock + mypy + conventional） |
+| `pyproject.toml` §`[tool.ruff]` | ruff lint/format 配置 |
+| `pyproject.toml` §`[tool.mypy]` | mypy 类型检查配置 |
+| `uv.lock` | uv 锁文件（由 `uv lock` 生成，`uv-lock` hook 自动检查同步） |
+
+#### 安装步骤
+
+```bash
+# 1. 安装 pre-commit（使用 uv）
+uv tool install pre-commit
+
+# 2. 安装 hooks
+uv run pre-commit install
+uv run pre-commit install --hook-type commit-msg
+
+# 3. 首次运行（下载 hooks）
+uv run pre-commit run --all-files
+```
+
+#### `.pre-commit-config.yaml` 模板
+
+```yaml
+repos:
+  # 基础检查
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  # Secret scan（必选）
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # Lint + Format（必选）
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.6
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # uv lock 文件同步检查
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: v0.6.6
+    hooks:
+      - id: uv-lock
+
+  # Typecheck（必选 2 的候选）
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.14.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [pydantic, flask]  # 按项目依赖调整
+
+  # Commit message format（必选）
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+```
+
+#### 与 Husky 的差异
+
+| 维度 | Husky (Node.js) | pre-commit + uv (Python) |
+|------|-----------------|--------------------------|
+| 包管理器 | pnpm | uv |
+| 安装 | `pnpm install` 自动（prepare script） | `uv run pre-commit install` 手动 |
+| 配置文件 | `.husky/` 目录 + shell 脚本 | `.pre-commit-config.yaml` |
+| 锁文件 | `pnpm-lock.yaml` | `uv.lock` |
+| Staged 处理 | lint-staged（外部工具） | pre-commit 内置 |
+| Commit 检查 | commitlint | conventional-pre-commit |
+| CI 一致性 | 同一 hook 脚本 | 同一 `.pre-commit-config.yaml` |
+
+#### 部署命令
+
+```bash
+~/AgentProjects/dev-standards/scripts/sync.sh hooks-precommit-python /path/to/project
+```
+
 ## 可选 4 项
 
 | 项        | 推荐触发                |
@@ -225,7 +349,7 @@ jobs:
 
 `dev-bootstrap` 审计时，按此清单逐项检查。**漏一项 = 不合格**。
 
-- [ ] `.husky/pre-commit` 存在，含 gitleaks（降级策略）+ lint-staged
+- [ ] `.husky/pre-commit` 存在，含 gitleaks（必须安装）+ lint-staged
 - [ ] `.husky/commit-msg` 存在，含 commitlint
 - [ ] `commitlint.config.{js,cjs}` 存在
 - [ ] 根 `package.json` 含 `"prepare": "husky"`
@@ -249,7 +373,7 @@ jobs:
 
 | 阶段              | 回答的问题                                                   | 阻断？                        | dev-standards 模板                                 |
 | ----------------- | ------------------------------------------------------------ | ----------------------------- | -------------------------------------------------- |
-| **1. 本地 hooks** | 本次 commit 有无 secret / 格式 / 暂存 lint 问题？            | 本地应阻断（gitleaks 可降级） | ✅ `hooks/pre-commit/` → `sync.sh hooks-precommit` |
+| **1. 本地 hooks** | 本次 commit 有无 secret / 格式 / 暂存 lint 问题？            | 本地应阻断（gitleaks 必装） | ✅ `hooks/pre-commit/` → `sync.sh hooks-precommit` |
 | **2. CI**         | 合并后全仓能否 lint / typecheck / test / build？制品可复现？ | **必须阻断**                  | ⚠️ 本文 §流水线骨架；复杂 monorepo 参考业务仓      |
 | **3. CD**         | 是否部署了正确版本？公网是否健康？                           | 生产应阻断                    | ❌ 无通用模板（domain 差异大）                     |
 

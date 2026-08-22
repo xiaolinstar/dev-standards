@@ -1,0 +1,47 @@
+# Pre-commit 配置模板（Python 项目，使用 uv）
+# 部署：~/AgentProjects/dev-standards/scripts/sync.sh hooks-precommit-python <project>
+# 安装：uv run pre-commit install && uv run pre-commit install --hook-type commit-msg
+
+repos:
+  # 基础检查
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  # Secret scan（必选）
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # Lint + Format（必选）
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.6
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # uv lock 文件同步检查
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: v0.6.6
+    hooks:
+      - id: uv-lock
+
+  # Typecheck（必选 2 的候选）
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.14.1
+    hooks:
+      - id: mypy
+        additional_dependencies: []  # 按项目依赖调整，如 [pydantic, flask]
+
+  # Commit message format（必选）
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.0.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]

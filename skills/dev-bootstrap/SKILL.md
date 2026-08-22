@@ -44,12 +44,22 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 
 ### 本地 Git hooks（必选，对应 [ci-minimum-gate.md §本地 pre-commit 配置](../../playbook/ci-minimum-gate.md#本地-pre-commit-配置必选)）
 
-- [ ] `.husky/pre-commit` 存在，含 gitleaks（降级策略）+ lint-staged
+**先判断项目类型**（见 [ci-minimum-gate.md §项目类型选型](../../playbook/ci-minimum-gate.md#项目类型--hook-框架选型)）：
+
+#### Node.js / TS 项目（有 `package.json`）
+
+- [ ] `.husky/pre-commit` 存在，含 gitleaks（必须安装）+ lint-staged
 - [ ] `.husky/commit-msg` 存在，含 commitlint
 - [ ] `commitlint.config.{js,cjs}` 存在
 - [ ] 根 `package.json` 含 `"prepare": "husky"`
 - [ ] 根 `package.json` 含 `lint-staged` 配置
 - [ ] **lint-staged 与 CI `format:check` glob 对齐**（monorepo 子 app 逐项对照；见 [ci-minimum-gate.md §hook ↔ CI 对齐](../../playbook/ci-minimum-gate.md#hook--ci-对齐monorepo-必查)）
+
+#### Python 项目（有 `pyproject.toml`，使用 uv）
+
+- [ ] `.pre-commit-config.yaml` 存在，含 gitleaks + ruff + uv-lock + mypy + conventional-pre-commit
+- [ ] `uv run pre-commit install` 已执行（hooks 可用）
+- [ ] `uv run pre-commit install --hook-type commit-msg` 已执行
 
 ### CI（必选 4 项，对应 [ci-minimum-gate.md §必选 4 项](../../playbook/ci-minimum-gate.md#必选-4-项local--ci-双段)）
 
