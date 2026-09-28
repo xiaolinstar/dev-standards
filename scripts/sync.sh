@@ -11,6 +11,7 @@ usage() {
 Usage: $(basename "$0") <command> [args]
 
 Commands:
+  agents              Sync agents/ and agentteams/ → ~/.agents/
   skills              Sync skills/ → ~/.claude/skills/
   skills --cursor     Also sync skills/ → ~/.cursor/skills/
   adapters <name> <project>   Copy adapters/<name>/ → target path under <project>/
@@ -221,6 +222,21 @@ cmd_env() {
   esac
 }
 
+AGENTS_DEST="${HOME}/.agents"
+
+cmd_agents() {
+  echo "→ Universal Agents & Subagents: $AGENTS_DEST"
+  mkdir -p "$AGENTS_DEST/subagents" "$AGENTS_DEST/agentteams"
+  if [[ -d "$ROOT/agents" ]]; then
+    rsync -a "$ROOT/agents/" "$AGENTS_DEST/subagents/"
+    echo "  synced: agents/ → $AGENTS_DEST/subagents/"
+  fi
+  if [[ -d "$ROOT/agentteams" ]]; then
+    rsync -a "$ROOT/agentteams/" "$AGENTS_DEST/agentteams/"
+    echo "  synced: agentteams/ → $AGENTS_DEST/agentteams/"
+  fi
+}
+
 cmd_validate() {
   local script failed=0
   for script in lint.sh adr-validate.sh baselines-validate.sh env/validate-registry.sh; do
@@ -240,6 +256,7 @@ main() {
   local cmd="${1:-help}"
   shift || true
   case "$cmd" in
+    agents)   cmd_agents "$@" ;;
     skills)   cmd_skills "$@" ;;
     adapters) cmd_adapters "$@" ;;
     hooks)    cmd_hooks "$@" ;;
@@ -247,7 +264,7 @@ main() {
     permissions) cmd_permissions "$@" ;;
     env) cmd_env "$@" ;;
     template) cmd_template "$@" ;;
-    all)      cmd_all "$@" ;;
+    all)      cmd_agents; cmd_skills "$@" ;;
     validate) cmd_validate ;;
     help|-h|--help) usage ;;
     *)

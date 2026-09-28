@@ -6,8 +6,8 @@
   "plugins": [
     {
       "name": "dev-standards",
-      "description": "Personal cross-project dev standards (dev-bootstrap, agent-permissions, wechat-mp)",
-      "version": "3.2.0",
+      "description": "Personal cross-project dev standards (dev-bootstrap, agent-permissions, wechat-mp, h5, ios)",
+      "version": "3.6.0",
       "source": "./"
     }
   ]

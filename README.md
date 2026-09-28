@@ -2,20 +2,23 @@
 
 个人跨项目开发标准库：规范、Skills、Hooks、Adapter 的**唯一真相来源**（公开仓库，欢迎 fork 与按需裁剪）。
 
-**一等公民**：Claude Code（`.claude/`、Skills、hooks）+ 跨工具 **AGENTS.md**。  
-**可选**：Cursor `.cursor/rules/`（glob 作用域，见 [playbook/agent-config.md](playbook/agent-config.md)）。
+**一等公民**：通用 Agents 规范（`AGENTS.md`、`agents/` Subagents、`agentteams/`）+ Claude 生态（Skills、hooks）。  
+**兼容层**：Cursor `.cursor/rules/` 等工具镜像（按需导出，见 [playbook/agent-config.md](playbook/agent-config.md)）。
 
 ## 定位
 
-| 层级 | 本仓库 | 消费位置 |
-|------|--------|----------|
-| 原则与 ADR | `playbook/` | 人读；Skill 引用 |
-| 外部基线映射 | `playbook/baselines/` | 人读；principles / skills 引用 |
-| 工作流 Skills | `skills/` | `~/.claude/skills/`（个人）或 `<project>/.claude/skills/`（项目） |
-| Agent 权限清单 | `permissions/` | `sync.sh permissions` → Cursor / Claude / Codex 等 |
-| Hooks 模板 | `hooks/` | `<project>/.claude/hooks/` |
-| 项目模板 | `templates/` | `sync.sh template <name> <dest>` |
-| Adapters | `adapters/<name>/` | `<project>/.cursor/rules/`（Cursor）等 |
+| 层级             | 本仓库                | 消费位置                                                       |
+| ---------------- | --------------------- | -------------------------------------------------------------- |
+| 原则与 ADR       | `playbook/`           | 人读；Agent 规则引用                                           |
+| 外部基线映射     | `playbook/baselines/` | 人读；principles / skills 引用                                 |
+| 通用 Agents 规范 | `AGENTS.md`           | 各项目根目录，跨 Agent 通用入口                                |
+| 领域 Subagents   | `agents/`             | `~/.agents/` 或各 Agent 引擎，独立子 Agent 角色声明            |
+| 多 Agent 协同    | `agentteams/`         | 复杂任务多 Agent (AgentTeam) 组队与工作流定义                  |
+| 工作流 Skills    | `skills/`             | `~/.claude/skills/`（个人）或 `<project>/.claude/skills/`      |
+| Agent 权限清单   | `permissions/`        | `sync.sh permissions` → 跨 Agent 自动化权限分发                |
+| Hooks 模板       | `hooks/`              | `<project>/.claude/hooks/`                                     |
+| 项目模板         | `templates/`          | `sync.sh template <name> <dest>`                               |
+| Adapters (可选)  | `adapters/<name>/`    | `<project>/.cursor/rules/`（仅当需要 Cursor 特有 glob 规则时） |
 
 **不是**业务代码仓库。各项目在自身 repo 里只保留「通用标准副本 + 项目特例」。
 
@@ -30,27 +33,36 @@ dev-standards/
 ├── playbook/
 │   ├── principles.md      # L1 原则（Agent / 流程层）
 │   ├── monorepo.md        # monorepo 实践
-│   ├── agent-config.md    # Claude + AGENTS 双体系最小维护
+│   ├── agent-config.md    # 通用 AGENTS + Subagents 体系维护
 │   ├── audit-feedback-loop.md  # 项目审计 → 标准反馈闭环
 │   ├── api-error-codes.md # 跨项目 API 错误响应约定
 │   ├── ci-minimum-gate.md # CI 必选 4 项 + 可选 4 项
 │   ├── wechat-mp.md       # 微信小程序（原生 + TS）
+│   ├── ios.md             # iOS 原生（SwiftUI + Liquid Glass）
 │   ├── baselines/         # 外部行业基线映射（CNCF TAG / 12-Factor / …）
 │   ├── INDEX.md           # 文档索引（含 ADR 仲裁顺序）
 │   └── adr/               # 架构 / 标准决策记录
-├── skills/                # Claude Code Skill 源码（一等公民）
+├── agents/                # 领域 Subagents 角色定义（一等公民）
+│   ├── auditor/
+│   ├── dev-bootstrap/
+│   └── env-ops/
+├── agentteams/            # 多 Agent 协同规范 (AgentTeam)
+│   ├── project-audit-team.md
+│   └── feature-refactor-team.md
+├── skills/                # Claude Code / Agent Skill 源码
 │   ├── dev-bootstrap/
 │   ├── agent-permissions/
 │   ├── wechat-mp/
-│   └── h5/
+│   ├── h5/
+│   └── ios/
 ├── permissions/           # 跨 Agent check/deny 规则真源
 │   ├── manifest.json
 │   └── overlays/        # 项目特例（如 ai-todo.json）
-├── hooks/                 # Claude hooks 模板（一等公民）
+├── hooks/                 # Claude hooks 模板
 │   ├── git-commit-guard.py
 │   └── pre-commit/        # Husky 模板（hooks-precommit 部署）
-├── adapters/              # 非 Claude Code Agent 的兼容镜像
-│   └── cursor/            # 6 个 .mdc（派生自 playbook/）
+├── adapters/              # 工具特有兼容镜像（可选）
+│   └── cursor/            # 7 个 .mdc（派生自 playbook/）
 ├── scripts/               # 同步 / 校验脚本
 │   ├── sync.sh            # 入口
 │   ├── permissions-sync.mjs  # permissions 分发
@@ -110,15 +122,17 @@ dev-standards/
 
 新增基线流程见 `playbook/baselines/README.md` §怎么改。
 
-## 与 Claude Code 的对应关系
+## 与 Agents 规范的对应关系
 
-| Claude Code 概念 | 本仓库位置 | 说明 |
-|------------------|------------|------|
-| Project memory | 各项目 `CLAUDE.md` | 标准库提供模板，不放项目细节 |
-| Skills | `skills/*/` | 扁平目录 + `SKILL.md`；复杂内容放 `references/` |
-| Hooks | `hooks/` | 可选；敏感操作守卫（如发邮件、commit） |
-| Subagents | 未来 `agents/` | 需要时再建 |
-| 工具清单 | 各项目 `.claude/TOOLS.md` | 标准库不强制统一工具版本 |
+| Agent 规范概念      | 本仓库位置         | 说明                                         |
+| ------------------- | ------------------ | -------------------------------------------- |
+| **Project Context** | 各项目 `AGENTS.md` | 跨 Agent 通用说明与规范入口                  |
+| **Claude Entry**    | 各项目 `CLAUDE.md` | 首行 `@AGENTS.md` + Claude 专有补充          |
+| **Subagents**       | `agents/*/`        | 领域子 Agent 角色声明与 Prompt Specification |
+| **AgentTeam**       | `agentteams/*/`    | 多 Agent 协同工作流与组队策略                |
+| **Skills**          | `skills/*/`        | 工作流能力包（`SKILL.md` 规范）              |
+| **Hooks**           | `hooks/`           | PreToolUse 守卫与 Git Hooks 模板             |
+| **Permissions**     | `permissions/`     | 跨 Agent shell 命令免审批 Allowlist 真源     |
 
 个人级 Skill（跨所有项目）→ sync 到 `~/.claude/skills/`
 项目级 Skill（仅某业务域）→ 留在业务仓库的 `.claude/skills/`，**不**放进 dev-standards

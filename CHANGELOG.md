@@ -2,6 +2,23 @@
 
 All notable changes to the dev-standards Claude Code plugin follow [Semantic Versioning](https://semver.org/).
 
+## [3.7.0] - 2026-09-27
+
+- **Changed** — `playbook/kubernetes.md` 重大更新：基于 drinkzen 项目 K8s 治理实践，
+  新增多组件分层目录结构、迁移门禁模式、NodePort + 外部网关模式、Job 隔离与 $patch: delete、
+  StorageClass Retain 策略、镜像仓库镜像策略、数据库备份 CronJob 最佳实践、CI 结构不变量断言
+- **Added** — `playbook/audits/2026-09-drinkzen.md`（drinkzen K8s 治理标杆审计报告，5 项创新模式已反馈到标准库）
+- **Changed** — `playbook/INDEX.md` 注册 drinkzen 审计报告
+
+## [3.6.0] - 2026-07-18
+
+- **Added** — `playbook/ios.md`（iOS 原生 App：SwiftUI + Liquid Glass 设计语言、Materials 回退、HIG）
+- **Added** — [ADR-0014](playbook/adr/0014-ios-swiftui-liquid-glass-baseline.md)（SwiftUI 优先、iOS 18 最低部署、玻璃克制）
+- **Added** — `skills/ios/`（Liquid Glass API、Materials 回退、架构骨架、坑点）
+- **Added** — `adapters/cursor/ios.mdc`（Cursor Rules，派生自 ios.md）
+- **Changed** — `playbook/INDEX.md` / `principles.md` 注册 iOS 主题；显式延后 RN/Flutter/KMP
+- **Changed** — `skills/dev-bootstrap/references/standards-overview.md` 补充 ios / h5 Skill 条目
+
 ## [3.5.0] - 2026-07-07
 
 - **Added** — [ADR-0012](playbook/adr/0012-config-github-l2-only.md)：`~/.config` 仅 GitHub L2 IaC；L3 运行时单一真源在 VPS

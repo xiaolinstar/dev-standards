@@ -1,36 +1,40 @@
-# Agent 配置：最小维护（Claude + AGENTS 双体系）
+# Agent 配置：通用 Agents 体系与 Subagents 规范
 
-> 立场：**只维护 Claude Code 生态 + AGENTS.md 通用层**，不对 Copilot / Windsurf / Continue 等逐一适配。
+> 立场：**优先维护通用 `AGENTS.md` + `agents/` Subagents 规范**， Cursor 等特定工具为可选导出镜像。
 
-## 三层结构
+## 架构结构
 
 ```text
 playbook/                    ← 真源（人读 + 审计基准）
     │
-    ├─ AGENTS.md             ← 各项目：跨 Agent 通用说明（Cursor / Codex / Copilot 等读）
+    ├─ AGENTS.md             ← 各项目：跨 Agent 通用说明（AGENTS 协议一等公民）
     │
-    ├─ CLAUDE.md             ← 各项目：@AGENTS.md + Claude 专有补充（hooks、子目录 CLAUDE.md）
+    ├─ agents/               ← 领域 Subagents 角色声明（auditor, bootstrap, env-ops...）
     │
-    └─ .cursor/rules/*.mdc   ← 可选：仅 glob 作用域规则（sync.sh 从 playbook 派生）
+    ├─ agentteams/           ← 多 Agent (AgentTeam) 协同工作流与组流模板
+    │
+    ├─ CLAUDE.md             ← 各项目：@AGENTS.md + Claude 专有补充
+    │
+    └─ .cursor/rules/*.mdc   ← 可选兼容镜像：仅当需要 Cursor 路径 Glob 触发时从 playbook 派生
 ```
 
-| 层 | 谁读 | 维护什么 |
-|----|------|----------|
-| **playbook/** | 人 + 审计 | 原则、ADR、主题 playbook |
-| **AGENTS.md** | Cursor、Codex、Copilot… | 项目结构、命令、约束、文档入口 |
-| **CLAUDE.md** | Claude Code | 首行 `@AGENTS.md`；hooks、Skills、子模块 CLAUDE.md 指针 |
-| **.cursor/rules/** | Cursor Agent | 需要 `globs` / `alwaysApply` 时才部署；`sync.sh adapters cursor` |
+| 层                 | 谁读                    | 维护什么                                                         |
+| ------------------ | ----------------------- | ---------------------------------------------------------------- |
+| **playbook/**      | 人 + 审计               | 原则、ADR、主题 playbook                                         |
+| **AGENTS.md**      | Cursor、Codex、Copilot… | 项目结构、命令、约束、文档入口                                   |
+| **CLAUDE.md**      | Claude Code             | 首行 `@AGENTS.md`；hooks、Skills、子模块 CLAUDE.md 指针          |
+| **.cursor/rules/** | Cursor Agent            | 需要 `globs` / `alwaysApply` 时才部署；`sync.sh adapters cursor` |
 
 **不维护**：`.windsurfrules`、`.github/copilot-instructions.md` 等逐工具副本。
 
 ## 不扫描的目录
 
-| 路径 | 归属 | Cursor 是否加载 |
-|------|------|-----------------|
-| `.claude/skills/` | Claude Code 项目/个人 Skill | ❌ |
-| `.claude/hooks/` | Claude PreToolUse 等 | ❌ |
-| `.agents/` | 技能市场缓存等 | ❌ |
-| `~/.claude/skills/` | 个人 Skill | ❌ |
+| 路径                | 归属                        | Cursor 是否加载 |
+| ------------------- | --------------------------- | --------------- |
+| `.claude/skills/`   | Claude Code 项目/个人 Skill | ❌              |
+| `.claude/hooks/`    | Claude PreToolUse 等        | ❌              |
+| `.agents/`          | 技能市场缓存等              | ❌              |
+| `~/.claude/skills/` | 个人 Skill                  | ❌              |
 
 Cursor **不会**自动读 `.claude/`、`.agents/`。跨工具共享内容放 **AGENTS.md**，不要指望目录扫描替代。
 

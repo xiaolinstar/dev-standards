@@ -4,38 +4,41 @@
 
 ## 一等公民
 
-| 路径 | 用途 | 消费方式 |
-|------|------|----------|
-| `playbook/principles.md` | L1 原则（短、稳定） | 人读；Skill/Adapter 引用 |
-| `playbook/monorepo.md` | monorepo 目录、版本、命令 | 人读；monorepo 项目必读 |
-| `playbook/audit-feedback-loop.md` | 项目审计 → 标准库反馈闭环 | 审计时必读 |
-| `playbook/adr/` | 有争议的默认选择 | 版本化决策记录 |
-| `playbook/baselines/` | 外部行业基线映射 | 人读；principles / skills 引用 |
-| `skills/` | 工作流 Skill 源码 | `sync.sh skills` → `~/.claude/skills/` |
-| `hooks/` | Claude hooks 模板 | `sync.sh hooks <project>` |
+| 路径                              | 用途                      | 消费方式                               |
+| --------------------------------- | ------------------------- | -------------------------------------- |
+| `playbook/principles.md`          | L1 原则（短、稳定）       | 人读；Skill/Adapter 引用               |
+| `playbook/monorepo.md`            | monorepo 目录、版本、命令 | 人读；monorepo 项目必读                |
+| `playbook/audit-feedback-loop.md` | 项目审计 → 标准库反馈闭环 | 审计时必读                             |
+| `playbook/adr/`                   | 有争议的默认选择          | 版本化决策记录                         |
+| `playbook/baselines/`             | 外部行业基线映射          | 人读；principles / skills 引用         |
+| `skills/`                         | 工作流 Skill 源码         | `sync.sh skills` → `~/.claude/skills/` |
+| `hooks/`                          | Claude hooks 模板         | `sync.sh hooks <project>`              |
 
 ## 主题 playbook（跨项目技术约定）
 
-| 文档 | ADR | 要点 |
-|------|-----|------|
-| [api-error-codes.md](../../../playbook/api-error-codes.md) | [0005](../../../playbook/adr/0005-api-error-code-convention.md) | 错误体 schema、前缀码、traceId；**参考实现** ai-todo tag `api-error-codes-migration-complete` |
-| [ci-minimum-gate.md](../../../playbook/ci-minimum-gate.md) | [0006](../../../playbook/adr/0006-ci-minimum-gate.md) | 必选 4 项 + Hooks/CI/CD 三阶段、Monorepo 布局、环境密钥 L0–L3 |
-| [env-management.md](../../../playbook/env-management.md) | — | `~/.config/xiaolinstar`、键名校验、Agent 禁区；索引 [env-registry.yaml](../../../playbook/env-registry.yaml) |
-| [wechat-mp.md](../../../playbook/wechat-mp.md) | [0007](../../../playbook/adr/0007-wechat-miniprogram-baseline.md) | 原生 + TS 小程序目录、CI、MobX 状态 |
+| 文档                                                       | ADR                                                                     | 要点                                                                                                         |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [api-error-codes.md](../../../playbook/api-error-codes.md) | [0005](../../../playbook/adr/0005-api-error-code-convention.md)         | 错误体 schema、前缀码、traceId；**参考实现** ai-todo tag `api-error-codes-migration-complete`                |
+| [ci-minimum-gate.md](../../../playbook/ci-minimum-gate.md) | [0006](../../../playbook/adr/0006-ci-minimum-gate.md)                   | 必选 4 项 + Hooks/CI/CD 三阶段、Monorepo 布局、环境密钥 L0–L3                                                |
+| [env-management.md](../../../playbook/env-management.md)   | —                                                                       | `~/.config/xiaolinstar`、键名校验、Agent 禁区；索引 [env-registry.yaml](../../../playbook/env-registry.yaml) |
+| [wechat-mp.md](../../../playbook/wechat-mp.md)             | [0007](../../../playbook/adr/0007-wechat-miniprogram-baseline.md)       | 原生 + TS 小程序目录、CI、MobX 状态                                                                          |
+| [ios.md](../../../playbook/ios.md)                         | [0014](../../../playbook/adr/0014-ios-swiftui-liquid-glass-baseline.md) | SwiftUI + Liquid Glass；Materials 回退；HIG                                                                  |
 
 索引真源：[playbook/INDEX.md](../../../playbook/INDEX.md)
 
 ## Skills
 
-| Skill | 用途 |
-|-------|------|
-| `dev-bootstrap/` | 新建 / 审计项目；checklist 含 CI 4 项 + 本地 hook |
-| `wechat-mp/` | 小程序 domain 模式与坑点；决策以 `wechat-mp.md` 为准 |
+| Skill            | 用途                                                     |
+| ---------------- | -------------------------------------------------------- |
+| `dev-bootstrap/` | 新建 / 审计项目；checklist 含 CI 4 项 + 本地 hook        |
+| `wechat-mp/`     | 小程序 domain 模式与坑点；决策以 `wechat-mp.md` 为准     |
+| `h5/`            | H5 移动端模式与坑点；决策以 `h5.md` / `h5-admin.md` 为准 |
+| `ios/`           | SwiftUI + Liquid Glass 模式与坑点；决策以 `ios.md` 为准  |
 
 ## Adapters（派生镜像）
 
-| 路径 | 用途 | 消费方式 |
-|------|------|----------|
+| 路径               | 用途                                          | 消费方式                            |
+| ------------------ | --------------------------------------------- | ----------------------------------- |
 | `adapters/cursor/` | Cursor Rules（5 个 `.mdc`，派生自 playbook/） | `sync.sh adapters cursor <project>` |
 
 ## 边界

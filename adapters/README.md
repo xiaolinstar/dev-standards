@@ -6,29 +6,31 @@
 
 ## 何时需要 adapter
 
-| 情况 | 做法 |
-|------|------|
-| 规则全项目通用 | 只写 **AGENTS.md**，不必部署 adapter |
-| 改 miniapp 时才加载 wechat 规则 | `sync.sh adapters cursor <project>` |
-| 标准库主题更新 | 改 **playbook/** → 再 sync adapter |
+| 情况                            | 做法                                 |
+| ------------------------------- | ------------------------------------ |
+| 规则全项目通用                  | 只写 **AGENTS.md**，不必部署 adapter |
+| 改 miniapp 时才加载 wechat 规则 | `sync.sh adapters cursor <project>`  |
+| 标准库主题更新                  | 改 **playbook/** → 再 sync adapter   |
 
 **不对** Copilot / Windsurf / Continue 等逐工具维护 adapter。
 
 ## 当前 adapter
 
-| Adapter | 目录 | 部署目标 | 命令 |
-|---------|------|----------|------|
-| Cursor | `adapters/cursor/` | `<project>/.cursor/rules/` | `sync.sh adapters cursor <project>` |
+| Adapter | 目录               | 部署目标                   | 命令                                |
+| ------- | ------------------ | -------------------------- | ----------------------------------- |
+| Cursor  | `adapters/cursor/` | `<project>/.cursor/rules/` | `sync.sh adapters cursor <project>` |
 
 ### `.mdc` 与 playbook 对应
 
-| 文件 | 真源 |
-|------|------|
-| `core-principles.mdc` | `playbook/principles.md` |
-| `monorepo.mdc` | `playbook/monorepo.md` |
-| `api-error-codes.mdc` | `playbook/api-error-codes.md` |
-| `ci-minimum-gate.mdc` | `playbook/ci-minimum-gate.md` |
-| `wechat-mp.mdc` | `playbook/wechat-mp.md` |
+| 文件                  | 真源                             |
+| --------------------- | -------------------------------- |
+| `core-principles.mdc` | `playbook/principles.md`         |
+| `monorepo.mdc`        | `playbook/monorepo.md`           |
+| `api-error-codes.mdc` | `playbook/api-error-codes.md`    |
+| `ci-minimum-gate.mdc` | `playbook/ci-minimum-gate.md`    |
+| `wechat-mp.mdc`       | `playbook/wechat-mp.md`          |
+| `h5.mdc`              | `playbook/h5.md` + `h5-admin.md` |
+| `ios.mdc`             | `playbook/ios.md`                |
 
 原则：adapter 内容是派生镜像；**改动先改 playbook**，再 sync。
 

@@ -62,6 +62,7 @@
 - 微信小程序项目标准（原生 + TypeScript）→ 详见 [wechat-mp.md](wechat-mp.md) / [ADR-0007](adr/0007-wechat-miniprogram-baseline.md)
 - Web 后台基线（PC 优先自适应 + Vant 4 + Tailwind + Design Tokens）→ 详见 [web.md](web.md) / [ADR-0011](adr/0011-web-admin-baseline.md)
 - H5 运营管理后台项目标准 → 详见 [h5-admin.md](h5-admin.md) / [ADR-0010](adr/0010-h5-project-baseline.md)
+- iOS 原生 App（SwiftUI + Liquid Glass）→ 详见 [ios.md](ios.md) / [ADR-0014](adr/0014-ios-swiftui-liquid-glass-baseline.md)
 
 ## 显式延后
 
@@ -69,6 +70,9 @@
   触发条件：出现 2 个及以上的非 Vue Web 前端项目时启动。
   理由：当前 drink-budget / party-helper / ai-todo 均统一在 Vue 生态内；引入新框架需重新评估。
   Vue 生态内的 Web 后台基线已落地于 [web.md](web.md)。
+- **React Native / Flutter / KMP** — 不在本阶段覆盖。
+  触发条件：出现跨端 iOS/Android 产品且确认不走原生 SwiftUI 时启动。
+  理由：当前 iOS 产品定位为苹果风味原生；跨端另开 ADR。
 
 ## 外部基线
 

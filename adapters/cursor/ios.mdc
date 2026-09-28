@@ -1,0 +1,45 @@
+---
+description: SwiftUI iOS 原生规范（Liquid Glass 设计语言、Materials 回退、HIG，派生自 ios.md）
+globs: "**/*.swift,**/Package.swift,**/*.xcodeproj/**,**/*.xcworkspace/**"
+alwaysApply: false
+---
+
+# iOS 原生开发规范（SwiftUI + Liquid Glass）
+
+来源：`~/AgentProjects/dev-standards/playbook/ios.md`
+
+## 技术基线
+
+- **SwiftUI 优先**；UIKit 仅互操作例外
+- **最低部署 iOS 18**；Liquid Glass API 用 `#available(iOS 26, *)` 门控
+- 架构：`@Observable` + 轻量 MVVM；Feature 垂直切片；包管理 SPM
+- 玻璃封装集中在 `DesignSystem/Glass.swift`，业务 View 不散落可用性判断
+
+## 设计语言（强制）
+
+1. **系统组件优先** — `NavigationStack` / `TabView` / `.toolbar` / Sheet 不要加不透明自定义背景
+2. **玻璃克制** — 只用于导航与关键功能控件，禁止整页 / 列表铺玻璃
+3. **禁止假玻璃** — 不用 `Color.*.opacity` 冒充材质
+4. **iOS 26+** — `.glassEffect`、`GlassEffectContainer`、`.buttonStyle(.glass)` / `.glassProminent`
+5. **iOS 18–25** — `.ultraThinMaterial` 等系统 Material 回退
+6. **多玻璃** — 必须包进 `GlassEffectContainer`
+
+## HIG / 辅助功能
+
+- 触控目标 ≥ 44×44 pt
+- Dynamic Type：用语义字体（`.body` / `.title2`），避免写死 pt 压制系统
+- 图标按钮必须有 `accessibilityLabel`
+- 必测：Reduce Transparency、Reduce Motion、Increase Contrast、深浅色
+
+## 工程约定
+
+- 网络走 `Services/HTTPClient`；View 内禁止直接打网
+- Token 进 Keychain，不进 UserDefaults
+- API 错误体尽量对齐 `api-error-codes.md`
+- 密钥 / `.p8` / 证书不入库
+
+## 模式与坑
+
+详细 API、回退封装、架构骨架：`skills/ios/`（Claude / Cursor Skill）
+
+> 来源：`playbook/ios.md` + `playbook/adr/0014-ios-swiftui-liquid-glass-baseline.md`

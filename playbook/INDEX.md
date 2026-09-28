@@ -22,6 +22,7 @@
 - [H5 项目通用开发规范（移动端 vw 适配、UI 交互、WebView 兼容）](h5.md)
 - [Web 项目统一规范（PC 优先自适应 + Vant 4 + Tailwind + Design Tokens）](web.md)
 - [H5 运营管理后台项目标准（继承 Web 基线，运营后台特有规则）](h5-admin.md)
+- [iOS 原生 App 项目标准（SwiftUI + Liquid Glass）](ios.md)
 
 ## 项目审计（差距 → 标准迭代）
 
@@ -32,6 +33,8 @@
   - [2026-07 ai-todo 核心项目](audits/2026-07-ai-todo.md)
   - [2026-07 drink-budget 核心项目](audits/2026-07-drink-budget-repo.md)
   - [2026-07 party-helper 核心项目](audits/2026-07-party-helper-repo.md)
+  - [2026-07 mixcrit iOS / 苹果风格](audits/2026-07-mixcrit-ios.md)
+  - [2026-09 drinkzen K8s 治理标杆](audits/2026-09-drinkzen.md)
 
 ## 实现片段（可复制参考）
 
@@ -63,3 +66,4 @@
 | [0011](adr/0011-web-admin-baseline.md)                             | Web 后台基线（PC 优先自适应 + Vant 4 + Tailwind + 品牌色变量） | Accepted |
 | [0012](adr/0012-devops-v1-archive-and-k8s-migration-roadmap.md)    | DevOps v1 归档与云原生 K8s (K3s + Kustomize) 演进路线图        | Accepted |
 | [0013](adr/0013-deployment-idempotency-and-immutable-artifacts.md) | 部署幂等性与不可变产物规范                                     | Accepted |
+| [0014](adr/0014-ios-swiftui-liquid-glass-baseline.md)              | iOS 原生 App 基线（SwiftUI + Liquid Glass）                    | Accepted |
