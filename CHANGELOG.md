@@ -4,6 +4,8 @@ All notable changes to the dev-standards Claude Code plugin follow [Semantic Ver
 
 ## [3.7.0] - 2026-09-27
 
+- **Added** — `playbook/database-operations.md`（数据库管理与备份方案：PostgreSQL/SQLite 选型、
+  pg_dump 备份策略、对象存储 + 本地 `.backup/` 降级、恢复流程、迁移门禁、运维 Runbook）
 - **Changed** — `playbook/kubernetes.md` 重大更新：基于 drinkzen 项目 K8s 治理实践，
   新增多组件分层目录结构、迁移门禁模式、NodePort + 外部网关模式、Job 隔离与 $patch: delete、
   StorageClass Retain 策略、镜像仓库镜像策略、数据库备份 CronJob 最佳实践、CI 结构不变量断言

@@ -17,6 +17,7 @@
 - [环境变量迁移 Runbook](env-migration-runbook.md)（进度：[env-migration-status.yaml](env-migration-status.yaml) · `sync.sh env status`）
 - [双机并存与渐进式迁移设计方案](vps-migration-strategy.md)（解决平滑迁移、可迁移性解耦及网关权重分流）
 - [Kubernetes 声明式资源编写规范与最佳实践](kubernetes.md)
+- [数据库管理与备份方案](database-operations.md)（PostgreSQL/SQLite、pg_dump 备份、恢复流程、迁移门禁、运维 Runbook）
 - [Phase 3 应用层清单](env-phase3-checklist.md)
 - [微信小程序项目标准（原生 + TypeScript）](wechat-mp.md)
 - [H5 项目通用开发规范（移动端 vw 适配、UI 交互、WebView 兼容）](h5.md)
