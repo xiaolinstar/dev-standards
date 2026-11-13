@@ -1,7 +1,7 @@
 # sync-github：约定优于配置（文件全量同步）
 
 Date: 2026-11-13  
-Status: Draft（待用户审阅后进入实现计划）  
+Status: Accepted  
 Scope: `dev-standards` · `scripts/env/sync-github-env.mjs` 及相关 L0 / 文档  
 Out of scope（后续）：旧扁平文件兼容增强、`DEPLOY_SSH_KEY_FILE` 等本地变换、仓库级与 Environment 混合推送策略细化
 

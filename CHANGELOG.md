@@ -4,6 +4,14 @@ All notable changes to the dev-standards Claude Code plugin follow [Semantic Ver
 
 ## [Unreleased]
 
+- **Changed** — `sync-github` 全量推送 `variables.env` / `secrets.env`（不再用 profile 白名单）；元数据来自 CLI 与 profile
+- **Changed** — `variables.env` 可选。旧扁平布局缺失新文件时报错，不静默合并。残留 `GITHUB_*` 会作为 Variable 推送
+- **Changed** — [ADR-0009](playbook/adr/0009-l2-github-env-by-category.md)：gateway 改为 Environments `tencent-101` / `aliyun-121`
+- **Changed** — `env-registry.yaml` / `github-sync-profiles.json`：gateway `l2_scope: environment`
+- **Changed** — [env-management.md](playbook/env-management.md)：Agent 禁读禁写 `~/.config/xiaolinstar`
+- **Changed** — `sync-github` / `check --github` 仅人类终端执行
+- **Added** — `permissions/manifest.json`：`fileDenies` 与 `sync-github-l2`；Claude deny `Read/Edit/Write`
+- **Added** — Cursor adapter `env-agent-ban.mdc`（alwaysApply）
 - **Added** — `hooks/pre-commit-python/` 模板：Python 项目专用 `.pre-commit-config.yaml`（gitleaks + ruff + uv-lock + mypy + conventional-pre-commit）
 - **Added** — `sync.sh hooks-precommit-python <project>` 部署命令
 - **Added** — [ADR-0006](playbook/adr/0006-ci-minimum-gate.md) §项目类型 → Hook 框架选型决策矩阵

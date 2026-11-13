@@ -84,7 +84,7 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 
 | category | 典型项目 | L2 作用域 | 键名前缀 |
 |----------|----------|-----------|----------|
-| platform | xiaolin-gateway | 仓库 Secrets | `SERVER_*` |
+| platform | xiaolin-gateway | Environments `tencent-101` / `aliyun-121` | `SERVER_*` |
 | content | xiaolin-docs、xiaolin-life | 仓库 Secrets / Variables | `SERVER_*` |
 | application | ai-todo、party-helper、drink-budget | GitHub Environment | `DEPLOY_*` |
 
@@ -97,7 +97,7 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 - [ ] **content / platform** 仓：CD 密钥在**仓库级** Secrets，**未**误放进 Environment（除非 ADR 偏离）
 - [ ] **content** 仓：workflow **无** `MAIL_*` / `action-send-mail`；CD 通知靠 GitHub 账户通知
 - [ ] L3 业务密钥（DB、JWT、`ADMIN_TOKEN` 等）**不在** L2
-- [ ] （可选）`~/.config/xiaolinstar/<project>/github-*.env` + `sync.sh env sync-github --dry-run` 可推
+- [ ] （可选，人类终端）`init-github-env` → 填 `~/.config/.../github/<env>/secrets.env` → `sync.sh env sync-github --dry-run`
 
 偏离双轨键名或 category 表 → 新建 ADR 或在审计报告「标准库待反馈」段说明。
 

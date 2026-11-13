@@ -50,14 +50,14 @@ L3 工作流：只在 VPS（或开发者本机）维护 `apps/api/.env.productio
     └── secrets.env
 ```
 
-**仓库级 L2**（platform / content，`l2_scope: repository`）：
+**仓库级 L2**（content 等 `scope: repository`）：
 
 ```text
 ~/.config/xiaolinstar/<project>/github/variables.env
 ~/.config/xiaolinstar/<project>/github/secrets.env
 ```
 
-L0 模板：`docs/env/github/<environment>/variables.env.example` 与 `secrets.env.example`。
+L0 模板：`docs/env/github/<environment>/variables.env.example`（可选）与 `secrets.env.example`。
 
 ### 3. GitHub Environment 名 vs 应用运行时名
 
@@ -80,9 +80,22 @@ L0 模板：`docs/env/github/<environment>/variables.env.example` 与 `secrets.e
 
 ### 5. 迁移
 
-- 旧路径 `github-production.env`：`sync-github` 只读兼容，**新文件请用** `github/<env>/variables.env` + `secrets.env`。
-- 旧单文件 `env.env`：同上只读兼容，**新文件请用** `variables.env` + `secrets.env`。
+- 旧扁平 `github-*.env` 与单文件 `env.env`：`sync-github` **不再读取**。
+- 新布局文件缺失时**报错**，并提示 `github/<env>/{variables,secrets}.env`（仓库级无环境子目录）。**不做**静默合并或只读回退。
 - 旧路径 `production.env` 等 L3 备份：可手动删除；不再由 `init-config` 创建。
+
+### 6. sync-github：全量同步，元数据来自约定
+
+存在的 `variables.env` / `secrets.env` 里每个非空键都会推到 GitHub Variables / Secrets。
+profile 的 `variables` / `secrets` 白名单已废弃并忽略。`variables.env` 可省略（无 Variables 的项目）。
+
+元数据不来自文件内容：
+
+- project、environment：CLI（`--project`、`--environment` / `--env`）
+- repository：profile，缺省 `xiaolinstar/<project>`
+- scope：profile（`environment` 或 `repository`）
+
+文件内残留的 `GITHUB_*` 会作为普通 Variable 推送。同步前删除，并用 `--dry-run` 核对键名。
 
 ## 后果
 
