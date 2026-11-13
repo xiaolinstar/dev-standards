@@ -67,6 +67,10 @@ copy_one() {
   template=$(resolve_template "$kind")
   local dest="$dest_dir/${kind}.env"
   if [[ -z "$template" ]]; then
+    if [[ "$kind" == variables ]]; then
+      echo "skip: no L0 variables template (optional)"
+      return 0
+    fi
     echo "error: L0 template missing for $PROJECT / $ENV_NAME / $kind" >&2
     exit 1
   fi
