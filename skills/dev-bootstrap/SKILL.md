@@ -95,7 +95,7 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 - [ ] 本地 `github-*.env` 模板键名 ⊆ registry 声明；无未文档化的 Secrets
 - [ ] **application** 仓：GitHub 上存在 `production` Environment；ai-todo 另有 `staging` / `production-k8s`
 - [ ] **platform** 仓（gateway）：GitHub 上存在 `tencent-101` 与 `aliyun-121`；CD Secrets 在 Environment 内，非仓库级
-- [ ] **content** 仓：CD 密钥在**仓库级** Secrets，**未**误用 Environment；workflow **无** `MAIL_*` / `action-send-mail`；CD 通知靠 GitHub 账户通知
+- [ ] **content** 仓：CD 密钥仍在**仓库级**（未误用 Environment），且**无** `MAIL_*` L2
 - [ ] L3 业务密钥（DB、JWT、`ADMIN_TOKEN` 等）**不在** L2
 - [ ] （可选，人类终端）`init-github-env` → 填 `~/.config/.../github/<env>/secrets.env` → `sync.sh env sync-github --dry-run`
 
