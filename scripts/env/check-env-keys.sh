@@ -115,6 +115,19 @@ if [[ $use_github -eq 1 ]]; then
   for kind in variables secrets; do
     gh_template="$project_path/docs/env/github/$env_name/${kind}.env.example"
     gh_runtime="$CONFIG_ROOT/$project_name/github/$env_name/${kind}.env"
+    if [[ ! -f "$gh_template" ]]; then
+      if [[ "$kind" == variables ]]; then
+        echo "skip [github:$env_name:$kind]: no L0 template"
+        if [[ -f "$gh_runtime" ]]; then
+          echo "warn [github:$env_name:$kind]: runtime exists but no L0 template → $gh_runtime"
+          warnings=$((warnings + 1))
+        fi
+        continue
+      fi
+      echo "FAIL [github:$env_name:$kind]: L0 template missing → $gh_template" >&2
+      errors=$((errors + 1))
+      continue
+    fi
     check_pair "$gh_template" "$gh_runtime" "github:$env_name:$kind"
   done
   if [[ $errors -gt 0 ]]; then
