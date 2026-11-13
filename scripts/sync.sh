@@ -19,6 +19,8 @@ Commands:
   hooks <project>     Copy Claude hooks → <project>/.claude/hooks/
   hooks-precommit <project>
                       Install Husky pre-commit templates (see hooks/pre-commit/)
+  hooks-precommit-python <project>
+                      Install Python pre-commit templates (see hooks/pre-commit-python/)
   permissions [--user] [--project PATH]
                       Sync permissions/manifest.json → Cursor / Claude / Codex / OpenCode / Antigravity
   template <name> <dest>
@@ -38,6 +40,7 @@ Examples:
   $(basename "$0") skills
   $(basename "$0") adapters cursor ~/AgentProjects/my-app
   $(basename "$0") hooks-precommit ~/AgentProjects/my-app
+  $(basename "$0") hooks-precommit-python ~/AgentProjects/my-flask-app
   $(basename "$0") template wechat-mp ~/AgentProjects/my-miniapp
   $(basename "$0") permissions --user
   $(basename "$0") permissions --user --project ~/AgentProjects/ai-todo
@@ -160,6 +163,33 @@ cmd_hooks_precommit() {
   echo "  full guide: $ROOT/playbook/ci-minimum-gate.md"
 }
 
+cmd_hooks_precommit_python() {
+  local project="${1:-}"
+  if [[ -z "$project" ]]; then
+    echo "error: project path required" >&2
+    usage >&2
+    exit 1
+  fi
+  local src="$ROOT/hooks/pre-commit-python"
+  if [[ ! -d "$src" ]]; then
+    echo "error: template dir not found: $src" >&2
+    exit 1
+  fi
+  project="$(cd "$project" && pwd)"
+
+  if [[ -f "$project/.pre-commit-config.yaml" ]]; then
+    echo "warning: $project/.pre-commit-config.yaml already exists; skipping (no overwrite)" >&2
+  else
+    cp "$src/.pre-commit-config.yaml" "$project/.pre-commit-config.yaml"
+    echo "→ installed .pre-commit-config.yaml"
+  fi
+
+  cp "$src/README.md" "$project/.dev-standards-precommit-python-README.md"
+  echo "→ wrote .dev-standards-precommit-python-README.md"
+  echo "  next: pre-commit install && pre-commit install --hook-type commit-msg"
+  echo "  full guide: $ROOT/playbook/ci-minimum-gate.md"
+}
+
 cmd_template() {
   local name="${1:-}"
   local dest="${2:-}"
@@ -188,7 +218,8 @@ cmd_all() {
   echo
   echo "Adapters:  $0 adapters <name> <project>   (e.g. 'adapters cursor <project>')"
   echo "Hooks:     $0 hooks <project>   (Claude PreToolUse guard)"
-  echo "Pre-commit: $0 hooks-precommit <project>   (Husky + lint-staged + commitlint)"
+  echo "Pre-commit (Node): $0 hooks-precommit <project>   (Husky + lint-staged + commitlint)"
+  echo "Pre-commit (Python): $0 hooks-precommit-python <project>   (pre-commit + ruff + mypy)"
   echo "Template:   $0 template <name> <dest>   (e.g. template wechat-mp ./my-app)"
   if [[ -n "${1:-}" ]]; then
     echo
@@ -261,6 +292,7 @@ main() {
     adapters) cmd_adapters "$@" ;;
     hooks)    cmd_hooks "$@" ;;
     hooks-precommit) cmd_hooks_precommit "$@" ;;
+    hooks-precommit-python) cmd_hooks_precommit_python "$@" ;;
     permissions) cmd_permissions "$@" ;;
     env) cmd_env "$@" ;;
     template) cmd_template "$@" ;;

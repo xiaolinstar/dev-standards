@@ -4,11 +4,14 @@
 
 | 工具 | 部署目标 |
 |------|----------|
-| Cursor | `~/.cursor/permissions.json`、`<project>/.cursor/permissions.json` |
-| Claude Code | `~/.claude/settings.json`（合并 `permissions`） |
+| Cursor | `~/.cursor/permissions.json`、`<project>/.cursor/permissions.json`；另同步 `env-agent-ban.mdc` 到 `~/.cursor/rules/` |
+| Claude Code | `~/.claude/settings.json`（合并 `permissions`；含 `fileDenies` → `Read/Edit/Write`） |
 | Codex | `~/.codex/rules/dev-standards.rules` |
 | OpenCode | `~/.config/opencode/opencode.json`（合并 `permission.bash`） |
 | Antigravity | `~/.gemini/policies/dev-standards-check.toml` |
+
+`fileDenies`（如 `~/.config/xiaolinstar/**`）：路径级禁读禁写，与 shell deny（`cat`、`sync-github`）互补。
+Cursor 侧靠 alwaysApply 规则与 `autoRun.block_instructions`（无原生 Read deny）。
 
 项目特例：`overlays/<project>.json`（如 `ai-todo.json`）。
 

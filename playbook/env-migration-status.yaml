@@ -12,8 +12,10 @@ projects:
     vps_host: 101.34.78.2
     local_config: done
     vps_runtime: done
-    github_l2: done
-    blockers: []
+    github_l2: tooling
+    blockers:
+      - 创建 GitHub Environment aliyun-121；init-github-env + 人工填 secrets 后 sync tencent-101 与 aliyun-121
+      - Environments 验证后删除仓库级 SERVER_*（及可选 production Environment）
 
   xiaolin-docs:
     category: content

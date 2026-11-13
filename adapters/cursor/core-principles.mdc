@@ -28,6 +28,7 @@ alwaysApply: true
 ## 配置与密钥
 
 密钥不进仓库；用 `.env.example` 文档化变量名。配置走环境，不硬编码环境差异。
+**禁止**读/写 `~/.config/xiaolinstar/**` 与 gitignore `.env*`；L2 仅由用户本机 `sync.sh` 同步（见 `env-agent-ban` 规则）。
 
 ## Git
 

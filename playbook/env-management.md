@@ -22,7 +22,7 @@ L3  业务运行时               VPS .env.production / K8s Secret 文件（仅�
 ### 单一受控源原则
 
 - **L3**：只在目标机器维护一份（Compose `.env.production`、K8s overlay `.env.production.secrets`）。**不再** scp 到 `~/.config/xiaolinstar/<project>/production.env`。
-- **L2**：本地 `variables.env` + `secrets.env` 是 **编写 IaC**；`sync-github` 推到 GitHub 后，**CD 只读 GitHub**。
+- **L2**：本地 `variables.env`（可选）+ `secrets.env` 是 **编写 IaC**；`sync-github` 按文件全量推到 GitHub 后，**CD 只读 GitHub**。
 - 避免「config 备份 + VPS 真源」双轨——后者是旧模型，已废弃（ADR-0012）。
 
 ### 模板书写规范
@@ -34,25 +34,40 @@ L3  业务运行时               VPS .env.production / K8s Secret 文件（仅�
 
 ```text
 ~/.config/xiaolinstar/<project>/github/
-├── production/
+├── production/          # application 等
 │   ├── variables.env    # → gh variable set
 │   └── secrets.env      # → gh secret set
-├── staging/
+├── tencent-101/         # platform · gateway
 │   ├── variables.env
 │   └── secrets.env
-└── production-k8s/
+└── aliyun-121/
     ├── variables.env
     └── secrets.env
 ```
 
-**仓库级 L2**（platform / content）：
+**仓库级 L2**（content）：
 
 ```text
 ~/.config/xiaolinstar/<project>/github/variables.env
 ~/.config/xiaolinstar/<project>/github/secrets.env
 ```
 
-L0 模板：`docs/env/github/<environment>/variables.env.example` 与 `secrets.env.example`。
+L0 模板：`docs/env/github/<environment>/variables.env.example`（**可选**）与 `secrets.env.example`。
+无 GitHub Variables 的项目（如 gateway）不提供 variables 模板；`init-github-env` 会跳过并提示 optional。
+
+### 元数据（约定优于配置）
+
+数据文件只放要同步的键。`project` / `environment` / `repository` / `scope` **不要**写进 `variables.env` 或 `secrets.env`。
+
+| 元数据 | 来源 |
+| ------ | ---- |
+| project | CLI `--project` |
+| environment | CLI `--environment` 或 `--env`（`scope: environment`；省略时 CLI 默认 `production`） |
+| repository | profile.`repository`，缺省 `xiaolinstar/<project>`。本阶段**不**支持文件内覆盖 |
+| scope | profile.`scope`：`environment` 或 `repository` |
+| 目录 | profile.`config_dir`。`environment` scope 再加环境子目录；`repository` scope 用 `github/variables.env` 与 `github/secrets.env`（无子目录，`gh … set` 不带 `--env`） |
+
+`variables.env` 与 `secrets.env` 各自可选，但**至少有一个**。两者皆缺时 `sync-github` 以非零退出，并提示 `init-github-env`。
 
 ### 命名对照（ai-todo）
 
@@ -82,13 +97,13 @@ GitHub Environment 描述 **部署面**；应用 `production` 描述 **产品档
   --project ai-todo --environment production-k8s --dry-run
 ```
 
-### 废弃路径（只读兼容，勿再写入）
+### 废弃路径（报错引导，勿再写入）
 
-| 旧路径                                   | 替代                                        |
-| ---------------------------------------- | ------------------------------------------- |
-| `<project>/github-production.env`        | `github/production/{variables,secrets}.env` |
-| `<project>/production.env`（L3 备份）    | VPS `apps/api/.env.production` **唯一**     |
-| `env import-config` / `env apply-config` | 直接在 VPS 或本机改 runtime                 |
+| 旧路径                                   | 现在                                                         |
+| ---------------------------------------- | ------------------------------------------------------------ |
+| `<project>/github-*.env`、`github/**/env.env` | **不再加载**。新布局缺失时 `sync-github` 报错并打印期望路径，提示 `init-github-env`。不做静默合并或只读回退 |
+| `<project>/production.env`（L3 备份）    | VPS `apps/api/.env.production` **唯一**                      |
+| `env import-config` / `env apply-config` | 直接在 VPS 或本机改 runtime                                  |
 
 ## 每仓运行时布局（L3）
 
@@ -127,10 +142,11 @@ GitHub Environment 描述 **部署面**；应用 `production` 描述 **产品档
 
 > [ADR-0009](adr/0009-l2-github-env-by-category.md) · `scripts/env/github-sync-profiles.json`
 
-| category           | Environment                                                | 键名前缀   |
-| ------------------ | ---------------------------------------------------------- | ---------- |
-| platform / content | 无（仓库级）                                               | `SERVER_*` |
-| application        | `production`、`staging`；ai-todo 另有 **`production-k8s`** | `DEPLOY_*` |
+| category    | Environment / 作用域                                                     | 键名前缀   |
+| ----------- | ------------------------------------------------------------------------ | ---------- |
+| platform    | Environments `tencent-101`、`aliyun-121`（gateway 双机）                 | `SERVER_*` |
+| content     | 仓库级（无 Environment）                                                 | `SERVER_*` |
+| application | `production`、`staging`；ai-todo 另有 **`production-k8s`**               | `DEPLOY_*` |
 
 ### application 标准键
 
@@ -145,14 +161,32 @@ GitHub Environment 描述 **部署面**；应用 `production` 描述 **产品档
 
 **不放 L2**：`POSTGRES_PASSWORD`、`AI_TODO_WECHAT_APP_SECRET` 等业务密钥——仅 L3。
 
-### sync-github 示例
+### sync-github（文件全量同步）
+
+只读取新布局里**存在**的文件。每个非空 `KEY=value` 原样推送（空值跳过）：
+
+- `variables.env` → `gh variable set KEY --repo <repository> [--env <environment>] --body <value>`
+- `secrets.env` → `gh secret set …`（参数相同）
+
+约定：
+
+- **不再**用 profile 的 `variables` / `secrets` 白名单过滤。这两个字段已废弃；写在 profile 里也会被忽略。
+- 可选 `required_variables` / `required_secrets`：只校验键存在且非空，缺则退出码 1。
+- `--dry-run`：打印将推送的 `variable|secret KEY → repo[/env]`，不调用 `gh` 写入。
+- 不展开 `DEPLOY_SSH_KEY_FILE`、`DEPLOY_SSH_KEY_B64` 或内联私钥路径。需要私钥时把内容写入 `secrets.env` 里对应的 Secret 名，或自行 `gh secret set`。
+
+**存量文件警告**：`variables.env` 里若还留着 `GITHUB_REPOSITORY`、`GITHUB_ENVIRONMENT` 或其他 `GITHUB_*`，
+全量同步会把它们当成普通 Variable 推上 GitHub。同步前删掉这些键，并用 `--dry-run` 核对键名。
 
 ```bash
 gh variable set DEPLOY_HOST --repo xiaolinstar/ai-todo --env production --body 124.222.98.227
 
 ~/AgentProjects/dev-standards/scripts/sync.sh env sync-github --project ai-todo --environment production
 ~/AgentProjects/dev-standards/scripts/sync.sh env sync-github --project ai-todo --environment production-k8s
-~/AgentProjects/dev-standards/scripts/sync.sh env sync-github --project xiaolin-gateway
+~/AgentProjects/dev-standards/scripts/sync.sh env sync-github \
+  --project xiaolin-gateway --environment tencent-101
+~/AgentProjects/dev-standards/scripts/sync.sh env sync-github \
+  --project xiaolin-gateway --environment aliyun-121
 ```
 
 ## 键名校验（check）
@@ -161,25 +195,41 @@ gh variable set DEPLOY_HOST --repo xiaolinstar/ai-todo --env production --body 1
 # 仓库 L0 *.example ↔ 本机 runtime（开发者）
 ~/AgentProjects/dev-standards/scripts/sync.sh env check --project ~/AgentProjects/ai-todo
 
-# L0 github 模板 ↔ ~/.config L2 文件
+# L0 github 模板 ↔ ~/.config L2 文件（**仅人类终端**；会读 secrets.env）
 ~/AgentProjects/dev-standards/scripts/sync.sh env check \
   --project ~/AgentProjects/ai-todo --github --env production
 ```
 
 **不再**使用 `--local production` 校验 `~/.config/.../production.env`。
 
-## Agent 禁区
+## Agent 禁区（`~/.config/xiaolinstar`）
 
-**禁止 Agent 修改：**
+**目标**：降低密钥进入 Agent 上下文的概率；**不是**密码学级保密（见下）。
 
+**禁止 Agent（读与写均禁止）：**
+
+- `~/.config/xiaolinstar/**`（含 `cat` / `less` / Read 工具 / 编辑器打开）
 - gitignore 的 `*.env`、`.env.*`（非 `*.example`）
-- `~/.config/xiaolinstar/**`
 - VPS / 服务器 L3 文件
+- 代跑 `env sync-github`、`env init-github-env`、`env check --github`（这些会读 L2 secrets）
 
 **允许 Agent：**
 
-- `docs/env/`、`*.example`、`playbook/env-registry.yaml`
-- 运行 `env check`（只读）
+- 仓库内 `docs/env/**/*.example`、`playbook/env-registry.yaml`
+- 提示用户在**自己的终端**执行 `init-github-env` / `sync-github`（Agent 只给命令，不执行、不读输出中的密钥）
+- 无 `--github` 的 `env check`（仅对照仓库模板与本机 gitignore runtime，若 runtime 也含密钥则仍勿代跑）
+
+**生效方式**：`permissions/manifest.json` + Claude `Read/Edit` deny + Cursor alwaysApply 规则；人类用本机终端维护 L2 并 `sync.sh env sync-github`。
+
+**保密边界（诚实预期）：**
+
+| 能做到 | 做不到 |
+|--------|--------|
+| 默认不把 L2 明文拉进对话 / 工具输出 | 阻止你本机其它进程、备份、截图读取同一文件 |
+| 降低 Agent「顺手打开 secrets.env」 | 你粘贴密钥到聊天、或批准 `all`/绕过规则后的读取 |
+| 与「只经 sync.sh 推 GitHub」流程对齐 | 替代磁盘加密、密钥管理器、或 OS 级 ACL |
+
+结论：**适合作为 Agent 隔离策略**；真保密仍依赖文件权限、少拷贝、不把真实值放进仓库/聊天，以及 GitHub Secrets 侧管控。
 
 ## 与其它文档
 

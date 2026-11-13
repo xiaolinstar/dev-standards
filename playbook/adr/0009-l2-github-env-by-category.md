@@ -22,18 +22,22 @@ xiaolinstar 旗下项目在 GitHub Actions L2（CD 用 Secrets / Variables）上
 
 | category | 项目 | `l2_scope` | 键名前缀 | Environment 名 |
 |----------|------|------------|----------|----------------|
-| **platform** | xiaolin-gateway | `repository` | `SERVER_*` | 无（CD 不挂 `environment:`） |
+| **platform** | xiaolin-gateway | `environment` | `SERVER_*` | `tencent-101`、`aliyun-121`（双机 CD） |
 | **content** | xiaolin-docs、xiaolin-life | `repository` | `SERVER_*` | 无 |
-| **application** | ai-todo、party-helper、drink-budget | `environment` | `DEPLOY_*` | `production`；ai-todo 另有 `staging` |
+| **application** | ai-todo、party-helper、drink-budget | `environment` | `DEPLOY_*` | `production`；ai-todo 另有 `staging` / `production-k8s` |
 
 **不**在本 ADR 阶段将 `SERVER_*` 批量重命名为 `DEPLOY_*`，也不强制内容站迁入 GitHub Environment。新仓默认：
 
-- 仅 SSH + 镜像拉取 + compose → **content / platform 轨**
-- 需要 staging Environment、manifest 部署、公网 smoke URL → **application 轨**
+- 单机 SSH + compose、无多 Environment → **content 轨**（仓库级 `SERVER_*`）
+- 平台入口多机 CD（同键名、不同主机凭证）→ **platform 轨**（Environment + `SERVER_*`）
+- 需要 staging / K8s overlay / 公网 smoke → **application 轨**（Environment + `DEPLOY_*`）
+
+> **修订（2026-07）**：platform 由「仓库级、无 Environment」改为 **GitHub Environments 双机**
+> （`tencent-101` / `aliyun-121`），键名仍为 `SERVER_*`。仓库级 `SERVER_*` 在 Environments 填齐后废弃。
 
 ### 2. 各类别标准键清单（L0 文档 + 本地 `github-*.env` 真源）
 
-#### A. platform / content（仓库级）
+#### A. platform（Environment）/ content（仓库级）
 
 | 类型 | 键 | 必填 |
 |------|-----|------|
@@ -42,6 +46,15 @@ xiaolinstar 旗下项目在 GitHub Actions L2（CD 用 Secrets / Variables）上
 | Secret | `SERVER_PASSWORD` 或 SSH key* | ✅ 二选一 |
 
 \* 若改用 SSH key，Secret 名 `SERVER_SSH_KEY`（待 workflow 支持时再实现；当前 workflow 仅 `SERVER_PASSWORD`）。
+
+**platform · xiaolin-gateway Environments（同名 Secrets，值按机）：**
+
+| Environment | 部署面 |
+|-------------|--------|
+| `tencent-101` | 腾讯云网关主入口（自动 CD 默认） |
+| `aliyun-121` | 阿里云双机入口（仅 `workflow_dispatch`） |
+
+本地 IaC：`~/.config/xiaolinstar/xiaolin-gateway/github/<environment>/{variables,secrets}.env`；L0：`docs/env/github/<environment>/`。
 
 **content · xiaolin-docs 额外 Variables（仅 docs）：**
 
@@ -95,9 +108,9 @@ xiaolinstar 旗下项目在 GitHub Actions L2（CD 用 Secrets / Variables）上
 - [ ] `env-registry.yaml` 存在该项目，`l2_category` 与 category 一致
 - [ ] 存在 `docs/env/github-environments.example.env` 或等效 L0 清单
 - [ ] 本地模板键名 ⊆ registry 声明；无未文档化的 Secrets
-- [ ] application 仓：GitHub 上存在 `production` Environment；ai-todo 另有 `staging`
-- [ ] content/platform 仓：**未**误把 CD 密钥放进 Environment（除非 ADR 偏离）
-- [ ] content 仓：**无** `MAIL_*` L2 配置
+- [ ] application 仓：GitHub 上存在 `production` Environment；ai-todo 另有 `staging` / `production-k8s`
+- [ ] platform 仓（gateway）：GitHub 上存在 `tencent-101` 与 `aliyun-121`；CD Secrets 在 Environment 内，非仓库级
+- [ ] content 仓：CD 密钥仍在**仓库级**（未误用 Environment），且**无** `MAIL_*` L2
 - [ ] L3 业务密钥（DB、JWT、ADMIN_TOKEN）**不在** L2
 
 ## 后果

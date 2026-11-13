@@ -44,12 +44,22 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 
 ### 本地 Git hooks（必选，对应 [ci-minimum-gate.md §本地 pre-commit 配置](../../playbook/ci-minimum-gate.md#本地-pre-commit-配置必选)）
 
-- [ ] `.husky/pre-commit` 存在，含 gitleaks（降级策略）+ lint-staged
+**先判断项目类型**（见 [ci-minimum-gate.md §项目类型选型](../../playbook/ci-minimum-gate.md#项目类型--hook-框架选型)）：
+
+#### Node.js / TS 项目（有 `package.json`）
+
+- [ ] `.husky/pre-commit` 存在，含 gitleaks（必须安装）+ lint-staged
 - [ ] `.husky/commit-msg` 存在，含 commitlint
 - [ ] `commitlint.config.{js,cjs}` 存在
 - [ ] 根 `package.json` 含 `"prepare": "husky"`
 - [ ] 根 `package.json` 含 `lint-staged` 配置
 - [ ] **lint-staged 与 CI `format:check` glob 对齐**（monorepo 子 app 逐项对照；见 [ci-minimum-gate.md §hook ↔ CI 对齐](../../playbook/ci-minimum-gate.md#hook--ci-对齐monorepo-必查)）
+
+#### Python 项目（有 `pyproject.toml`，使用 uv）
+
+- [ ] `.pre-commit-config.yaml` 存在，含 gitleaks + ruff + uv-lock + mypy + conventional-pre-commit
+- [ ] `uv run pre-commit install` 已执行（hooks 可用）
+- [ ] `uv run pre-commit install --hook-type commit-msg` 已执行
 
 ### CI（必选 4 项，对应 [ci-minimum-gate.md §必选 4 项](../../playbook/ci-minimum-gate.md#必选-4-项local--ci-双段)）
 
@@ -74,7 +84,7 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 
 | category | 典型项目 | L2 作用域 | 键名前缀 |
 |----------|----------|-----------|----------|
-| platform | xiaolin-gateway | 仓库 Secrets | `SERVER_*` |
+| platform | xiaolin-gateway | Environments `tencent-101` / `aliyun-121` | `SERVER_*` |
 | content | xiaolin-docs、xiaolin-life | 仓库 Secrets / Variables | `SERVER_*` |
 | application | ai-todo、party-helper、drink-budget | GitHub Environment | `DEPLOY_*` |
 
@@ -83,11 +93,11 @@ B 类反馈落点含 `playbook/baselines/`、`playbook/adr/` — 见
 - [ ] `env-registry.yaml` 存在该项目，`l2_category` 与 `category` 一致
 - [ ] 存在 `docs/env/github-environments.example.env` 或等效 L0 清单（如 `github-environments.md`）
 - [ ] 本地 `github-*.env` 模板键名 ⊆ registry 声明；无未文档化的 Secrets
-- [ ] **application** 仓：GitHub 上存在 `production` Environment；ai-todo 另有 `staging`
-- [ ] **content / platform** 仓：CD 密钥在**仓库级** Secrets，**未**误放进 Environment（除非 ADR 偏离）
-- [ ] **content** 仓：workflow **无** `MAIL_*` / `action-send-mail`；CD 通知靠 GitHub 账户通知
+- [ ] **application** 仓：GitHub 上存在 `production` Environment；ai-todo 另有 `staging` / `production-k8s`
+- [ ] **platform** 仓（gateway）：GitHub 上存在 `tencent-101` 与 `aliyun-121`；CD Secrets 在 Environment 内，非仓库级
+- [ ] **content** 仓：CD 密钥在**仓库级** Secrets，**未**误用 Environment；workflow **无** `MAIL_*` / `action-send-mail`；CD 通知靠 GitHub 账户通知
 - [ ] L3 业务密钥（DB、JWT、`ADMIN_TOKEN` 等）**不在** L2
-- [ ] （可选）`~/.config/xiaolinstar/<project>/github-*.env` + `sync.sh env sync-github --dry-run` 可推
+- [ ] （可选，人类终端）`init-github-env` → 填 `~/.config/.../github/<env>/secrets.env` → `sync.sh env sync-github --dry-run`
 
 偏离双轨键名或 category 表 → 新建 ADR 或在审计报告「标准库待反馈」段说明。
 

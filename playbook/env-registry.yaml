@@ -14,9 +14,9 @@ github_config:
 
 categories:
   platform:
-    description: 公网入口、TLS、监控栈
+    description: 公网入口、TLS、监控栈（多机 CD 用 GitHub Environments + SERVER_*）
     projects: [xiaolin-gateway]
-    l2_scope: repository
+    l2_scope: environment
     l2_secret_prefix: SERVER_
   application:
     description: 业务 API / monorepo 可部署产物
@@ -34,13 +34,20 @@ projects:
     category: platform
     repo: xiaolinstar/xiaolin-gateway
     l2_category: platform
-    l2_scope: repository
+    l2_scope: environment
     l2_github_secrets: [SERVER_HOST, SERVER_USER, SERVER_PASSWORD]
     runtime_layout: root-dotenv
     load_order: [.env, .env.production]
     templates:
       - { path: .env.example, env: base }
       - { path: .env.production.example, env: production }
+    github_environments:
+      - name: tencent-101
+        l0_secrets: docs/env/github/tencent-101/secrets.env.example
+        notes: Auto CD default; primary public gateway
+      - name: aliyun-121
+        l0_secrets: docs/env/github/aliyun-121/secrets.env.example
+        notes: Manual workflow_dispatch only; dual-host life/ai-todo entry
     docs: [docs/runtime-env-management.md, docs/env/README.md]
 
   ai-todo:

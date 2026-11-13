@@ -1,0 +1,29 @@
+---
+description: Agent 禁读禁写 ~/.config/xiaolinstar 与运行时 .env（L2/L3 密钥）
+alwaysApply: true
+---
+
+# 环境密钥 · Agent 禁区
+
+来源：`~/AgentProjects/dev-standards/playbook/env-management.md` §Agent 禁区
+
+## 硬禁止（读与写）
+
+- `~/.config/xiaolinstar/**`（含 Read / Grep / Shell `cat`/`less`/`head`）
+- 仓库内 gitignore 的 `.env`、`.env.*`（非 `*.example`）
+- VPS / 远程机上的 L3 运行时密钥文件
+
+## 禁止代跑（会读入 secrets）
+
+- `sync.sh env sync-github`
+- `sync.sh env init-github-env`
+- `sync.sh env check --github` / `check-env-keys.sh --github`
+
+需要时只给出命令，由用户在自己的终端执行并填值。
+
+## 允许
+
+- 编辑/新增 `docs/env/**/*.example`、`*.env.example`
+- 更新 `playbook/env-registry.yaml`（在标准仓内）
+
+此为流程隔离，非磁盘加密；真实值永不进对话与 git。

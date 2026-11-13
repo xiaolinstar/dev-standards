@@ -104,14 +104,36 @@ function buildCursorPermissions(checkPatterns, autoRun) {
   };
 }
 
-function buildClaudePermissions(checkPatterns, denyPatterns) {
+function expandHomeGlob(p) {
+  const home = process.env.HOME || process.env.USERPROFILE || '';
+  if (!home) return p;
+  if (p.startsWith('~/')) return join(home, p.slice(2));
+  if (p === '~') return home;
+  return p;
+}
+
+function buildClaudeFileDenies(fileDenies) {
+  const out = [];
+  for (const raw of fileDenies || []) {
+    const abs = expandHomeGlob(raw);
+    out.push(`Read(${abs})`);
+    out.push(`Edit(${abs})`);
+    out.push(`Write(${abs})`);
+  }
+  return out;
+}
+
+function buildClaudePermissions(checkPatterns, denyPatterns, fileDenies) {
   const allow = [
     'Read',
     'Grep',
     'Glob',
     ...checkPatterns.map(toClaudeBash),
   ];
-  const deny = denyPatterns.map(toClaudeDeny);
+  const deny = [
+    ...denyPatterns.map(toClaudeDeny),
+    ...buildClaudeFileDenies(fileDenies),
+  ];
   return { allow, deny };
 }
 
@@ -175,7 +197,7 @@ function mergeJsonFile(path, mergeFn) {
   return JSON.stringify(merged, null, 2) + '\n';
 }
 
-function applyUserConfigs(checkPatterns, denyPatterns, autoRun) {
+function applyUserConfigs(checkPatterns, denyPatterns, autoRun, fileDenies) {
   const home = process.env.HOME || process.env.USERPROFILE || '';
   if (!home) {
     console.error('error: HOME not set');
@@ -186,8 +208,15 @@ function applyUserConfigs(checkPatterns, denyPatterns, autoRun) {
   const cursorBody = buildCursorPermissions(checkPatterns, autoRun);
   writeMaybe(cursorPath, JSON.stringify(cursorBody, null, 2) + '\n', 'Cursor permissions.json');
 
+  // Global Cursor rule: Agent must not read/write L2 IaC under ~/.config/xiaolinstar
+  const banSrc = join(ROOT, 'adapters/cursor/env-agent-ban.mdc');
+  if (existsSync(banSrc)) {
+    const banBody = readFileSync(banSrc, 'utf8');
+    writeMaybe(join(home, '.cursor/rules/env-agent-ban.mdc'), banBody, 'Cursor user rule env-agent-ban.mdc');
+  }
+
   const claudePath = join(home, '.claude/settings.json');
-  const claudePerms = buildClaudePermissions(checkPatterns, denyPatterns);
+  const claudePerms = buildClaudePermissions(checkPatterns, denyPatterns, fileDenies);
   const claudeContent = mergeJsonFile(claudePath, (existing) => ({
     ...existing,
     permissions: {
@@ -256,6 +285,7 @@ function main() {
   const autoRun = mergeAutoRun(manifest, overlay);
   const checkPatterns = patternsForTier(rules, 'check');
   const denyPatterns = patternsForTier(rules, 'deny');
+  const fileDenies = manifest.fileDenies || [];
 
   mkdirSync(GENERATED_DIR, { recursive: true });
   writeFileSync(
@@ -264,7 +294,7 @@ function main() {
   );
   writeFileSync(
     join(GENERATED_DIR, 'claude-permissions.json'),
-    JSON.stringify(buildClaudePermissions(checkPatterns, denyPatterns), null, 2) + '\n',
+    JSON.stringify(buildClaudePermissions(checkPatterns, denyPatterns, fileDenies), null, 2) + '\n',
   );
   writeFileSync(join(GENERATED_DIR, 'codex-dev-standards.rules'), buildCodexRules(checkPatterns, denyPatterns));
   writeFileSync(
@@ -275,7 +305,7 @@ function main() {
   console.log(`→ preview: ${GENERATED_DIR}/`);
 
   if (applyUser) {
-    applyUserConfigs(checkPatterns, denyPatterns, autoRun);
+    applyUserConfigs(checkPatterns, denyPatterns, autoRun, fileDenies);
   }
 
   if (projectPath) {

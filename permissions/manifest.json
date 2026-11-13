@@ -1,8 +1,11 @@
 {
   "$schema": "./manifest.schema.json",
   "version": 1,
-  "updated": "2026-06-28",
+  "updated": "2026-07-13",
   "description": "跨 Agent 只读 check / deny 规则真源。由 sync.sh permissions 分发到 Cursor、Claude Code、Codex、OpenCode、Antigravity。",
+  "fileDenies": [
+    "~/.config/xiaolinstar/**"
+  ],
   "autoRun": {
     "allow_instructions": [
       "Read-only verification and CI check commands (typecheck, lint, format:check, test, pytest, check:wechat, gitleaks protect --staged on staged files only) may run without approval.",
@@ -12,7 +15,7 @@
     "block_instructions": [
       "Do not auto-run git push, git commit, pnpm publish, docker push, deploy scripts, or rm -rf without explicit user request and approval.",
       "Do not auto-run commands that modify production databases or remote infrastructure.",
-      "Do not edit gitignored env files (.env, .env.production, etc.) or ~/.config/xiaolinstar/; only *.example and docs/env/ in repos."
+      "Never read or edit ~/.config/xiaolinstar/** (Agent forbidden zone). Do not cat/less/open those files; do not run sync-github, init-github-env, or env check --github. Only *.example and docs/env/ in repos. User fills secrets and runs sync.sh in their own terminal."
     ]
   },
   "rules": [
@@ -119,6 +122,36 @@
       "since": "2026-06-28",
       "patterns": ["> .env", "tee .env", "vim .env", "nano .env"],
       "note": "Runtime env is human-only; edit *.example in repo instead"
+    },
+    {
+      "id": "read-xiaolinstar-config",
+      "tier": "deny",
+      "status": "active",
+      "since": "2026-07-13",
+      "patterns": [
+        "cat ~/.config/xiaolinstar",
+        "less ~/.config/xiaolinstar",
+        "more ~/.config/xiaolinstar",
+        "head ~/.config/xiaolinstar",
+        "tail ~/.config/xiaolinstar",
+        "bat ~/.config/xiaolinstar",
+        "rg ~/.config/xiaolinstar",
+        "grep ~/.config/xiaolinstar"
+      ],
+      "note": "L2 secrets under ~/.config/xiaolinstar are human-only; Agent must not read"
+    },
+    {
+      "id": "sync-github-l2",
+      "tier": "deny",
+      "status": "active",
+      "since": "2026-07-13",
+      "patterns": [
+        "sync.sh env sync-github",
+        "sync.sh env init-github-env",
+        "sync-github-env.mjs",
+        "init-github-env.sh"
+      ],
+      "note": "sync-github reads secrets.env; human runs in own terminal"
     },
     {
       "id": "pnpm-publish",
